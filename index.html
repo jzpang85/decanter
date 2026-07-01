@@ -812,10 +812,7 @@ Use your knowledge of this style/region if you don't know this exact drink.`;
     const data = await response.json();
     const text = data.choices?.[0]?.message?.content || '';
 
-    // DEBUG: always show raw response preview
-    toast('📡 Raw: ' + text.trim().slice(0, 180));
-
-    // Smart parsing: try markdown fence → raw braces → fallback to text
+    // Smart parsing: try markdown fence → raw braces → fallback to raw text
     let jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
     let parsed = null;
     if (jsonMatch) {
@@ -828,8 +825,19 @@ Use your knowledge of this style/region if you don't know this exact drink.`;
       }
     }
     if (!parsed) {
+      // No JSON at all — use entire response as summary
       parsed = { summary: text.trim(), flavor: null, pairing: null };
     }
+
+    // If summary is still empty, use the full raw text
+    if (!parsed.summary || parsed.summary.trim().length < 5) {
+      parsed.summary = text.trim() || '(model returned empty response)';
+    }
+
+    // DEBUG: show what we got in the toast
+    const hasJson = parsed.flavor || parsed.pairing;
+    toast(`📡 ${hasJson ? 'JSON parsed ✓' : 'Raw text used'} — ${text.length} chars. Check summary field.`);
+
     return parsed;
 
   } catch (err) {
@@ -867,7 +875,12 @@ function populateFromPhoto(result) {
   }
   updateSummaryCard();
   $('#summaryCard').classList.add('visible');
-  toast('✅ Photo analyzed! Review the details and Save.');
+  const filled = [result.name, result.variety, result.origin, result.flavor, result.summary].filter(Boolean).length;
+  if (filled >= 2) {
+    toast('✅ Photo analyzed! Review and Save.');
+  } else {
+    toast('⚠️ Low detail from model. Raw text in summary field — you can edit it.');
+  }
 }
 
 // ── Populate from Text (fills flavor/pairing/summary only) ────────────────────
