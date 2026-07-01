@@ -811,11 +811,9 @@ Use your knowledge of this style/region if you don't know this exact drink.`;
 
     const data = await response.json();
     const text = data.choices?.[0]?.message?.content || '';
-    console.log('AI raw response:', text);
 
-    // Debug: show first 200 chars of raw response
-    const rawPreview = text.trim().slice(0, 200);
-    console.log('AI response length:', text.length, 'preview:', rawPreview);
+    // DEBUG: always show raw response preview
+    toast('📡 Raw: ' + text.trim().slice(0, 180));
 
     // Smart parsing: try markdown fence → raw braces → fallback to text
     let jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
@@ -831,11 +829,6 @@ Use your knowledge of this style/region if you don't know this exact drink.`;
     }
     if (!parsed) {
       parsed = { summary: text.trim(), flavor: null, pairing: null };
-    }
-    // If summary is empty, show raw preview so we can debug
-    if (!parsed.summary || parsed.summary.trim().length < 10) {
-      console.warn('Empty summary. Raw response:', text);
-      toast('⚠️ Model returned: ' + rawPreview.substring(0, 150));
     }
     return parsed;
 
