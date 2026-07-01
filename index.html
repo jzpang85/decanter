@@ -510,13 +510,30 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <h3>⚙️ Settings</h3>
-    <label>Zhipu (GLM-4V) API Key</label>
+    <label>Zhipu (GLM) API Key</label>
     <input type="password" id="apiKeyInput" placeholder="e.g. abc123...">
     <p class="note">
-      Used to analyze label photos with GLM-4V vision model and generate summaries.
+      Used to analyze label photos and generate summaries.
       Your key is stored only in this browser's localStorage and never sent anywhere else.
       <a href="https://open.bigmodel.cn/usercenter/apikeys" target="_blank">Get a free API key →</a>
     </p>
+    <label>Vision Model</label>
+    <select id="modelSelect">
+      <option value="glm-4.6v">glm-4.6v</option>
+      <option value="glm-4.6v-flash">glm-4.6v-flash (free)</option>
+      <option value="glm-4.5v">glm-4.5v</option>
+      <option value="glm-4.5v-flash">glm-4.5v-flash</option>
+      <option value="glm-4v-flash">glm-4v-flash (free)</option>
+      <option value="glm-4v-plus">glm-4v-plus</option>
+      <option value="glm-5v-turbo">glm-5v-turbo</option>
+      <option value="glm-4.1v-thinking-flash">glm-4.1v-thinking-flash</option>
+    </select>
+    <p class="note">If one model fails, try another. "Flash" models are free.</p>
+    <label>API Endpoint</label>
+    <select id="endpointSelect">
+      <option value="https://open.bigmodel.cn/api/paas/v4/chat/completions">open.bigmodel.cn (domestic)</option>
+      <option value="https://api.z.ai/api/chat/completions">api.z.ai (international)</option>
+    </select>
     <label>TTS Voice Speed</label>
     <input type="range" id="ttsRate" min="0.5" max="1.5" step="0.1" value="0.9" style="width:100%;">
     <span style="font-size:0.8rem;color:var(--text-dim);" id="rateLabel">0.9×</span>
@@ -601,7 +618,7 @@ function deleteDrink(id) {
 // ── Settings ─────────────────────────────────────────────────────────────────
 function getSettings() {
   const raw = localStorage.getItem('decanter_settings');
-  return raw ? JSON.parse(raw) : { apiKey: '', ttsRate: 0.9 };
+  return raw ? JSON.parse(raw) : { apiKey: '', model: 'glm-4.6v-flash', endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', ttsRate: 0.9 };
 }
 
 function saveSettings(s) {
@@ -743,14 +760,14 @@ async function analyzeLabel(imageBase64) {
 If you cannot identify the drink from the label, set name to null and explain in summary what you can see.`;
 
   try {
-    const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
+    const response = await fetch(settings.endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${settings.apiKey}`
       },
       body: JSON.stringify({
-        model: 'glm-5.1',
+        model: settings.model,
         max_tokens: 1024,
         temperature: 0.7,
         messages: [{
@@ -1144,6 +1161,8 @@ $('#btnSave').addEventListener('click', saveEntry);
 $('#btnSettings').addEventListener('click', () => {
   const s = getSettings();
   $('#apiKeyInput').value = s.apiKey || '';
+  if (s.model) $('#modelSelect').value = s.model;
+  if (s.endpoint) $('#endpointSelect').value = s.endpoint;
   $('#ttsRate').value = s.ttsRate;
   $('#rateLabel').textContent = s.ttsRate.toFixed(1) + '×';
   $('#settingsModal').classList.add('open');
@@ -1161,6 +1180,8 @@ $('#ttsRate').addEventListener('input', (e) => {
 $('#btnSaveSettings').addEventListener('click', () => {
   const settings = {
     apiKey: $('#apiKeyInput').value.trim(),
+    model: $('#modelSelect').value,
+    endpoint: $('#endpointSelect').value,
     ttsRate: parseFloat($('#ttsRate').value)
   };
   saveSettings(settings);
