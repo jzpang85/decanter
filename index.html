@@ -383,7 +383,6 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
       <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp">
     </div>
     <div class="btn-row" style="margin-top:12px;">
-      <button class="btn btn-primary" id="btnAnalyze" disabled>🔍 Identify &amp; Summarize</button>
       <button class="btn" id="btnClearPhoto" style="display:none;">✕ Clear Photo</button>
     </div>
     <input type="hidden" id="imageBase64" value="">
@@ -416,7 +415,10 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
     <input type="text" id="drinkPairing" placeholder="e.g. grilled lamb, aged cheese, dark chocolate...">
 
     <label>AI Summary (∼1 min read)</label>
-    <textarea id="drinkSummary" placeholder="A concise summary of the drink — its story, character, and what makes it special. The AI will populate this, or you can write your own."></textarea>
+    <textarea id="drinkSummary" placeholder="Type the drink name + variety + origin above, then tap ✨ Generate Summary — the AI will fill this in."></textarea>
+    <div class="btn-row" style="margin-top:8px;">
+      <button class="btn btn-primary" id="btnGenerate">✨ Generate Summary</button>
+    </div>
 
     <input type="hidden" id="drinkRating" value="0">
   </div>
@@ -444,7 +446,7 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   <!-- Save -->
   <div class="btn-row">
     <button class="btn btn-primary" id="btnSave">💾 Save to Journal</button>
-    <button class="btn" id="btnPreview">👁 Preview Summary</button>
+    <button class="btn" id="btnPreview">👁 Preview</button>
   </div>
 </section>
 
@@ -517,18 +519,16 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
       Your key is stored only in this browser's localStorage and never sent anywhere else.
       <a href="https://open.bigmodel.cn/usercenter/apikeys" target="_blank">Get a free API key →</a>
     </p>
-    <label>Vision Model</label>
+    <label>Model</label>
     <select id="modelSelect">
-      <option value="glm-4.6v">glm-4.6v</option>
-      <option value="glm-4.6v-flash">glm-4.6v-flash (free)</option>
-      <option value="glm-4.5v">glm-4.5v</option>
-      <option value="glm-4.5v-flash">glm-4.5v-flash</option>
-      <option value="glm-4v-flash">glm-4v-flash (free)</option>
-      <option value="glm-4v-plus">glm-4v-plus</option>
-      <option value="glm-5v-turbo">glm-5v-turbo</option>
-      <option value="glm-4.1v-thinking-flash">glm-4.1v-thinking-flash</option>
+      <option value="glm-5.1">glm-5.1</option>
+      <option value="glm-5">glm-5</option>
+      <option value="glm-4.7-flash">glm-4.7-flash (free)</option>
+      <option value="glm-4-flash">glm-4-flash (free)</option>
+      <option value="glm-4-plus">glm-4-plus</option>
+      <option value="glm-4.6v-flash">glm-4.6v-flash (vision)</option>
     </select>
-    <p class="note">If one model fails, try another. "Flash" models are free.</p>
+    <p class="note">If one model fails, try another. Flash models are free.</p>
     <label>API Endpoint</label>
     <select id="endpointSelect">
       <option value="https://open.bigmodel.cn/api/paas/v4/chat/completions">open.bigmodel.cn (domestic)</option>
@@ -618,7 +618,7 @@ function deleteDrink(id) {
 // ── Settings ─────────────────────────────────────────────────────────────────
 function getSettings() {
   const raw = localStorage.getItem('decanter_settings');
-  return raw ? JSON.parse(raw) : { apiKey: '', model: 'glm-4.6v-flash', endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', ttsRate: 0.9 };
+  return raw ? JSON.parse(raw) : { apiKey: '', model: 'glm-5.1', endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', ttsRate: 0.9 };
 }
 
 function saveSettings(s) {
@@ -713,7 +713,6 @@ function showPreview(dataUrl) {
   // Replace content with image preview
   zone.innerHTML = `<img src="${dataUrl}" class="preview" alt="Label preview">`;
   zone.style.padding = '12px';
-  $('#btnAnalyze').disabled = false;
   $('#btnClearPhoto').style.display = '';
   currentImageBase64 = dataUrl;
   $('#imageBase64').value = dataUrl;
@@ -727,14 +726,13 @@ function clearPhoto() {
     <p class="hint">Wine, sake, whisky, or coffee — JPG/PNG, max ~10MB</p>
   `;
   zone.style.padding = '40px 20px';
-  $('#btnAnalyze').disabled = true;
   $('#btnClearPhoto').style.display = 'none';
   currentImageBase64 = '';
   $('#imageBase64').value = '';
 }
 
-// ── GLM-4V Vision API (Zhipu) ───────────────────────────────────────────────────────────────
-async function analyzeLabel(imageBase64) {
+// ── AI Summary Generator (text-only, works with any LLM) ──────────────────────
+async function generateSummary() {
   const settings = getSettings();
   if (!settings.apiKey) {
     toast('⚠️ Please set your Zhipu API key in Settings (⚙️) first.');
@@ -743,21 +741,25 @@ async function analyzeLabel(imageBase64) {
     return null;
   }
 
-  // GLM-4V accepts full data URLs — no stripping needed
+  const name = $('#drinkName').value.trim();
+  const variety = $('#drinkVariety').value.trim();
+  const origin = $('#drinkOrigin').value.trim();
+  const type = currentDrinkType;
 
-  const prompt = `You are a world-class sommelier, sake expert, whisky connoisseur, and coffee cupper. Analyze this drink label photo and identify the drink. Return ONLY a JSON object (no markdown, no extra text) with these fields (use null for anything you cannot determine):
+  if (!name) { toast('⚠️ Please enter at least a drink name first.'); return null; }
+
+  const prompt = `You are a world-class sommelier, sake expert, whisky connoisseur, and coffee cupper. Based on the drink information below, return ONLY a JSON object (no markdown) with these fields:
 
 {
-  "type": "wine" | "sake" | "whisky" | "coffee",
-  "name": "Full drink name with producer/brand and vintage/age if visible",
-  "variety": "Grape variety / sake category / whisky style / coffee bean variety & process",
-  "origin": "Country, region, sub-region",
   "flavor": "Key tasting notes as a comma-separated list (5-8 descriptors)",
   "pairing": "3-4 food pairing suggestions as a comma-separated list",
-  "summary": "A concise, engaging summary of this drink (~150-200 words) that covers: what it is, where it's from, how it's made (briefly), key character, and what makes it notable. Write in an informative but warm tone. Should take about 1 minute to read aloud."
+  "summary": "A concise, engaging summary (~150-200 words) covering: what it is, where from, how made, key character, and what makes it notable. Informative but warm tone. ~1 min to read aloud."
 }
 
-If you cannot identify the drink from the label, set name to null and explain in summary what you can see.`;
+Drink type: ${typeLabels[type]}
+Name: ${name}${variety ? `\nVariety/Style: ${variety}` : ''}${origin ? `\nOrigin: ${origin}` : ''}
+
+If you don't recognize this specific drink, use your knowledge of the style/region to write an informed summary.`;
 
   try {
     const response = await fetch(settings.endpoint, {
@@ -770,13 +772,7 @@ If you cannot identify the drink from the label, set name to null and explain in
         model: settings.model,
         max_tokens: 1024,
         temperature: 0.7,
-        messages: [{
-          role: 'user',
-          content: [
-            { type: 'image_url', image_url: { url: imageBase64 } },
-            { type: 'text', text: prompt }
-          ]
-        }]
+        messages: [{ role: 'user', content: prompt }]
       })
     });
 
@@ -787,28 +783,21 @@ If you cannot identify the drink from the label, set name to null and explain in
 
     const data = await response.json();
     const text = data.choices?.[0]?.message?.content || '';
-    // Extract JSON from response (may have markdown fences or extra whitespace)
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error('Could not parse AI response: ' + text.slice(0, 100));
     return JSON.parse(jsonMatch[0]);
 
   } catch (err) {
-    console.error('GLM API error:', err);
+    console.error('API error:', err);
     toast(`❌ ${err.message}`);
     return null;
   }
 }
 
 // ── Populate Form ────────────────────────────────────────────────────────────
-function populateForm(result) {
+function populateSummary(result) {
   if (!result) return;
 
-  if (result.type && ['wine','sake','whisky','coffee'].includes(result.type)) {
-    setDrinkType(result.type);
-  }
-  if (result.name) $('#drinkName').value = result.name;
-  if (result.variety) $('#drinkVariety').value = result.variety;
-  if (result.origin) $('#drinkOrigin').value = result.origin;
   if (result.flavor) $('#drinkFlavor').value = result.flavor;
   if (result.pairing) $('#drinkPairing').value = result.pairing;
   if (result.summary) {
@@ -818,7 +807,7 @@ function populateForm(result) {
 
   updateSummaryCard();
   $('#summaryCard').classList.add('visible');
-  toast('✅ AI analysis complete! Review and edit below, then Save.');
+  toast('✅ Summary generated! Review and Save.');
 }
 
 // ── Summary Card ─────────────────────────────────────────────────────────────
@@ -1091,7 +1080,7 @@ $('#uploadZone').addEventListener('drop', async (e) => {
   if (file && file.type.startsWith('image/')) {
     const { dataUrl } = await resizeImage(file);
     showPreview(dataUrl);
-    toast('📸 Photo ready! Tap "Identify & Summarize" to analyze.');
+    toast('📸 Photo saved! Fill in the details below, then tap Generate Summary.');
   }
 });
 
@@ -1100,28 +1089,24 @@ $('#fileInput').addEventListener('change', async (e) => {
   if (file) {
     const { dataUrl } = await resizeImage(file);
     showPreview(dataUrl);
-    toast('📸 Photo ready! Tap "Identify & Summarize" to analyze.');
+    toast('📸 Photo saved! Fill in the details below, then tap Generate Summary.');
   }
 });
 
 $('#btnClearPhoto').addEventListener('click', clearPhoto);
 
-// Analyze
-$('#btnAnalyze').addEventListener('click', async () => {
-  if (!currentImageBase64) return;
-  const btn = $('#btnAnalyze');
-  const origText = btn.textContent;
-  btn.textContent = '🔍 Analyzing...';
+// Generate Summary
+$('#btnGenerate').addEventListener('click', async () => {
+  const btn = $('#btnGenerate');
+  btn.innerHTML = '<span class="spinner"></span> Generating...';
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Analyzing...';
 
-  const result = await analyzeLabel(currentImageBase64);
+  const result = await generateSummary();
 
-  btn.textContent = origText;
+  btn.innerHTML = '✨ Generate Summary';
   btn.disabled = false;
-  btn.innerHTML = '🔍 Identify & Summarize';
 
-  if (result) populateForm(result);
+  if (result) populateSummary(result);
 });
 
 // Type tabs
@@ -1228,8 +1213,8 @@ document.addEventListener('keydown', (e) => {
   }
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
     e.preventDefault();
-    if ($('#panel-journal').classList.contains('active') && currentImageBase64) {
-      $('#btnAnalyze').click();
+    if ($('#panel-journal').classList.contains('active')) {
+      $('#btnGenerate').click();
     }
   }
   if (e.key === 'Escape') {
