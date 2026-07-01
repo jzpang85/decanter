@@ -383,6 +383,7 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
       <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp">
     </div>
     <div class="btn-row" style="margin-top:12px;">
+      <button class="btn btn-primary" id="btnAnalyze" disabled>🔍 Identify &amp; Summarize from Photo</button>
       <button class="btn" id="btnClearPhoto" style="display:none;">✕ Clear Photo</button>
     </div>
     <input type="hidden" id="imageBase64" value="">
@@ -714,6 +715,7 @@ function showPreview(dataUrl) {
   // Replace content with image preview
   zone.innerHTML = `<img src="${dataUrl}" class="preview" alt="Label preview">`;
   zone.style.padding = '12px';
+  $('#btnAnalyze').disabled = false;
   $('#btnClearPhoto').style.display = '';
   currentImageBase64 = dataUrl;
   $('#imageBase64').value = dataUrl;
@@ -727,13 +729,14 @@ function clearPhoto() {
     <p class="hint">Wine, sake, whisky, or coffee — JPG/PNG, max ~10MB</p>
   `;
   zone.style.padding = '40px 20px';
+  $('#btnAnalyze').disabled = true;
   $('#btnClearPhoto').style.display = 'none';
   currentImageBase64 = '';
   $('#imageBase64').value = '';
 }
 
-// ── AI Summary Generator (text-only, works with any LLM) ──────────────────────
-async function generateSummary() {
+// ── AI Call (photo or text) ──────────────────────────────────────────────────
+async function callAI(imageBase64) {
   const settings = getSettings();
   if (!settings.apiKey) {
     toast('⚠️ Please set your Zhipu API key in Settings (⚙️) first.');
@@ -747,20 +750,44 @@ async function generateSummary() {
   const origin = $('#drinkOrigin').value.trim();
   const type = currentDrinkType;
 
-  if (!name) { toast('⚠️ Please enter at least a drink name first.'); return null; }
+  let prompt, content;
 
-  const prompt = `You are a world-class sommelier, sake expert, whisky connoisseur, and coffee cupper. Based on the drink information below, return ONLY a JSON object (no markdown) with these fields:
+  if (imageBase64) {
+    // PHOTO mode: analyze the label image
+    prompt = `You are a world-class sommelier, sake expert, whisky connoisseur, and coffee cupper. Analyze this drink label photo. Return ONLY a JSON object (no markdown) with:
 
 {
-  "flavor": "Key tasting notes as a comma-separated list (5-8 descriptors)",
-  "pairing": "3-4 food pairing suggestions as a comma-separated list",
-  "summary": "A concise, engaging summary (~150-200 words) covering: what it is, where from, how made, key character, and what makes it notable. Informative but warm tone. ~1 min to read aloud."
+  "type": "wine" | "sake" | "whisky" | "coffee",
+  "name": "Full drink name with producer and vintage/age",
+  "variety": "Grape/sake category/whisky style/coffee variety & process",
+  "origin": "Country, region",
+  "flavor": "5-8 tasting notes, comma-separated",
+  "pairing": "3-4 food pairings, comma-separated",
+  "summary": "Concise summary (~150 words): what it is, where from, how made, key character. ~1 min read."
+}
+
+If you cannot identify the drink, set name to null and describe what you see in summary.`;
+    content = [
+      { type: 'image_url', image_url: { url: imageBase64 } },
+      { type: 'text', text: prompt }
+    ];
+  } else {
+    // TEXT mode: generate from what user typed
+    if (!name) { toast('⚠️ Enter a drink name first.'); return null; }
+    prompt = `You are a world-class sommelier, sake expert, whisky connoisseur, and coffee cupper. Based on this drink info, return ONLY a JSON object (no markdown) with:
+
+{
+  "flavor": "5-8 tasting notes, comma-separated",
+  "pairing": "3-4 food pairings, comma-separated",
+  "summary": "Concise summary (~150 words): what it is, where from, how made, key character. ~1 min read."
 }
 
 Drink type: ${typeLabels[type]}
 Name: ${name}${variety ? `\nVariety/Style: ${variety}` : ''}${origin ? `\nOrigin: ${origin}` : ''}
 
-If you don't recognize this specific drink, use your knowledge of the style/region to write an informed summary.`;
+Use your knowledge of this style/region if you don't know this exact drink.`;
+    content = prompt;
+  }
 
   try {
     const response = await fetch(settings.endpoint, {
@@ -773,7 +800,7 @@ If you don't recognize this specific drink, use your knowledge of the style/regi
         model: settings.model,
         max_tokens: 1024,
         temperature: 0.7,
-        messages: [{ role: 'user', content: prompt }]
+        messages: [{ role: 'user', content }]
       })
     });
 
@@ -785,7 +812,7 @@ If you don't recognize this specific drink, use your knowledge of the style/regi
     const data = await response.json();
     const text = data.choices?.[0]?.message?.content || '';
 
-    // Try to extract JSON — first check for markdown code fences, then raw braces
+    // Smart parsing: try markdown fence → raw braces → fallback to text
     let jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
     let parsed = null;
     if (jsonMatch) {
@@ -797,7 +824,6 @@ If you don't recognize this specific drink, use your knowledge of the style/regi
         try { parsed = JSON.parse(jsonMatch[0]); } catch(e) {}
       }
     }
-    // If still no JSON, use the raw text as summary
     if (!parsed) {
       parsed = { summary: text.trim(), flavor: null, pairing: null };
     }
@@ -810,7 +836,38 @@ If you don't recognize this specific drink, use your knowledge of the style/regi
   }
 }
 
-// ── Populate Form ────────────────────────────────────────────────────────────
+async function analyzeFromPhoto() {
+  if (!currentImageBase64) return;
+  const result = await callAI(currentImageBase64);
+  if (result) populateFromPhoto(result);
+}
+
+async function generateFromText() {
+  const result = await callAI(null);
+  if (result) populateSummary(result);
+}
+
+// ── Populate from Photo (fills ALL fields) ────────────────────────────────────
+function populateFromPhoto(result) {
+  if (!result) return;
+  if (result.type && ['wine','sake','whisky','coffee'].includes(result.type)) {
+    setDrinkType(result.type);
+  }
+  if (result.name) $('#drinkName').value = result.name;
+  if (result.variety) $('#drinkVariety').value = result.variety;
+  if (result.origin) $('#drinkOrigin').value = result.origin;
+  if (result.flavor) $('#drinkFlavor').value = result.flavor;
+  if (result.pairing) $('#drinkPairing').value = result.pairing;
+  if (result.summary) {
+    $('#drinkSummary').value = result.summary;
+    currentSummaryText = result.summary;
+  }
+  updateSummaryCard();
+  $('#summaryCard').classList.add('visible');
+  toast('✅ Photo analyzed! Review the details and Save.');
+}
+
+// ── Populate from Text (fills flavor/pairing/summary only) ────────────────────
 function populateSummary(result) {
   if (!result) return;
 
@@ -1111,18 +1168,24 @@ $('#fileInput').addEventListener('change', async (e) => {
 
 $('#btnClearPhoto').addEventListener('click', clearPhoto);
 
-// Generate Summary
+// Analyze from Photo
+$('#btnAnalyze').addEventListener('click', async () => {
+  const btn = $('#btnAnalyze');
+  btn.innerHTML = '<span class="spinner"></span> Analyzing photo...';
+  btn.disabled = true;
+  await analyzeFromPhoto();
+  btn.innerHTML = '🔍 Identify & Summarize from Photo';
+  btn.disabled = false;
+});
+
+// Generate from Text
 $('#btnGenerate').addEventListener('click', async () => {
   const btn = $('#btnGenerate');
   btn.innerHTML = '<span class="spinner"></span> Generating...';
   btn.disabled = true;
-
-  const result = await generateSummary();
-
+  await generateFromText();
   btn.innerHTML = '✨ Generate Summary';
   btn.disabled = false;
-
-  if (result) populateSummary(result);
 });
 
 // Type tabs
