@@ -523,10 +523,11 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
     <select id="modelSelect">
       <option value="glm-5.1">glm-5.1</option>
       <option value="glm-5">glm-5</option>
+      <option value="glm-5v-turbo">glm-5v-turbo (vision)</option>
       <option value="glm-4.7-flash">glm-4.7-flash (free)</option>
       <option value="glm-4-flash">glm-4-flash (free)</option>
       <option value="glm-4-plus">glm-4-plus</option>
-      <option value="glm-4.6v-flash">glm-4.6v-flash (vision)</option>
+      <option value="glm-4.6v-flash">glm-4.6v-flash (free vision)</option>
     </select>
     <p class="note">If one model fails, try another. Flash models are free.</p>
     <label>API Endpoint</label>
@@ -783,9 +784,24 @@ If you don't recognize this specific drink, use your knowledge of the style/regi
 
     const data = await response.json();
     const text = data.choices?.[0]?.message?.content || '';
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('Could not parse AI response: ' + text.slice(0, 100));
-    return JSON.parse(jsonMatch[0]);
+
+    // Try to extract JSON — first check for markdown code fences, then raw braces
+    let jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+    let parsed = null;
+    if (jsonMatch) {
+      try { parsed = JSON.parse(jsonMatch[1].trim()); } catch(e) {}
+    }
+    if (!parsed) {
+      jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try { parsed = JSON.parse(jsonMatch[0]); } catch(e) {}
+      }
+    }
+    // If still no JSON, use the raw text as summary
+    if (!parsed) {
+      parsed = { summary: text.trim(), flavor: null, pairing: null };
+    }
+    return parsed;
 
   } catch (err) {
     console.error('API error:', err);
