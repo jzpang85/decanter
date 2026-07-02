@@ -725,15 +725,16 @@ hr.sep { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
 
     <label>Model</label>
     <select id="modelSelect">
-      <option value="glm-4.6v-flash">glm-4.6v-flash · free, vision (recommended)</option>
-      <option value="glm-4.6v">glm-4.6v · vision</option>
-      <option value="glm-4.6v-flashx">glm-4.6v-flashx · fast vision</option>
-      <option value="glm-4v-plus">glm-4v-plus · vision</option>
-      <option value="glm-4-flash">glm-4-flash · free text</option>
-      <option value="glm-4-plus">glm-4-plus · text</option>
-      <option value="glm-4.6v-flash-text">glm-4.6v-flash (text mode)</option>
+      <option value="glm-5-turbo">glm-5-turbo · free, fast text (recommended)</option>
+      <option value="glm-5">glm-5 · free flagship text</option>
+      <option value="glm-5.2">glm-5.2 · 1M-context text</option>
+      <option value="glm-5.1">glm-5.1 · text</option>
+      <option value="glm-4.6v-flash">glm-4.6v-flash · free vision (label photos)</option>
+      <option value="glm-5v-turbo">glm-5v-turbo · vision</option>
+      <option value="glm-4.6v">glm-4.6v · vision (paid)</option>
+      <option value="glm-4-plus">glm-4-plus · text (paid)</option>
     </select>
-    <p class="note">Tip: <b>glm-4.6v-flash</b> is free and works for both photo and text. If one model fails, the app automatically tries others in the background.</p>
+    <p class="note">Tip: <b>glm-5-turbo</b> (free) is best for summaries; <b>glm-4.6v-flash</b> (free) for label photos. If the chosen model is busy or fails, the app automatically tries the others in the background.</p>
 
     <label>API Endpoint</label>
     <select id="endpointSelect">
@@ -834,7 +835,7 @@ function deleteDrink(id) {
 // ── Settings ─────────────────────────────────────────────────────────────────
 const DEFAULT_SETTINGS = {
   apiKey: '',
-  model: 'glm-4.6v-flash',
+  model: 'glm-5-turbo',
   endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
   ttsRate: 0.9
 };
@@ -844,7 +845,8 @@ function getSettings() {
   catch (e) { s = {}; }
   // merge + migrate: if the saved model is one known to be broken, upgrade it
   const out = Object.assign({}, DEFAULT_SETTINGS, s);
-  if (['glm-5.1', 'glm-5', 'glm-5v-turbo', 'glm-4.7-flash'].includes(out.model)) {
+  // upgrade only IDs confirmed not to exist on the current endpoint
+  if (['glm-4-flash', 'glm-4v-plus', 'glm-4.7-flash', 'glm-4.6v-flash-text'].includes(out.model)) {
     out.model = DEFAULT_SETTINGS.model;
   }
   return out;
@@ -945,8 +947,10 @@ function clearPhoto() {
 //  4. the chosen model id being invalid/retired → auto fallback to known-good ids
 //  5. CORS / network errors surfaced as "Failed to fetch"
 
-const VISION_FALLBACK = ['glm-4.6v-flash', 'glm-4.6v', 'glm-4.6v-flashx', 'glm-4v-plus'];
-const TEXT_FALLBACK   = ['glm-4.6v-flash', 'glm-4-flash', 'glm-4.6v', 'glm-4-plus'];
+const VISION_MODELS = ['glm-4.6v-flash', 'glm-5v-turbo', 'glm-4.6v', 'glm-4.6v-flashx'];
+const TEXT_MODELS   = ['glm-5-turbo', 'glm-5', 'glm-4.6v-flash', 'glm-5.2', 'glm-4-plus'];
+const KNOWN_VISION_IDS = new Set(['glm-4.6v-flash', 'glm-4.6v', 'glm-4.6v-flashx', 'glm-5v-turbo', 'glm-4v-plus']);
+const isVisionModel = (m) => KNOWN_VISION_IDS.has(m);
 
 function extractContent(data) {
   const msg = data && data.choices && data.choices[0] && data.choices[0].message;
@@ -1022,11 +1026,14 @@ async function rawCompletion(settings, model, messages, isVision, log) {
 }
 
 function buildChain(selected, isVision) {
-  const chain = isVision ? VISION_FALLBACK.slice() : TEXT_FALLBACK.slice();
-  if (selected && !chain.includes(selected)) chain.unshift(selected);
-  else if (selected) { chain.unshift(selected); }
-  // dedupe preserving order
-  return Array.from(new Set(chain));
+  let chain;
+  if (isVision) {
+    // if the user picked a text-only model, skip straight to the vision pool
+    chain = isVisionModel(selected) ? [selected, ...VISION_MODELS] : VISION_MODELS.slice();
+  } else {
+    chain = [selected, ...TEXT_MODELS];
+  }
+  return Array.from(new Set(chain.filter(Boolean)));
 }
 
 async function callAI(opts) {
@@ -1919,7 +1926,7 @@ async function testConnection() {
   log(`Endpoint: <span class="hi">${endpoint}</span>`);
   log('Testing models (text prompt "Reply: PONG")…');
 
-  const candidates = ['glm-4.6v-flash', 'glm-4-flash', 'glm-4.6v', 'glm-4-plus', 'glm-4v-plus'];
+  const candidates = ['glm-5-turbo', 'glm-5', 'glm-4.6v-flash', 'glm-5v-turbo', 'glm-5.2', 'glm-4.6v'];
   const messages = [{ role:'user', content:'Reply with the single word: PONG' }];
   let anyOk = false;
   for (const m of candidates) {
