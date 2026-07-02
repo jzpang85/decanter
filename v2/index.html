@@ -644,7 +644,7 @@ const isVisionModel=m=>KNOWN_VISION.has(m);
 function extractContent(d){const m=d&&d.choices&&d.choices[0]&&d.choices[0].message;if(!m)return'';let t='';if(typeof m.content==='string')t=m.content;else if(Array.isArray(m.content))t=m.content.map(p=>(p&&typeof p==='string')?p:(p&&p.text)||'').join('\n');t=(t||'').trim();if(!t&&m.reasoning_content){let r=m.reasoning_content;if(Array.isArray(r))r=r.map(p=>(p&&p.text)||'').join('\n');t=String(r||'').trim();}return t;}
 function parseAIResult(text){if(!text)return null;let p=null,m;m=text.match(/```(?:json)?\s*([\s\S]*?)```/i);if(m){try{p=JSON.parse(m[1].trim());}catch(e){}}if(!p){m=text.match(/\{[\s\S]*\}/);if(m){try{p=JSON.parse(m[0]);}catch(e){}}}if(p){const c=v=>v==null?'':String(v).trim();return{type:c(p.type),name:c(p.name),variety:c(p.variety)||c(p.style),origin:c(p.origin)||c(p.region),flavor:c(p.flavor)||c(p.tasting_notes)||c(p.notes),pairing:c(p.pairing)||c(p.pairings),summary:c(p.summary)||c(p.description)};}return{summary:text.trim(),flavor:'',pairing:''};}
 function buildChain(sel,isVision){let chain;if(isVision)chain=isVisionModel(sel)?[sel,...VISION_MODELS]:VISION_MODELS.slice();else chain=[sel,...TEXT_MODELS];return Array.from(new Set(chain.filter(Boolean)));}
-async function rawCompletion(s,model,messages,log){const res=await fetch(s.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+s.apiKey},body:JSON.stringify({model,messages,temperature:.7,max_tokens:4096,stream:false})});if(!res.ok){let d='';try{const j=await res.json();d=(j.error&&j.error.message)||JSON.stringify(j);}catch(e){try{d=await res.text();}catch(e2){}}const err=new Error('HTTP '+res.status+(d?': '+d.slice(0,280):''));err.status=res.status;throw err;}const data=await res.json();const t=extractContent(data);if(log)log.push('  '+model+' → '+t.length+' chars'+(t?'':' (EMPTY)'));return t;}
+async function rawCompletion(s,model,messages,log){const res=await fetch(s.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+s.apiKey},body:JSON.stringify({model,messages,temperature:.7,max_tokens:4096,stream:false,thinking:{type:'disabled'}})});if(!res.ok){let d='';try{const j=await res.json();d=(j.error&&j.error.message)||JSON.stringify(j);}catch(e){try{d=await res.text();}catch(e2){}}const err=new Error('HTTP '+res.status+(d?': '+d.slice(0,280):''));err.status=res.status;throw err;}const data=await res.json();const t=extractContent(data);if(log)log.push('  '+model+' → '+t.length+' chars'+(t?'':' (EMPTY)'));return t;}
 async function callAI({image,fillAll}){
   const s=getSettings();
   if(!s.apiKey){toast('⚠️ Add your GLM API key in Settings (⚙️) first.');openSettings();return null;}
@@ -653,12 +653,12 @@ async function callAI({image,fillAll}){
   if(!isVision&&!name){toast('⚠️ Enter a name first.');return null;}
   let prompt,content;
   if(isVision){
-    prompt='You are a world-class sommelier, sake expert, whisky connoisseur and Q-grader coffee cupper. Analyze this drink label. Reply with ONLY a JSON object, no markdown:\n{"type":"wine|sake|whisky|coffee","name":"full name with producer/vintage","variety":"style","origin":"country, region","flavor":"5-8 tasting notes, comma-separated","pairing":"3-4 pairings, comma-separated","summary":"~120-word overview"}\nIf unreadable, set name null and describe what you see in summary.';
+    prompt='You are a world-class sommelier, sake expert, whisky connoisseur and Q-grader coffee cupper. Analyze this drink label. Reply with ONLY a JSON object, no markdown:\n{"type":"wine|sake|whisky|coffee","name":"full name with producer/vintage","variety":"style","origin":"country, region","flavor":"5-8 tasting notes, comma-separated","pairing":"3-4 pairings, comma-separated","summary":"~120-word overview"}\nIf unreadable, set name null and describe what you see in summary.\n/nothink';
     content=[{type:'image_url',image_url:{url:image}},{type:'text',text:prompt}];
   }else{
     const scope=fillAll?'Return ONLY JSON: {"variety":"likely variety","origin":"likely origin","flavor":"5-8 notes","pairing":"3-4 pairings","summary":"~120-word overview"}'
       :'Return ONLY JSON: {"flavor":"5-8 notes","pairing":"3-4 pairings","summary":"~120-word overview"}';
-    prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. '+scope+'\n\nDrink type: '+TYPE[formType].label+'\nName: '+name+(variety?'\nVariety: '+variety:'')+(origin?'\nOrigin: '+origin:'')+'\n\nUse your knowledge of this style/region if you don\'t know the exact bottling.';
+    prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. '+scope+'\n\nDrink type: '+TYPE[formType].label+'\nName: '+name+(variety?'\nVariety: '+variety:'')+(origin?'\nOrigin: '+origin:'')+'\n\nUse your knowledge of this style/region if you don\'t know the exact bottling.\n/nothink';
     content=prompt;
   }
   const messages=[{role:'user',content}];
@@ -682,15 +682,15 @@ async function testConnection(){
   log('Endpoint: <span class="hi">'+ep+'</span>');
   log('Probing models (text: "Reply: PONG")…');
   const cand=['glm-5-turbo','glm-5','glm-4.6v-flash','glm-5v-turbo','glm-5.2','glm-4.6v'];
-  const messages=[{role:'user',content:'Reply with the single word: PONG'}];let any=false;
+  const messages=[{role:'user',content:'Reply with the single word: PONG\n/nothink'}];let any=false;
   for(const m of cand){
     try{
-      const res=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:m,messages,max_tokens:50,stream:false})});
+      const res=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:m,messages,max_tokens:256,stream:false,thinking:{type:'disabled'}})});
       if(res.status===401||res.status===403){log('<span class="bad">✗ '+m+': auth failed ('+res.status+') — bad key.</span>');return;}
       if(!res.ok){const t=await res.text().catch(()=>'');log('<span class="bad">✗ '+m+': HTTP '+res.status+' '+t.slice(0,110)+'</span>');continue;}
       const data=await res.json();const t=extractContent(data);
       if(t){log('<span class="ok">✓ '+m+': OK — "'+t.slice(0,28).replace(/\n/g,' ')+'"</span>');any=true;}
-      else log('<span class="bad">○ '+m+': connected but empty (thinking model).</span>');
+      else{const msg=(data&&data.choices&&data.choices[0]&&data.choices[0].message)||{};log('<span class="bad">○ '+m+': empty. raw msg: '+JSON.stringify(msg).slice(0,220).replace(/</g,'&lt;')+'</span>');if(data&&data.usage)log('  usage: '+JSON.stringify(data.usage));}
     }catch(err){log('<span class="bad">✗ '+m+': '+err.message+'</span>');if(/Failed to fetch|NetworkError|load failed/i.test(err.message)){log('<span class="bad">↳ Network/CORS blocked. Try the other endpoint or network.</span>');return;}}
   }
   log(any?'\n<span class="ok">✅ Working models above — pick one as default.</span>':'\n<span class="bad">❌ None responded.</span>');
