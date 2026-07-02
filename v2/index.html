@@ -563,10 +563,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     <option value="glm-5.1">glm-5.1 · text</option>
     <option value="glm-4.6v-flash">glm-4.6v-flash · free vision (photos)</option>
     <option value="glm-5v-turbo">glm-5v-turbo · vision</option>
-    <option value="glm-4.6v">glm-4.6v · vision (paid)</option>
-    <option value="glm-4-plus">glm-4-plus · text (paid)</option>
+    <option value="glm-4.6v">glm-4.6v · vision (photos)</option>
+    <option value="glm-4-plus">glm-4-plus · text</option>
   </select>
-  <div class="note"><b>glm-5-turbo</b> (free) is best for summaries; <b>glm-4.6v-flash</b> (free) for photos. The app auto-tries other models if one is busy.</div>
+  <div class="note"><b>glm-5-turbo</b> is best for summaries. For <b>label photos</b> the app auto-uses a vision model (glm-4.6v). If a model is busy, it tries the next one automatically.</div>
   <div class="label">Endpoint</div>
   <select id="setEndpoint">
     <option value="https://open.bigmodel.cn/api/paas/v4/chat/completions">open.bigmodel.cn (domestic)</option>
@@ -638,7 +638,7 @@ function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
 function resizeImage(file,max=1024){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=e=>{const img=new Image();img.onload=()=>{let{width,height}=img;if(width<=max&&height<=max&&file.type==='image/jpeg'){res(e.target.result);return;}const r=Math.min(max/width,max/height,1);width=Math.round(width*r);height=Math.round(height*r);const c=document.createElement('canvas');c.width=width;c.height=height;c.getContext('2d').drawImage(img,0,0,width,height);res(c.toDataURL('image/jpeg',.85));};img.onerror=()=>rej(new Error('bad image'));img.src=e.target.result;};fr.onerror=()=>rej(new Error('bad file'));fr.readAsDataURL(file);});}
 
 /* ================================================================ AI (proven) */
-const VISION_MODELS=['glm-4.6v-flash','glm-5v-turbo','glm-4.6v','glm-4.6v-flashx'];
+const VISION_MODELS=['glm-4.6v','glm-4.6v-flash','glm-4.6v-flashx','glm-5v-turbo'];
 const TEXT_MODELS=['glm-5-turbo','glm-5','glm-4.6v-flash','glm-5.2','glm-4-plus'];
 const KNOWN_VISION=new Set(['glm-4.6v-flash','glm-4.6v','glm-4.6v-flashx','glm-5v-turbo','glm-4v-plus']);
 const isVisionModel=m=>KNOWN_VISION.has(m);
