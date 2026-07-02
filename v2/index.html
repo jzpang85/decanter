@@ -570,7 +570,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   <div class="label">Endpoint</div>
   <select id="setEndpoint">
     <option value="https://open.bigmodel.cn/api/paas/v4/chat/completions">open.bigmodel.cn (domestic)</option>
-    <option value="https://api.z.ai/api/chat/completions">api.z.ai (international)</option>
+    <option value="https://api.z.ai/api/paas/v4/chat/completions">api.z.ai (international)</option>
+    <option value="https://api.z.ai/api/coding/paas/v4/chat/completions">api.z.ai (coding plan)</option>
   </select>
   <div class="note">Seeing "Failed to fetch"? Try the other endpoint.</div>
   <div class="label">Voice speed</div>
@@ -613,7 +614,7 @@ const PROF_FIELDS=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tan
 
 /* ---------------- settings ---------------- */
 const DEFAULTS={apiKey:'',model:'glm-5-turbo',endpoint:'https://open.bigmodel.cn/api/paas/v4/chat/completions',ttsRate:0.9};
-function getSettings(){let s;try{s=JSON.parse(localStorage.getItem('decanter_settings')||'{}');}catch(e){s={};}const o=Object.assign({},DEFAULTS,s);if(['glm-4-flash','glm-4v-plus','glm-4.7-flash','glm-4.6v-flash-text'].includes(o.model))o.model=DEFAULTS.model;return o;}
+function getSettings(){let s;try{s=JSON.parse(localStorage.getItem('decanter_settings')||'{}');}catch(e){s={};}const o=Object.assign({},DEFAULTS,s);if(['glm-4-flash','glm-4v-plus','glm-4.7-flash','glm-4.6v-flash-text'].includes(o.model))o.model=DEFAULTS.model;if(o.endpoint==='https://api.z.ai/api/chat/completions')o.endpoint='https://api.z.ai/api/paas/v4/chat/completions';return o;}
 function saveSettings(s){localStorage.setItem('decanter_settings',JSON.stringify(s));}
 
 /* ---------------- toast ---------------- */
@@ -690,7 +691,7 @@ async function testConnection(){
       if(!res.ok){const t=await res.text().catch(()=>'');log('<span class="bad">✗ '+m+': HTTP '+res.status+' '+t.slice(0,110)+'</span>');continue;}
       const data=await res.json();const t=extractContent(data);
       if(t){log('<span class="ok">✓ '+m+': OK — "'+t.slice(0,28).replace(/\n/g,' ')+'"</span>');any=true;}
-      else{const msg=(data&&data.choices&&data.choices[0]&&data.choices[0].message)||{};log('<span class="bad">○ '+m+': empty. raw msg: '+JSON.stringify(msg).slice(0,220).replace(/</g,'&lt;')+'</span>');if(data&&data.usage)log('  usage: '+JSON.stringify(data.usage));}
+      else{const full=JSON.stringify(data).slice(0,500).replace(/</g,'&lt;');log('<span class="bad">○ '+m+': no usable content. Full response (HTTP '+res.status+'):</span>');log('<span class="hi">'+full+'</span>');}
     }catch(err){log('<span class="bad">✗ '+m+': '+err.message+'</span>');if(/Failed to fetch|NetworkError|load failed/i.test(err.message)){log('<span class="bad">↳ Network/CORS blocked. Try the other endpoint or network.</span>');return;}}
   }
   log(any?'\n<span class="ok">✅ Working models above — pick one as default.</span>':'\n<span class="bad">❌ None responded.</span>');
