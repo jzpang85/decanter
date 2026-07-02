@@ -2,8 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Decanter — Drink Journal &amp; Study</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1410">
+<meta name="description" content="JP Decanter — a personal journal and study companion for wine, sake, whisky, and coffee.">
+<title>JP Decanter — Drink Journal &amp; Study</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍷%3C/text%3E%3C/svg%3E">
+<!-- iOS / iPadOS home-screen -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JP Decanter">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231a1410'/%3E%3Ctext x='50' y='72' font-size='62' text-anchor='middle'%3E🍷%3C/text%3E%3C/svg%3E">
 <style>
 /* ========== RESET & VARIABLES ========== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,6 +31,8 @@
   --whisky: #c97d28;
   --sake: #5b8c7a;
   --coffee: #6b3a2a;
+  --green: #5b8c7a;
+  --red: #b6454b;
   --accent: var(--gold);
   --radius: 12px;
   --radius-sm: 8px;
@@ -40,70 +51,80 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  padding-top: env(safe-area-inset-top);
 }
 
 /* ========== HEADER ========== */
 header {
-  background: var(--bg-card);
+  background: rgba(36,29,23,0.92);
   border-bottom: 1px solid var(--border);
-  padding: 16px 24px;
+  padding: 14px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   position: sticky;
   top: 0;
   z-index: 100;
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 .logo {
   font-family: var(--font);
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--gold);
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
-.logo span { color: var(--text); font-size: 0.85rem; margin-left: 6px; font-family: var(--font-ui); font-weight: 400; }
+.logo .jp { color: var(--text); font-size: 0.95rem; font-style: italic; opacity: 0.85; }
+.logo span.sub { color: var(--text-muted); font-size: 0.7rem; margin-left: 6px; font-family: var(--font-ui); font-weight: 400; display: block; letter-spacing: 1px; text-transform: uppercase; }
 
 /* ========== TABS ========== */
-nav { display: flex; gap: 4px; }
+nav { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
 nav button {
   background: none;
   border: 1px solid transparent;
   color: var(--text-muted);
-  padding: 8px 18px;
+  padding: 8px 16px;
   border-radius: 20px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-family: var(--font-ui);
   transition: var(--transition);
+  white-space: nowrap;
 }
 nav button:hover { color: var(--text); background: var(--bg-input); }
 nav button.active { color: var(--gold); border-color: var(--gold); background: rgba(201,165,92,0.08); }
 
 /* ========== MAIN ========== */
-main { max-width: 800px; margin: 0 auto; padding: 24px 20px 80px; }
+main { max-width: 880px; margin: 0 auto; padding: 24px 20px 100px; }
 .panel { display: none; animation: fadeIn 0.3s ease; }
 .panel.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.panel-title { font-family: var(--font); font-size: 1.3rem; color: var(--gold); margin-bottom: 4px; }
+.panel-sub { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px; }
 
 /* ========== CARDS ========== */
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 24px;
-  margin-bottom: 20px;
+  padding: 22px;
+  margin-bottom: 18px;
   box-shadow: var(--shadow);
 }
 .card-header {
   font-family: var(--font);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   color: var(--gold);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
+.card-header .hint { font-size: 0.72rem; color: var(--text-dim); font-weight: 400; font-family: var(--font-ui); }
 
 /* ========== UPLOAD ZONE ========== */
 .upload-zone {
@@ -118,7 +139,7 @@ main { max-width: 800px; margin: 0 auto; padding: 24px 20px 80px; }
 }
 .upload-zone:hover, .upload-zone.drag-over { border-color: var(--gold); background: rgba(201,165,92,0.04); }
 .upload-zone .icon { font-size: 3rem; margin-bottom: 12px; display: block; }
-.upload-zone .hint { color: var(--text-muted); font-size: 0.85rem; margin-top: 6px; }
+.upload-zone .hint { color: var(--text-muted); font-size: 0.82rem; margin-top: 6px; }
 .upload-zone input[type=file] { display: none; }
 .upload-zone img.preview {
   max-width: 100%;
@@ -130,12 +151,12 @@ main { max-width: 800px; margin: 0 auto; padding: 24px 20px 80px; }
 /* ========== FORM ELEMENTS ========== */
 label {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.8px;
   margin-bottom: 4px;
-  margin-top: 16px;
+  margin-top: 14px;
 }
 label:first-of-type { margin-top: 0; }
 input, select, textarea {
@@ -152,8 +173,12 @@ input, select, textarea {
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,165,92,0.12); }
 textarea { resize: vertical; min-height: 80px; }
 select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239b8e7e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+input[type=range] { padding: 0; background: transparent; border: none; box-shadow: none; }
 
-.type-tabs { display: flex; gap: 6px; margin-top: 8px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 560px) { .field-row { grid-template-columns: 1fr; } }
+
+.type-tabs { display: flex; gap: 6px; margin-top: 4px; }
 .type-tab {
   flex: 1;
   text-align: center;
@@ -168,18 +193,19 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   transition: var(--transition);
 }
 .type-tab:hover { color: var(--text); }
-.type-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(201,165,92,0.08); }
-.type-tab[data-type="wine"].active { --accent: var(--wine); }
-.type-tab[data-type="sake"].active { --accent: var(--sake); }
-.type-tab[data-type="whisky"].active { --accent: var(--whisky); }
-.type-tab[data-type="coffee"].active { --accent: var(--coffee); }
+.type-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(201,165,92,0.08); font-weight: 600; }
+.type-tab[data-type="wine"].active { --accent: #d4889e; color: #d4889e; border-color: #d4889e; background: rgba(139,34,82,0.18); }
+.type-tab[data-type="sake"].active { --accent: #8cc9b0; color: #8cc9b0; border-color: #8cc9b0; background: rgba(91,140,122,0.18); }
+.type-tab[data-type="whisky"].active { --accent: #e8b878; color: #e8b878; border-color: #e8b878; background: rgba(201,125,40,0.18); }
+.type-tab[data-type="coffee"].active { --accent: #c98970; color: #c98970; border-color: #c98970; background: rgba(107,58,42,0.28); }
 
 /* ========== BUTTONS ========== */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 10px 22px;
+  padding: 10px 20px;
   border-radius: 24px;
   border: 1px solid var(--border);
   background: var(--bg-input);
@@ -191,11 +217,22 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   white-space: nowrap;
 }
 .btn:hover { border-color: var(--text-muted); background: #352d24; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-primary { background: var(--gold); color: #1a1410; border-color: var(--gold); font-weight: 600; }
 .btn-primary:hover { background: var(--gold-bright); border-color: var(--gold-bright); }
+.btn-ghost { background: transparent; }
 .btn-icon { width: 38px; height: 38px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; }
 .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
-.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+/* ========== STARS ========== */
+.stars { display: inline-flex; gap: 2px; }
+.stars .star { font-size: 1.35rem; color: var(--text-dim); cursor: pointer; line-height: 1; user-select: none; transition: var(--transition); }
+.stars .star:hover { transform: scale(1.15); }
+.stars .star.on { color: var(--gold-bright); text-shadow: 0 0 8px rgba(224,184,96,0.5); }
+.stars.readonly .star { cursor: default; }
+.stars.readonly .star:hover { transform: none; }
+.stars .star.sm { font-size: 0.95rem; }
 
 /* ========== SUMMARY CARD ========== */
 .summary-card {
@@ -208,11 +245,11 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 }
 .summary-card.visible { display: block; animation: fadeIn 0.4s ease; }
 .summary-card .drink-name { font-family: var(--font); font-size: 1.3rem; color: var(--gold); margin-bottom: 6px; }
-.summary-card .drink-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; font-size: 0.85rem; color: var(--text-muted); }
+.summary-card .drink-meta { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; font-size: 0.85rem; color: var(--text-muted); }
 .summary-card .drink-meta span { display: flex; align-items: center; gap: 4px; }
-.summary-card .section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); margin-top: 14px; margin-bottom: 4px; }
-.summary-card .section-text { font-size: 0.95rem; line-height: 1.7; }
-.summary-card .pairing-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.section-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); margin-top: 14px; margin-bottom: 4px; }
+.section-text { font-size: 0.95rem; line-height: 1.7; white-space: pre-wrap; }
+.pairing-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .pairing-tag { background: rgba(201,165,92,0.12); color: var(--gold); padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; }
 
 /* ========== TTS CONTROLS ========== */
@@ -220,9 +257,23 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 .tts-bar .btn-speaking { animation: pulse 1.5s ease infinite; }
 @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(201,165,92,0.4); } 50% { box-shadow: 0 0 0 8px rgba(201,165,92,0); } }
 
+/* ========== COLLAPSIBLE ========== */
+details.collapsible { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-input); margin-top: 14px; }
+details.collapsible > summary { list-style: none; cursor: pointer; padding: 12px 16px; font-size: 0.85rem; color: var(--gold); display: flex; align-items: center; justify-content: space-between; }
+details.collapsible > summary::-webkit-details-marker { display: none; }
+details.collapsible > summary::after { content: '▾'; transition: transform 0.2s; color: var(--text-muted); }
+details.collapsible[open] > summary::after { transform: rotate(180deg); }
+details.collapsible > .collapsible-body { padding: 4px 16px 16px; }
+
+/* range sliders for tasting profile */
+.profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 6px; }
+@media (max-width: 560px) { .profile-grid { grid-template-columns: 1fr; } }
+.profile-grid .item label { margin-top: 0; }
+.profile-grid .item .val { font-size: 0.75rem; color: var(--gold); margin-bottom: 4px; }
+
 /* ========== HISTORY LIST ========== */
-.search-bar { margin-bottom: 20px; }
-.filter-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.search-bar { margin-bottom: 16px; }
+.filter-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
 .filter-chip {
   padding: 5px 14px;
   border-radius: 16px;
@@ -236,36 +287,37 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 }
 .filter-chip:hover, .filter-chip.active { border-color: var(--text-muted); color: var(--text); }
 .filter-chip.active { background: var(--bg-input); }
+.sort-select { margin-left: auto; max-width: 160px; padding: 5px 30px 5px 12px; font-size: 0.8rem; }
 
 .history-item {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 18px 20px;
+  padding: 16px 18px;
   margin-bottom: 12px;
   display: flex;
-  gap: 16px;
+  gap: 14px;
   cursor: pointer;
   transition: var(--transition);
 }
 .history-item:hover { border-color: var(--text-dim); }
 .history-item img {
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
   border-radius: var(--radius-sm);
   object-fit: cover;
   flex-shrink: 0;
   background: var(--bg-input);
 }
 .history-item .info { flex: 1; min-width: 0; }
-.history-item .name { font-family: var(--font); font-size: 1rem; color: var(--text); }
+.history-item .name { font-family: var(--font); font-size: 1rem; color: var(--text); display: flex; align-items: center; gap: 8px; }
 .history-item .detail { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
-.history-item .date { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
-.history-item .type-badge {
+.history-item .date { font-size: 0.74rem; color: var(--text-dim); margin-top: 5px; display: flex; align-items: center; gap: 8px; }
+.type-badge {
   display: inline-block;
   padding: 2px 10px;
   border-radius: 10px;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -273,114 +325,201 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 .type-badge.wine { background: rgba(139,34,82,0.3); color: #e890a0; }
 .type-badge.sake { background: rgba(91,140,122,0.3); color: #8cc9b0; }
 .type-badge.whisky { background: rgba(201,125,40,0.3); color: #e8b878; }
-.type-badge.coffee { background: rgba(107,58,42,0.3); color: #c98970; }
+.type-badge.coffee { background: rgba(107,58,42,0.45); color: #c98970; }
 
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text-dim);
-}
-.empty-state .icon { font-size: 4rem; display: block; margin-bottom: 16px; }
+.empty-state { text-align: center; padding: 56px 20px; color: var(--text-dim); }
+.empty-state .icon { font-size: 3.5rem; display: block; margin-bottom: 14px; }
+
+/* ========== CELLAR / DASHBOARD ========== */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
+.stat-card .num { font-family: var(--font); font-size: 1.8rem; color: var(--gold); line-height: 1; }
+.stat-card .lbl { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 6px; }
+.stat-card .sub { font-size: 0.78rem; color: var(--text-dim); margin-top: 4px; }
+
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.bar-row .lbl { width: 70px; font-size: 0.82rem; color: var(--text-muted); }
+.bar-row .bar-track { flex: 1; height: 10px; background: var(--bg-input); border-radius: 6px; overflow: hidden; }
+.bar-row .bar-fill { height: 100%; border-radius: 6px; }
+.bar-row .cnt { width: 28px; font-size: 0.8rem; color: var(--text-dim); text-align: right; }
+
+.rec-card { background: var(--bg-input); border: 1px solid var(--border); border-left: 3px solid var(--gold); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 10px; }
+.rec-card .rec-title { font-family: var(--font); color: var(--gold); font-size: 1rem; margin-bottom: 2px; }
+.rec-card .rec-reason { font-size: 0.8rem; color: var(--text-muted); }
+.rec-card .rec-action { margin-top: 8px; }
 
 /* ========== STUDY ========== */
-.study-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-.study-card {
+.study-tabs { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+.study-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-muted); cursor: pointer; font-size: 0.85rem; transition: var(--transition); }
+.study-tab.active { color: var(--gold); border-color: var(--gold); background: rgba(201,165,92,0.08); }
+.study-pane { display: none; }
+.study-pane.active { display: block; animation: fadeIn 0.3s ease; }
+
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.cat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; cursor: pointer; transition: var(--transition); }
+.cat-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+.cat-card .emoji { font-size: 1.8rem; }
+.cat-card .title { font-family: var(--font); color: var(--gold); font-size: 1.05rem; margin: 6px 0; }
+.cat-card .desc { font-size: 0.8rem; color: var(--text-muted); }
+
+.kb-entry { border-bottom: 1px solid var(--border); padding: 14px 0; }
+.kb-entry:last-child { border-bottom: none; }
+.kb-entry .kb-name { font-family: var(--font); color: var(--gold-bright); font-size: 1.02rem; }
+.kb-entry .kb-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.kb-entry .kb-tags span { font-size: 0.72rem; padding: 2px 8px; border-radius: 8px; background: var(--bg-input); color: var(--text-muted); }
+.kb-entry .kb-desc { font-size: 0.88rem; color: var(--text); margin-top: 6px; line-height: 1.6; }
+
+/* flashcard */
+.flashcard {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 24px;
+  min-height: 280px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  position: relative;
+}
+.flashcard:hover { border-color: var(--gold); }
+.flashcard .fc-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 12px; }
+.flashcard .fc-front { font-family: var(--font); font-size: 1.5rem; color: var(--gold); }
+.flashcard .fc-back { font-size: 1rem; color: var(--text); line-height: 1.7; }
+.flashcard .fc-hint { position: absolute; bottom: 14px; font-size: 0.74rem; color: var(--text-dim); }
+.fc-controls { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+.fc-meta { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin: 14px 0 4px; }
+
+/* quiz */
+.quiz-q { font-family: var(--font); font-size: 1.15rem; color: var(--text); margin-bottom: 18px; line-height: 1.5; }
+.quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+.quiz-opt {
+  text-align: left;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: var(--font-ui);
   transition: var(--transition);
 }
-.study-card:hover { border-color: var(--gold); transform: translateY(-2px); }
-.study-card .emoji { font-size: 3rem; display: block; margin-bottom: 12px; }
-.study-card .title { font-family: var(--font); color: var(--gold); margin-bottom: 6px; }
-.study-card .desc { font-size: 0.8rem; color: var(--text-muted); }
+.quiz-opt:hover { border-color: var(--gold); }
+.quiz-opt.correct { border-color: var(--green); background: rgba(91,140,122,0.2); color: #bfe3d2; }
+.quiz-opt.wrong { border-color: var(--red); background: rgba(182,69,75,0.18); color: #f0b8bb; }
+.quiz-progress { display: flex; gap: 4px; margin-bottom: 16px; }
+.quiz-progress .pip { flex: 1; height: 5px; border-radius: 3px; background: var(--bg-input); }
+.quiz-progress .pip.done { background: var(--gold); }
+.quiz-progress .pip.wrong { background: var(--red); }
+.quiz-explain { margin-top: 14px; font-size: 0.88rem; color: var(--text-muted); padding: 12px 16px; background: var(--bg-input); border-radius: var(--radius-sm); line-height: 1.6; }
 
-/* ========== SETTINGS MODAL ========== */
+/* ========== MODAL ========== */
 .modal-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.7);
   display: flex; align-items: center; justify-content: center;
   z-index: 1000;
   opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+  padding: 20px;
+  overflow-y: auto;
 }
 .modal-overlay.open { opacity: 1; pointer-events: auto; }
 .modal {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 28px;
-  max-width: 460px;
-  width: 90%;
+  padding: 26px;
+  max-width: 520px;
+  width: 100%;
   box-shadow: var(--shadow);
+  margin: auto;
 }
-.modal h3 { font-family: var(--font); color: var(--gold); margin-bottom: 16px; }
+.modal.wide { max-width: 620px; }
+.modal h3 { font-family: var(--font); color: var(--gold); margin-bottom: 14px; }
 .modal .btn-row { justify-content: flex-end; }
 .modal .note { font-size: 0.8rem; color: var(--text-dim); margin-top: 8px; line-height: 1.5; }
 .modal .note a { color: var(--gold); }
+
+/* diagnostic output box */
+.diag-box { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 0.76rem; background: #120d09; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin-top: 12px; max-height: 200px; overflow: auto; white-space: pre-wrap; color: var(--text-muted); line-height: 1.5; }
+.diag-box .ok { color: #8cc9b0; }
+.diag-box .bad { color: #f0b8bb; }
+.diag-box .hi { color: var(--gold); }
 
 /* ========== TOAST ========== */
 .toast {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
   background: var(--bg-card); border: 1px solid var(--gold);
-  color: var(--text); padding: 12px 24px; border-radius: 24px;
-  font-size: 0.9rem; z-index: 2000; opacity: 0; pointer-events: none;
+  color: var(--text); padding: 12px 22px; border-radius: 24px;
+  font-size: 0.88rem; z-index: 2000; opacity: 0; pointer-events: none;
   transition: opacity 0.3s ease; box-shadow: var(--shadow);
+  max-width: 90vw; text-align: center;
 }
 .toast.show { opacity: 1; }
 
 /* ========== RESPONSIVE ========== */
-@media (max-width: 600px) {
-  header { padding: 12px 16px; }
-  .logo { font-size: 1.2rem; }
-  nav button { padding: 6px 12px; font-size: 0.8rem; }
-  main { padding: 16px 12px 80px; }
+@media (max-width: 720px) {
+  header { padding: 12px 14px; flex-wrap: wrap; }
+  .logo { font-size: 1.15rem; }
+  nav button { padding: 6px 12px; font-size: 0.78rem; }
+  main { padding: 16px 12px 90px; }
   .card { padding: 18px 16px; }
-  .history-item { flex-direction: column; }
-  .history-item img { width: 100%; height: 120px; }
+}
+@media (max-width: 480px) {
+  .history-item { flex-direction: row; }
+  .history-item img { width: 52px; height: 52px; }
 }
 
 /* ========== LOADING SPINNER ========== */
 .spinner {
-  width: 20px; height: 20px;
-  border: 2px solid var(--border);
-  border-top-color: var(--gold);
+  width: 16px; height: 16px;
+  border: 2px solid rgba(0,0,0,0.25);
+  border-top-color: #1a1410;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   display: inline-block;
 }
+.btn:not(.btn-primary) .spinner { border-color: var(--border); border-top-color: var(--gold); }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+.muted-link { background: none; border: none; color: var(--gold); cursor: pointer; font-size: 0.8rem; text-decoration: underline; padding: 0; font-family: var(--font-ui); }
+hr.sep { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+.chip-mini { display:inline-block; font-size:0.72rem; padding:1px 8px; border-radius:8px; background:var(--bg-input); color:var(--text-muted); }
 </style>
 </head>
 <body>
 
 <!-- ========== HEADER ========== -->
 <header>
-  <div class="logo">🍷 Decanter <span>Drink Journal</span></div>
+  <div class="logo">🍷 <span class="jp">JP</span> Decanter<span class="sub">Drink Journal</span></div>
   <nav>
     <button data-panel="journal" class="active">📝 Journal</button>
+    <button data-panel="cellar">📊 Cellar</button>
     <button data-panel="history">📚 History</button>
     <button data-panel="study">🧠 Study</button>
+    <button class="btn btn-icon" id="btnSettings" title="Settings">⚙️</button>
   </nav>
-  <button class="btn btn-icon" id="btnSettings" title="Settings">⚙️</button>
 </header>
 
 <!-- ========== MAIN CONTENT ========== -->
 <main>
 
-<!-- JOURNAL PANEL -->
+<!-- ===================== JOURNAL PANEL ===================== -->
 <section class="panel active" id="panel-journal">
 
   <!-- Upload -->
   <div class="card">
-    <div class="card-header">📸 Label Photo</div>
+    <div class="card-header">📸 Label Photo <span class="hint">optional — AI reads the label for you</span></div>
     <div class="upload-zone" id="uploadZone">
       <span class="icon">🖼️</span>
       <p>Tap or drag a label photo here</p>
-      <p class="hint">Wine, sake, whisky, or coffee — JPG/PNG, max ~10MB</p>
-      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp">
+      <p class="hint">Wine, sake, whisky, or coffee — JPG / PNG / WEBP</p>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/heic,image/heif">
     </div>
     <div class="btn-row" style="margin-top:12px;">
       <button class="btn btn-primary" id="btnAnalyze" disabled>🔍 Identify &amp; Summarize from Photo</button>
@@ -391,7 +530,7 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 
   <!-- Manual Entry -->
   <div class="card">
-    <div class="card-header">✏️ Drink Details <span style="font-size:0.75rem;color:var(--text-dim);font-weight:400;">(manual or AI-filled)</span></div>
+    <div class="card-header">✏️ Drink Details <span class="hint">(manual or AI-filled)</span></div>
 
     <div class="type-tabs" id="typeTabs">
       <button class="type-tab active" data-type="wine">🍷 Wine</button>
@@ -401,27 +540,71 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
     </div>
 
     <label>Drink Name / Producer</label>
-    <input type="text" id="drinkName" placeholder="e.g. Château Margaux 2015, Yamazaki 12 Year, Ethiopia Yirgacheffe...">
+    <input type="text" id="drinkName" placeholder="e.g. Château Margaux 2015, Yamazaki 12, Ethiopia Yirgacheffe...">
 
-    <label>Variety / Style</label>
-    <input type="text" id="drinkVariety" placeholder="e.g. Cabernet Sauvignon blend, Junmai Daiginjo, Single Malt, Natural processed...">
-
-    <label>Origin / Region</label>
-    <input type="text" id="drinkOrigin" placeholder="e.g. Bordeaux, France; Islay, Scotland; Yirgacheffe, Ethiopia...">
-
-    <label>Flavor Notes</label>
-    <input type="text" id="drinkFlavor" placeholder="e.g. blackcurrant, cedar, tobacco, dark chocolate...">
-
-    <label>Food Pairing</label>
-    <input type="text" id="drinkPairing" placeholder="e.g. grilled lamb, aged cheese, dark chocolate...">
-
-    <label>AI Summary (∼1 min read)</label>
-    <textarea id="drinkSummary" placeholder="Type the drink name + variety + origin above, then tap ✨ Generate Summary — the AI will fill this in."></textarea>
-    <div class="btn-row" style="margin-top:8px;">
-      <button class="btn btn-primary" id="btnGenerate">✨ Generate Summary</button>
+    <div class="field-row">
+      <div>
+        <label>Variety / Style</label>
+        <input type="text" id="drinkVariety" placeholder="Cabernet blend, Junmai Daiginjo, Single Malt...">
+      </div>
+      <div>
+        <label>Origin / Region</label>
+        <input type="text" id="drinkOrigin" placeholder="Bordeaux; Islay; Yirgacheffe...">
+      </div>
     </div>
 
+    <div class="field-row">
+      <div>
+        <label>ABV %</label>
+        <input type="text" id="drinkAbv" placeholder="e.g. 13.5" inputmode="decimal">
+      </div>
+      <div>
+        <label>Price (optional)</label>
+        <input type="text" id="drinkPrice" placeholder="e.g. $45" inputmode="decimal">
+      </div>
+    </div>
+
+    <label>Your Rating</label>
+    <div class="stars" id="ratingStars" data-rating="0">
+      <span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span>
+    </div>
+
+    <label>Flavor Notes</label>
+    <input type="text" id="drinkFlavor" placeholder="blackcurrant, cedar, tobacco, dark chocolate...">
+
+    <label>Food Pairing</label>
+    <input type="text" id="drinkPairing" placeholder="grilled lamb, aged cheese, dark chocolate...">
+
+    <label>AI Summary (~1 min read)</label>
+    <textarea id="drinkSummary" placeholder="Type the drink name + variety + origin above, then tap ✨ Generate Summary — the AI fills this in. Or write your own notes."></textarea>
+    <div class="btn-row" style="margin-top:8px;">
+      <button class="btn btn-primary" id="btnGenerate">✨ Generate Summary</button>
+      <button class="btn btn-ghost" id="btnGenerateFull">🪄 Fill All from Name</button>
+    </div>
+
+    <!-- Structured tasting profile -->
+    <details class="collapsible" id="satDetails">
+      <summary>📋 Tasting Profile (structured)</summary>
+      <div class="collapsible-body">
+        <div class="profile-grid">
+          <div class="item"><label>Body</label><div class="val" id="valBody">—</div><input type="range" id="satBody" min="0" max="5" step="1" value="0"></div>
+          <div class="item"><label>Acidity</label><div class="val" id="valAcidity">—</div><input type="range" id="satAcidity" min="0" max="5" step="1" value="0"></div>
+          <div class="item"><label>Sweetness</label><div class="val" id="valSweet">—</div><input type="range" id="satSweet" min="0" max="5" step="1" value="0"></div>
+          <div class="item" id="tanninWrap"><label>Tannin</label><div class="val" id="valTannin">—</div><input type="range" id="satTannin" min="0" max="5" step="1" value="0"></div>
+          <div class="item"><label>Alcohol</label><div class="val" id="valAlcohol">—</div><input type="range" id="satAlcohol" min="0" max="5" step="1" value="0"></div>
+          <div class="item"><label>Finish</label><div class="val" id="valFinish">—</div><input type="range" id="satFinish" min="0" max="5" step="1" value="0"></div>
+        </div>
+        <label>Appearance / Color</label>
+        <input type="text" id="satColor" placeholder="e.g. deep garnet, pale gold, copper, bright ruby">
+        <label>Aroma / Nose</label>
+        <input type="text" id="satAroma" placeholder="e.g. black cherry, vanilla oak, honeysuckle">
+        <label>Conclusion / Notes</label>
+        <input type="text" id="satConclusion" placeholder="e.g. outstanding, drink now–2030, best with decanting">
+      </div>
+    </details>
+
     <input type="hidden" id="drinkRating" value="0">
+    <input type="hidden" id="editingId" value="">
   </div>
 
   <!-- Summary Preview -->
@@ -431,6 +614,7 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
       <span id="sumType">—</span>
       <span id="sumVariety">—</span>
       <span id="sumOrigin">—</span>
+      <span id="sumRating"></span>
     </div>
     <div class="section-title">Tasting Notes</div>
     <div class="section-text" id="sumFlavor">—</div>
@@ -448,10 +632,18 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   <div class="btn-row">
     <button class="btn btn-primary" id="btnSave">💾 Save to Journal</button>
     <button class="btn" id="btnPreview">👁 Preview</button>
+    <button class="btn btn-ghost" id="btnClearForm" style="display:none;">✕ Clear</button>
   </div>
 </section>
 
-<!-- HISTORY PANEL -->
+<!-- ===================== CELLAR (DASHBOARD) PANEL ===================== -->
+<section class="panel" id="panel-cellar">
+  <div class="panel-title">📊 Your Cellar</div>
+  <div class="panel-sub">Insights and suggestions drawn from everything you've journaled.</div>
+  <div id="cellarContent"></div>
+</section>
+
+<!-- ===================== HISTORY PANEL ===================== -->
 <section class="panel" id="panel-history">
   <div class="search-bar">
     <input type="text" id="searchInput" placeholder="🔍 Search by name, variety, origin, or flavor...">
@@ -461,6 +653,12 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
       <button class="filter-chip" data-filter="sake">🍶 Sake</button>
       <button class="filter-chip" data-filter="whisky">🥃 Whisky</button>
       <button class="filter-chip" data-filter="coffee">☕ Coffee</button>
+      <select class="sort-select" id="sortSelect">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="rating">Top rated</option>
+        <option value="name">Name A–Z</option>
+      </select>
     </div>
   </div>
   <div id="historyList"></div>
@@ -471,74 +669,87 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   </div>
 </section>
 
-<!-- STUDY PANEL -->
+<!-- ===================== STUDY PANEL ===================== -->
 <section class="panel" id="panel-study">
-  <div class="study-grid">
-    <div class="study-card" data-study="wset-wine">
-      <span class="emoji">🍷</span>
-      <div class="title">WSET Wine</div>
-      <div class="desc">Systematic Approach to Tasting — levels 1–4 knowledge</div>
+  <div class="panel-title">🧠 Study</div>
+  <div class="panel-sub">Reference knowledge, flashcards, and quizzes to sharpen your palate.</div>
+  <div class="study-tabs">
+    <button class="study-tab active" data-study-tab="reference">📚 Reference</button>
+    <button class="study-tab" data-study-tab="flashcards">🃏 Flashcards</button>
+    <button class="study-tab" data-study-tab="quiz">❓ Quiz</button>
+  </div>
+
+  <div class="study-pane active" id="study-reference">
+    <div class="cat-grid" id="refCategoryGrid"></div>
+    <div id="refListWrap" style="display:none;">
+      <button class="btn btn-ghost btn-sm" id="refBack" style="margin-bottom:14px;">← Back to topics</button>
+      <div class="card"><div id="refList"></div></div>
     </div>
-    <div class="study-card" data-study="wset-sake">
-      <span class="emoji">🍶</span>
-      <div class="title">WSET Sake</div>
-      <div class="desc">Sake production, categories, and tasting methodology</div>
+  </div>
+
+  <div class="study-pane" id="study-flashcards">
+    <div class="card">
+      <div class="card-header">🃏 Flashcards <span class="hint">flip to reveal · mark to schedule</span></div>
+      <div id="fcDeckPicker">
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:12px;">Pick a deck. Your-drink cards are built from your journal; knowledge cards come from the reference library.</p>
+        <div class="btn-row" id="fcDeckButtons"></div>
+      </div>
+      <div id="fcSession" style="display:none;"></div>
     </div>
-    <div class="study-card" data-study="whisky">
-      <span class="emoji">🥃</span>
-      <div class="title">Whisky Regions</div>
-      <div class="desc">Scotch, Irish, American, Japanese — regions and styles</div>
-    </div>
-    <div class="study-card" data-study="coffee">
-      <span class="emoji">☕</span>
-      <div class="title">Coffee Origins</div>
-      <div class="desc">Bean varieties, processing methods, and flavor wheels</div>
-    </div>
-    <div class="study-card" data-study="flashcards">
-      <span class="emoji">🃏</span>
-      <div class="title">Flashcards</div>
-      <div class="desc">Review your past drinks with spaced repetition</div>
-    </div>
-    <div class="study-card" data-study="quiz">
-      <span class="emoji">❓</span>
-      <div class="title">Quiz Me</div>
-      <div class="desc">Test your knowledge from your tasting history</div>
+  </div>
+
+  <div class="study-pane" id="study-quiz">
+    <div class="card">
+      <div class="card-header">❓ Quiz <span class="hint">10 questions · mixed topics</span></div>
+      <div id="quizIntro">
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:14px;">Test yourself on wine, sake, whisky and coffee. Questions mix a general knowledge bank with items drawn from your own journal.</p>
+        <div class="btn-row"><button class="btn btn-primary" id="btnStartQuiz">▶ Start Quiz</button></div>
+      </div>
+      <div id="quizSession" style="display:none;"></div>
     </div>
   </div>
 </section>
 
 </main>
 
-<!-- SETTINGS MODAL -->
+<!-- ========== SETTINGS MODAL ========== -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <h3>⚙️ Settings</h3>
     <label>Zhipu (GLM) API Key</label>
-    <input type="password" id="apiKeyInput" placeholder="e.g. abc123...">
+    <input type="password" id="apiKeyInput" placeholder="paste your API key here">
     <p class="note">
-      Used to analyze label photos and generate summaries.
-      Your key is stored only in this browser's localStorage and never sent anywhere else.
-      <a href="https://open.bigmodel.cn/usercenter/apikeys" target="_blank">Get a free API key →</a>
+      Used to analyze label photos and generate summaries. Stored only in this browser's localStorage; never sent anywhere except the endpoint below.
+      <a href="https://open.bigmodel.cn/usercenter/apikeys" target="_blank" rel="noopener">Get a free key (bigmodel.cn) →</a>
     </p>
+
     <label>Model</label>
     <select id="modelSelect">
-      <option value="glm-5.1">glm-5.1</option>
-      <option value="glm-5">glm-5</option>
-      <option value="glm-5v-turbo">glm-5v-turbo (vision)</option>
-      <option value="glm-4.7-flash">glm-4.7-flash (free)</option>
-      <option value="glm-4-flash">glm-4-flash (free)</option>
-      <option value="glm-4-plus">glm-4-plus</option>
-      <option value="glm-4.6v-flash">glm-4.6v-flash (free vision)</option>
+      <option value="glm-4.6v-flash">glm-4.6v-flash · free, vision (recommended)</option>
+      <option value="glm-4.6v">glm-4.6v · vision</option>
+      <option value="glm-4.6v-flashx">glm-4.6v-flashx · fast vision</option>
+      <option value="glm-4v-plus">glm-4v-plus · vision</option>
+      <option value="glm-4-flash">glm-4-flash · free text</option>
+      <option value="glm-4-plus">glm-4-plus · text</option>
+      <option value="glm-4.6v-flash-text">glm-4.6v-flash (text mode)</option>
     </select>
-    <p class="note">If one model fails, try another. Flash models are free.</p>
+    <p class="note">Tip: <b>glm-4.6v-flash</b> is free and works for both photo and text. If one model fails, the app automatically tries others in the background.</p>
+
     <label>API Endpoint</label>
     <select id="endpointSelect">
       <option value="https://open.bigmodel.cn/api/paas/v4/chat/completions">open.bigmodel.cn (domestic)</option>
       <option value="https://api.z.ai/api/chat/completions">api.z.ai (international)</option>
     </select>
+    <p class="note">If "Failed to fetch" appears, the endpoint may be blocked by your network/CORS — try the other one.</p>
+
     <label>TTS Voice Speed</label>
     <input type="range" id="ttsRate" min="0.5" max="1.5" step="0.1" value="0.9" style="width:100%;">
     <span style="font-size:0.8rem;color:var(--text-dim);" id="rateLabel">0.9×</span>
+
+    <hr class="sep">
+    <button class="btn btn-sm" id="btnTestConn">🔌 Test Connection</button>
+    <div class="diag-box" id="diagBox" style="display:none;"></div>
+
     <div class="btn-row">
       <button class="btn" id="btnCloseSettings">Cancel</button>
       <button class="btn btn-primary" id="btnSaveSettings">Save</button>
@@ -550,13 +761,15 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 <div class="toast" id="toast"></div>
 
 <script>
+'use strict';
 // =============================================================================
-// DECANTER — Drink Journal & Study App
+// JP DECANTER — Drink Journal & Study App
+// Single-file, vanilla JS, zero dependencies.
 // =============================================================================
 
-// ── DOM refs ─────────────────────────────────────────────────────────────────
-const $ = (sel) => document.querySelector(sel);
-const $$ = (sel) => document.querySelectorAll(sel);
+// ── DOM helpers ──────────────────────────────────────────────────────────────
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 // ── State ────────────────────────────────────────────────────────────────────
 let currentDrinkType = 'wine';
@@ -564,19 +777,26 @@ let currentImageBase64 = '';
 let currentSummaryText = '';
 let isSpeaking = false;
 let db = null;
+let currentFilter = 'all';
+let currentSearch = '';
+let currentSort = 'newest';
+
+const typeLabels = { wine: '🍷 Wine', sake: '🍶 Sake', whisky: '🥃 Whisky', coffee: '☕ Coffee' };
+const typeEmoji  = { wine: '🍷', sake: '🍶', whisky: '🥃', coffee: '☕' };
+const typeColor  = { wine: '#d4889e', sake: '#8cc9b0', whisky: '#e8b878', coffee: '#c98970' };
 
 // ── IndexedDB ────────────────────────────────────────────────────────────────
 const DB_NAME = 'DecanterDB';
-const DB_VER = 1;
+const DB_VER = 2;
 const STORE = 'drinks';
 
 function openDB() {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VER);
     req.onupgradeneeded = (e) => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(STORE)) {
-        const store = db.createObjectStore(STORE, { keyPath: 'id' });
+      const database = e.target.result;
+      if (!database.objectStoreNames.contains(STORE)) {
+        const store = database.createObjectStore(STORE, { keyPath: 'id' });
         store.createIndex('type', 'type', { unique: false });
         store.createIndex('createdAt', 'createdAt', { unique: false });
         store.createIndex('name', 'name', { unique: false });
@@ -586,46 +806,50 @@ function openDB() {
     req.onerror = (e) => reject(e.target.error);
   });
 }
-
 function saveDrink(entry) {
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE, 'readwrite');
-    const store = tx.objectStore(STORE);
-    store.put(entry);
+    tx.objectStore(STORE).put(entry);
     tx.oncomplete = () => resolve();
     tx.onerror = (e) => reject(e.target.error);
   });
 }
-
 function getAllDrinks() {
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE, 'readonly');
-    const store = tx.objectStore(STORE);
-    const req = store.getAll();
+    const req = tx.objectStore(STORE).getAll();
     req.onsuccess = () => resolve(req.result || []);
     req.onerror = (e) => reject(e.target.error);
   });
 }
-
 function deleteDrink(id) {
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE, 'readwrite');
-    const store = tx.objectStore(STORE);
-    store.delete(id);
+    tx.objectStore(STORE).delete(id);
     tx.oncomplete = () => resolve();
     tx.onerror = (e) => reject(e.target.error);
   });
 }
 
 // ── Settings ─────────────────────────────────────────────────────────────────
+const DEFAULT_SETTINGS = {
+  apiKey: '',
+  model: 'glm-4.6v-flash',
+  endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
+  ttsRate: 0.9
+};
 function getSettings() {
-  const raw = localStorage.getItem('decanter_settings');
-  return raw ? JSON.parse(raw) : { apiKey: '', model: 'glm-5.1', endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', ttsRate: 0.9 };
+  let s;
+  try { s = JSON.parse(localStorage.getItem('decanter_settings') || '{}'); }
+  catch (e) { s = {}; }
+  // merge + migrate: if the saved model is one known to be broken, upgrade it
+  const out = Object.assign({}, DEFAULT_SETTINGS, s);
+  if (['glm-5.1', 'glm-5', 'glm-5v-turbo', 'glm-4.7-flash'].includes(out.model)) {
+    out.model = DEFAULT_SETTINGS.model;
+  }
+  return out;
 }
-
-function saveSettings(s) {
-  localStorage.setItem('decanter_settings', JSON.stringify(s));
-}
+function saveSettings(s) { localStorage.setItem('decanter_settings', JSON.stringify(s)); }
 
 // ── Toast ────────────────────────────────────────────────────────────────────
 let toastTimer;
@@ -634,85 +858,61 @@ function toast(msg) {
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
 }
 
 // ── TTS ──────────────────────────────────────────────────────────────────────
 function speak(text, rate = 0.9) {
-  window.speechSynthesis.cancel();
   if (!text) return;
-
+  if (!('speechSynthesis' in window)) { toast('🔇 Text-to-speech not supported here.'); return; }
+  window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
   utter.rate = rate;
   utter.lang = 'en-US';
-
-  // Try to find a good English voice
   const voices = window.speechSynthesis.getVoices();
-  const preferred = voices.find(v => v.name.includes('Samantha') || v.name.includes('Google US English') || v.name.includes('Daniel') || v.lang.startsWith('en'));
+  const preferred = voices.find(v => /Samantha|Google US English|Daniel|Karen/i.test(v.name)) || voices.find(v => v.lang && v.lang.startsWith('en'));
   if (preferred) utter.voice = preferred;
-
   utter.onstart = () => { isSpeaking = true; updateTTSButton(); };
   utter.onend = () => { isSpeaking = false; updateTTSButton(); };
   utter.onerror = () => { isSpeaking = false; updateTTSButton(); };
-
   window.speechSynthesis.speak(utter);
 }
-
-function stopSpeaking() {
-  window.speechSynthesis.cancel();
-  isSpeaking = false;
-  updateTTSButton();
-}
-
+function stopSpeaking() { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); isSpeaking = false; updateTTSButton(); }
 function updateTTSButton() {
-  const btn = $('#btnTTS');
-  const status = $('#ttsStatus');
-  if (isSpeaking) {
-    btn.textContent = '⏹';
-    btn.classList.add('btn-speaking');
-    status.textContent = 'Reading aloud...';
-  } else {
-    btn.textContent = '🔊';
-    btn.classList.remove('btn-speaking');
-    status.textContent = 'Tap to listen';
-  }
+  const btn = $('#btnTTS'), status = $('#ttsStatus');
+  if (!btn) return;
+  if (isSpeaking) { btn.textContent = '⏹'; btn.classList.add('btn-speaking'); status.textContent = 'Reading aloud...'; }
+  else { btn.textContent = '🔊'; btn.classList.remove('btn-speaking'); status.textContent = 'Tap to listen'; }
 }
-
-// Load voices (some browsers need this triggered)
-window.speechSynthesis.onvoiceschanged = () => { /* preload */ };
-window.speechSynthesis.getVoices();
+if ('speechSynthesis' in window) { window.speechSynthesis.onvoiceschanged = () => {}; window.speechSynthesis.getVoices(); }
 
 // ── Image Handling ───────────────────────────────────────────────────────────
 function resizeImage(file, maxDim = 1024) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
         let { width, height } = img;
-        if (width <= maxDim && height <= maxDim) {
-          resolve({ dataUrl: e.target.result, width, height });
-          return;
+        if (width <= maxDim && height <= maxDim && file.type === 'image/jpeg') {
+          resolve({ dataUrl: e.target.result, width, height }); return;
         }
-        const ratio = Math.min(maxDim / width, maxDim / height);
-        width = Math.round(width * ratio);
-        height = Math.round(height * ratio);
+        const ratio = Math.min(maxDim / width, maxDim / height, 1);
+        width = Math.round(width * ratio); height = Math.round(height * ratio);
         const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
         resolve({ dataUrl: canvas.toDataURL('image/jpeg', 0.85), width, height });
       };
+      img.onerror = () => reject(new Error('Could not read image'));
       img.src = e.target.result;
     };
+    reader.onerror = () => reject(new Error('Could not read file'));
     reader.readAsDataURL(file);
   });
 }
-
 function showPreview(dataUrl) {
   const zone = $('#uploadZone');
-  // Replace content with image preview
   zone.innerHTML = `<img src="${dataUrl}" class="preview" alt="Label preview">`;
   zone.style.padding = '12px';
   $('#btnAnalyze').disabled = false;
@@ -720,13 +920,12 @@ function showPreview(dataUrl) {
   currentImageBase64 = dataUrl;
   $('#imageBase64').value = dataUrl;
 }
-
 function clearPhoto() {
   const zone = $('#uploadZone');
   zone.innerHTML = `
     <span class="icon">🖼️</span>
     <p>Tap or drag a label photo here</p>
-    <p class="hint">Wine, sake, whisky, or coffee — JPG/PNG, max ~10MB</p>
+    <p class="hint">Wine, sake, whisky, or coffee — JPG / PNG / WEBP</p>
   `;
   zone.style.padding = '40px 20px';
   $('#btnAnalyze').disabled = true;
@@ -735,168 +934,214 @@ function clearPhoto() {
   $('#imageBase64').value = '';
 }
 
-// ── AI Call (photo or text) ──────────────────────────────────────────────────
-async function callAI(imageBase64) {
+// =============================================================================
+// AI INTEGRATION — robust to Zhipu/GLM response quirks
+// =============================================================================
+//
+// Known failure modes this defends against:
+//  1. content returned as an array of parts (vision/thinking modes) not a string
+//  2. content empty because a thinking model spent the budget on reasoning_content
+//  3. JSON wrapped in ```json fences or mixed with prose
+//  4. the chosen model id being invalid/retired → auto fallback to known-good ids
+//  5. CORS / network errors surfaced as "Failed to fetch"
+
+const VISION_FALLBACK = ['glm-4.6v-flash', 'glm-4.6v', 'glm-4.6v-flashx', 'glm-4v-plus'];
+const TEXT_FALLBACK   = ['glm-4.6v-flash', 'glm-4-flash', 'glm-4.6v', 'glm-4-plus'];
+
+function extractContent(data) {
+  const msg = data && data.choices && data.choices[0] && data.choices[0].message;
+  if (!msg) return '';
+  let text = '';
+  if (typeof msg.content === 'string') text = msg.content;
+  else if (Array.isArray(msg.content)) {
+    text = msg.content.map(p => (p && typeof p === 'string') ? p : (p && p.text) || '').join('\n');
+  }
+  text = (text || '').trim();
+  // thinking-model fallback: if main content is empty, the answer often sits in reasoning_content
+  if (!text && msg.reasoning_content) {
+    let r = msg.reasoning_content;
+    if (Array.isArray(r)) r = r.map(p => (p && p.text) || '').join('\n');
+    text = String(r || '').trim();
+  }
+  return text;
+}
+
+function parseAIResult(text) {
+  if (!text) return null;
+  let parsed = null;
+  // 1. ```json ... ``` fence
+  let m = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (m) { try { parsed = JSON.parse(m[1].trim()); } catch (e) {} }
+  // 2. bare { ... } object
+  if (!parsed) {
+    m = text.match(/\{[\s\S]*\}/);
+    if (m) { try { parsed = JSON.parse(m[0]); } catch (e) {} }
+  }
+  if (parsed) {
+    // normalise: ensure fields are strings
+    const clean = (v) => (v == null) ? '' : String(v).trim();
+    return {
+      type: clean(parsed.type),
+      name: clean(parsed.name),
+      variety: clean(parsed.variety) || clean(parsed.style),
+      origin: clean(parsed.origin) || clean(parsed.region),
+      flavor: clean(parsed.flavor) || clean(parsed.tasting_notes) || clean(parsed.notes),
+      pairing: clean(parsed.pairing) || clean(parsed.pairings),
+      summary: clean(parsed.summary) || clean(parsed.description)
+    };
+  }
+  // 3. no JSON — use the whole response as the summary
+  return { summary: text.trim(), flavor: '', pairing: '' };
+}
+
+async function rawCompletion(settings, model, messages, isVision, log) {
+  const body = {
+    model,
+    messages,
+    temperature: 0.7,
+    max_tokens: 4096,
+    stream: false
+  };
+  const res = await fetch(settings.endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${settings.apiKey}` },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    let detail = '';
+    try { const j = await res.json(); detail = (j.error && j.error.message) || JSON.stringify(j); }
+    catch (e) { try { detail = await res.text(); } catch (e2) {} }
+    const err = new Error(`HTTP ${res.status}${detail ? ': ' + detail.slice(0, 300) : ''}`);
+    err.status = res.status;
+    throw err;
+  }
+  const data = await res.json();
+  const text = extractContent(data);
+  if (log) log.push(`  ${model} → ${text.length} chars${text ? '' : ' (EMPTY)'}`);
+  return text;
+}
+
+function buildChain(selected, isVision) {
+  const chain = isVision ? VISION_FALLBACK.slice() : TEXT_FALLBACK.slice();
+  if (selected && !chain.includes(selected)) chain.unshift(selected);
+  else if (selected) { chain.unshift(selected); }
+  // dedupe preserving order
+  return Array.from(new Set(chain));
+}
+
+async function callAI(opts) {
+  // opts: { image, fillAll }
   const settings = getSettings();
   if (!settings.apiKey) {
-    toast('⚠️ Please set your Zhipu API key in Settings (⚙️) first.');
+    toast('⚠️ Set your Zhipu API key in Settings (⚙️) first.');
     $('#settingsModal').classList.add('open');
     $('#apiKeyInput').focus();
     return null;
   }
-
+  const fillAll = opts.fillAll;
+  const image = opts.image || null;
+  const isVision = !!image;
   const name = $('#drinkName').value.trim();
   const variety = $('#drinkVariety').value.trim();
   const origin = $('#drinkOrigin').value.trim();
   const type = currentDrinkType;
 
+  if (!isVision && !name) { toast('⚠️ Enter a drink name first.'); return null; }
+
   let prompt, content;
+  if (isVision) {
+    prompt = `You are a world-class sommelier, sake expert (Kiki-shu), whisky connoisseur, and Q-grader coffee cupper. Analyze this drink label photo. Respond with ONLY a JSON object, no markdown, no commentary:
 
-  if (imageBase64) {
-    // PHOTO mode: analyze the label image
-    prompt = `You are a world-class sommelier, sake expert, whisky connoisseur, and coffee cupper. Analyze this drink label photo. Return ONLY a JSON object (no markdown) with:
+{"type":"wine|sake|whisky|coffee","name":"full drink name with producer and vintage/age if visible","variety":"grape/sake class/whisky style/coffee variety & process","origin":"country, region","flavor":"5-8 expected tasting notes, comma-separated","pairing":"3-4 food pairings, comma-separated","summary":"~120-word overview: what it is, where it is from, how it is made, its key character"}
 
-{
-  "type": "wine" | "sake" | "whisky" | "coffee",
-  "name": "Full drink name with producer and vintage/age",
-  "variety": "Grape/sake category/whisky style/coffee variety & process",
-  "origin": "Country, region",
-  "flavor": "5-8 tasting notes, comma-separated",
-  "pairing": "3-4 food pairings, comma-separated",
-  "summary": "Concise summary (~150 words): what it is, where from, how made, key character. ~1 min read."
-}
-
-If you cannot identify the drink, set name to null and describe what you see in summary.`;
+If the label is unreadable, still return JSON with name null and describe what you see in summary.`;
     content = [
-      { type: 'image_url', image_url: { url: imageBase64 } },
+      { type: 'image_url', image_url: { url: image } },
       { type: 'text', text: prompt }
     ];
   } else {
-    // TEXT mode: generate from what user typed
-    if (!name) { toast('⚠️ Enter a drink name first.'); return null; }
-    prompt = `You are a world-class sommelier, sake expert, whisky connoisseur, and coffee cupper. Based on this drink info, return ONLY a JSON object (no markdown) with:
-
-{
-  "flavor": "5-8 tasting notes, comma-separated",
-  "pairing": "3-4 food pairings, comma-separated",
-  "summary": "Concise summary (~150 words): what it is, where from, how made, key character. ~1 min read."
-}
-
-Drink type: ${typeLabels[type]}
-Name: ${name}${variety ? `\nVariety/Style: ${variety}` : ''}${origin ? `\nOrigin: ${origin}` : ''}
-
-Use your knowledge of this style/region if you don't know this exact drink.`;
+    const scope = fillAll
+      ? `Based on this drink, return ONLY a JSON object (no markdown):\n{"variety":"likely variety/style","origin":"likely origin","flavor":"5-8 tasting notes, comma-separated","pairing":"3-4 food pairings, comma-separated","summary":"~120-word overview: what it is, where it is from, how it is made, its key character"}`
+      : `Based on this drink, return ONLY a JSON object (no markdown):\n{"flavor":"5-8 tasting notes, comma-separated","pairing":"3-4 food pairings, comma-separated","summary":"~120-word overview: what it is, where it is from, how it is made, its key character"}`;
+    prompt = `You are a world-class sommelier, sake expert, whisky connoisseur, and coffee cupper. ${scope}\n\nDrink type: ${typeLabels[type]}\nName: ${name}${variety ? `\nVariety/Style: ${variety}` : ''}${origin ? `\nOrigin: ${origin}` : ''}\n\nUse your knowledge of this style/region if you do not know this exact bottling.`;
     content = prompt;
   }
 
-  try {
-    const response = await fetch(settings.endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${settings.apiKey}`
-      },
-      body: JSON.stringify({
-        model: settings.model,
-        max_tokens: 1024,
-        temperature: 0.7,
-        messages: [{ role: 'user', content }]
-      })
-    });
+  const messages = [{ role: 'user', content }];
+  const chain = buildChain(settings.model, isVision);
+  const log = ['AI request log:'];
+  let lastErr = null;
 
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      throw new Error(err.error?.message || `API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const text = data.choices?.[0]?.message?.content || '';
-
-    // Smart parsing: try markdown fence → raw braces → fallback to raw text
-    let jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-    let parsed = null;
-    if (jsonMatch) {
-      try { parsed = JSON.parse(jsonMatch[1].trim()); } catch(e) {}
-    }
-    if (!parsed) {
-      jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        try { parsed = JSON.parse(jsonMatch[0]); } catch(e) {}
+  for (let i = 0; i < chain.length; i++) {
+    const model = chain[i];
+    try {
+      log.push(`Trying ${model}…`);
+      const text = await rawCompletion(settings, model, messages, isVision, log);
+      const result = parseAIResult(text);
+      if (result && (result.summary || result.flavor || result.name)) {
+        log.push(`✓ ${model} succeeded`);
+        console.log(log.join('\n'));
+        return result;
+      } else {
+        log.push(`  ${model}: no usable content, will try next model`);
       }
+    } catch (err) {
+      lastErr = err;
+      log.push(`  ${model}: ${err.message}`);
+      // 400/401/auth-ish errors: a different model won't help for auth, but model-not-found (often 400 with "model") might — keep trying conservatively
     }
-    if (!parsed) {
-      // No JSON at all — use entire response as summary
-      parsed = { summary: text.trim(), flavor: null, pairing: null };
-    }
-
-    // If summary is still empty, use the full raw text
-    if (!parsed.summary || parsed.summary.trim().length < 5) {
-      parsed.summary = text.trim() || '(model returned empty response)';
-    }
-
-    // DEBUG: show what we got in the toast
-    const hasJson = parsed.flavor || parsed.pairing;
-    toast(`📡 ${hasJson ? 'JSON parsed ✓' : 'Raw text used'} — ${text.length} chars. Check summary field.`);
-
-    return parsed;
-
-  } catch (err) {
-    console.error('API error:', err);
-    toast(`❌ ${err.message}`);
-    return null;
   }
+
+  console.log(log.join('\n'));
+  if (lastErr && /Failed to fetch|NetworkError|load failed/i.test(lastErr.message)) {
+    toast('❌ Network/CORS error reaching the API. Try the other endpoint in Settings.');
+  } else if (lastErr && (lastErr.status === 401 || lastErr.status === 403)) {
+    toast('❌ Auth failed — check your API key in Settings.');
+  } else {
+    toast('❌ All models returned empty. Open Settings → Test Connection for details.');
+  }
+  return null;
 }
 
 async function analyzeFromPhoto() {
   if (!currentImageBase64) return;
-  const result = await callAI(currentImageBase64);
+  const result = await callAI({ image: currentImageBase64 });
   if (result) populateFromPhoto(result);
 }
-
-async function generateFromText() {
-  const result = await callAI(null);
-  if (result) populateSummary(result);
+async function generateFromText(fillAll) {
+  const result = await callAI({ fillAll: !!fillAll });
+  if (result) populateSummary(result, !!fillAll);
 }
 
-// ── Populate from Photo (fills ALL fields) ────────────────────────────────────
+// ── Populate ─────────────────────────────────────────────────────────────────
 function populateFromPhoto(result) {
   if (!result) return;
-  if (result.type && ['wine','sake','whisky','coffee'].includes(result.type)) {
-    setDrinkType(result.type);
-  }
+  if (result.type && typeLabels[result.type]) setDrinkType(result.type);
   if (result.name) $('#drinkName').value = result.name;
   if (result.variety) $('#drinkVariety').value = result.variety;
   if (result.origin) $('#drinkOrigin').value = result.origin;
   if (result.flavor) $('#drinkFlavor').value = result.flavor;
   if (result.pairing) $('#drinkPairing').value = result.pairing;
-  if (result.summary) {
-    $('#drinkSummary').value = result.summary;
-    currentSummaryText = result.summary;
-  }
+  if (result.summary) { $('#drinkSummary').value = result.summary; currentSummaryText = result.summary; }
   updateSummaryCard();
   $('#summaryCard').classList.add('visible');
+  $('#btnClearForm').style.display = '';
   const filled = [result.name, result.variety, result.origin, result.flavor, result.summary].filter(Boolean).length;
-  if (filled >= 2) {
-    toast('✅ Photo analyzed! Review and Save.');
-  } else {
-    toast('⚠️ Low detail from model. Raw text in summary field — you can edit it.');
-  }
+  toast(filled >= 2 ? '✅ Photo analyzed! Review, rate, and Save.' : '⚠️ Low detail from model — raw text is in the summary; edit freely.');
 }
-
-// ── Populate from Text (fills flavor/pairing/summary only) ────────────────────
-function populateSummary(result) {
+function populateSummary(result, fillAll) {
   if (!result) return;
-
+  if (fillAll) {
+    if (result.variety && !$('#drinkVariety').value.trim()) $('#drinkVariety').value = result.variety;
+    if (result.origin && !$('#drinkOrigin').value.trim()) $('#drinkOrigin').value = result.origin;
+  }
   if (result.flavor) $('#drinkFlavor').value = result.flavor;
   if (result.pairing) $('#drinkPairing').value = result.pairing;
-  if (result.summary) {
-    $('#drinkSummary').value = result.summary;
-    currentSummaryText = result.summary;
-  }
-
+  if (result.summary) { $('#drinkSummary').value = result.summary; currentSummaryText = result.summary; }
   updateSummaryCard();
   $('#summaryCard').classList.add('visible');
-  toast('✅ Summary generated! Review and Save.');
+  $('#btnClearForm').style.display = '';
+  toast('✅ AI filled in fields! Review, rate, and Save.');
 }
 
 // ── Summary Card ─────────────────────────────────────────────────────────────
@@ -908,208 +1153,286 @@ function updateSummaryCard() {
   const flavor = $('#drinkFlavor').value || '—';
   const pairing = $('#drinkPairing').value || '';
   const summary = $('#drinkSummary').value || '—';
+  const rating = currentRating;
 
-  $('#sumName').textContent = name || '—';
+  $('#sumName').textContent = name;
   $('#sumType').textContent = typeLabels[type] || type;
   $('#sumVariety').textContent = variety;
   $('#sumOrigin').textContent = origin;
   $('#sumFlavor').textContent = flavor;
   $('#sumSummary').textContent = summary;
+  $('#sumRating').innerHTML = rating > 0 ? starsHtml(rating, true) : '';
 
-  const pairingTags = $('#sumPairing');
-  pairingTags.innerHTML = '';
+  const tags = $('#sumPairing'); tags.innerHTML = '';
   if (pairing.trim()) {
-    pairing.split(',').forEach(p => {
-      const tag = document.createElement('span');
-      tag.className = 'pairing-tag';
-      tag.textContent = p.trim();
-      pairingTags.appendChild(tag);
-    });
+    pairing.split(',').forEach(p => { if (p.trim()) {
+      const tag = document.createElement('span'); tag.className = 'pairing-tag'; tag.textContent = p.trim(); tags.appendChild(tag);
+    }});
   }
-
   currentSummaryText = summary;
 }
 
-const typeLabels = {
-  wine: '🍷 Wine',
-  sake: '🍶 Sake',
-  whisky: '🥃 Whisky',
-  coffee: '☕ Coffee'
-};
+// ── Ratings ──────────────────────────────────────────────────────────────────
+let currentRating = 0;
+function starsHtml(v, sm) {
+  let s = '<span class="stars readonly">';
+  for (let i = 1; i <= 5; i++) s += `<span class="star${sm ? ' sm' : ''}${i <= v ? ' on' : ''}">★</span>`;
+  return s + '</span>';
+}
+function renderRatingStars() {
+  $$('#ratingStars .star').forEach(st => {
+    st.classList.toggle('on', parseInt(st.dataset.v, 10) <= currentRating);
+  });
+  $('#drinkRating').value = currentRating;
+}
+function setRating(v) { currentRating = v; renderRatingStars(); updateSummaryCard(); }
 
-// ── Type Selection ───────────────────────────────────────────────────────────
+// ── Tasting profile ──────────────────────────────────────────────────────────
+const PROFILE_FIELDS = ['Body','Acidity','Sweet','Tannin','Alcohol','Finish'];
+function profileValLabel(v) { return v > 0 ? v + '/5' : '—'; }
+function bindProfileSliders() {
+  PROFILE_FIELDS.forEach(f => {
+    const key = f === 'Sweet' ? 'Sweet' : f;
+    const el = $(`#sat${f}`);
+    if (!el) return;
+    el.addEventListener('input', () => { $(`#val${f}`).textContent = profileValLabel(parseInt(el.value, 10)); });
+  });
+}
+function collectProfile() {
+  const p = {};
+  PROFILE_FIELDS.forEach(f => {
+    const v = parseInt($(`#sat${f}`).value, 10);
+    if (v > 0) p[f.toLowerCase()] = v;
+  });
+  return p;
+}
+function fillProfile(sat) {
+  PROFILE_FIELDS.forEach(f => {
+    const key = f.toLowerCase();
+    const v = (sat && sat[key]) ? sat[key] : 0;
+    $(`#sat${f}`).value = v;
+    $(`#val${f}`).textContent = profileValLabel(v);
+  });
+  $('#satColor').value = (sat && sat.color) || '';
+  $('#satAroma').value = (sat && sat.aroma) || '';
+  $('#satConclusion').value = (sat && sat.conclusion) || '';
+}
+function showTanninForType(type) {
+  $('#tanninWrap').style.display = (type === 'wine') ? '' : 'none';
+}
+
+// ── Type selection ───────────────────────────────────────────────────────────
 function setDrinkType(type) {
   currentDrinkType = type;
   $$('.type-tab').forEach(t => t.classList.toggle('active', t.dataset.type === type));
+  showTanninForType(type);
+  updateSummaryCard();
 }
 
-// ── Save Entry ───────────────────────────────────────────────────────────────
-async function saveEntry() {
-  const name = $('#drinkName').value.trim();
-  if (!name) { toast('⚠️ Please enter at least a drink name.'); return; }
-
-  const entry = {
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-    createdAt: new Date().toISOString(),
+// ── Save / load form ─────────────────────────────────────────────────────────
+function buildEntryFromForm(id, createdAt) {
+  return {
+    id: id || (Date.now().toString(36) + Math.random().toString(36).slice(2, 6)),
+    createdAt: createdAt || new Date().toISOString(),
     type: currentDrinkType,
-    name: name,
+    name: $('#drinkName').value.trim(),
     variety: $('#drinkVariety').value.trim(),
     origin: $('#drinkOrigin').value.trim(),
+    abv: $('#drinkAbv').value.trim(),
+    price: $('#drinkPrice').value.trim(),
     flavor: $('#drinkFlavor').value.trim(),
     pairing: $('#drinkPairing').value.trim(),
     summary: $('#drinkSummary').value.trim(),
-    imageBase64: currentImageBase64 || '',
+    rating: currentRating,
+    sat: Object.assign(collectProfile(), {
+      color: $('#satColor').value.trim(),
+      aroma: $('#satAroma').value.trim(),
+      conclusion: $('#satConclusion').value.trim()
+    }),
+    imageBase64: currentImageBase64 || ''
   };
-
+}
+async function saveEntry() {
+  const name = $('#drinkName').value.trim();
+  if (!name) { toast('⚠️ Please enter at least a drink name.'); return; }
+  const editingId = $('#editingId').value;
+  let createdAt;
+  if (editingId) {
+    try { const all = await getAllDrinks(); const prev = all.find(d => d.id === editingId); if (prev) createdAt = prev.createdAt; } catch (e) {}
+  }
+  const entry = buildEntryFromForm(editingId || null, createdAt);
   try {
     await saveDrink(entry);
-    toast('✅ Saved to journal!');
+    toast(editingId ? '✅ Updated!' : '✅ Saved to journal!');
     clearForm();
-    clearPhoto();
-  } catch (err) {
-    toast('❌ Failed to save: ' + err.message);
-  }
+    switchPanel('history');
+    renderHistory();
+  } catch (err) { toast('❌ Failed to save: ' + err.message); }
 }
-
 function clearForm() {
-  $('#drinkName').value = '';
-  $('#drinkVariety').value = '';
-  $('#drinkOrigin').value = '';
-  $('#drinkFlavor').value = '';
-  $('#drinkPairing').value = '';
-  $('#drinkSummary').value = '';
+  $('#drinkName').value = ''; $('#drinkVariety').value = ''; $('#drinkOrigin').value = '';
+  $('#drinkAbv').value = ''; $('#drinkPrice').value = '';
+  $('#drinkFlavor').value = ''; $('#drinkPairing').value = ''; $('#drinkSummary').value = '';
   $('#summaryCard').classList.remove('visible');
-  currentSummaryText = '';
-  currentImageBase64 = '';
+  currentSummaryText = ''; currentRating = 0; renderRatingStars();
+  $('#editingId').value = '';
+  $('#btnClearForm').style.display = 'none';
+  fillProfile(null);
   setDrinkType('wine');
+  clearPhoto();
+}
+function loadEntryIntoForm(d) {
+  setDrinkType(d.type || 'wine');
+  $('#editingId').value = d.id || '';
+  $('#drinkName').value = d.name || '';
+  $('#drinkVariety').value = d.variety || '';
+  $('#drinkOrigin').value = d.origin || '';
+  $('#drinkAbv').value = d.abv || '';
+  $('#drinkPrice').value = d.price || '';
+  $('#drinkFlavor').value = d.flavor || '';
+  $('#drinkPairing').value = d.pairing || '';
+  $('#drinkSummary').value = d.summary || '';
+  currentRating = d.rating || 0; renderRatingStars();
+  fillProfile(d.sat || null);
+  if (d.imageBase64) showPreview(d.imageBase64); else clearPhoto();
+  updateSummaryCard();
+  $('#summaryCard').classList.add('visible');
+  $('#btnClearForm').style.display = '';
+  switchPanel('journal');
+  toast('✏️ Editing — tap Save to update.');
 }
 
-// ── History Rendering ────────────────────────────────────────────────────────
-async function renderHistory(filter = 'all', search = '') {
+// ── History ──────────────────────────────────────────────────────────────────
+function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str == null ? '' : str; return d.innerHTML; }
+function formatDate(iso) {
+  const d = new Date(iso); const now = new Date(); const diff = now - d;
+  if (diff < 86400000 && d.getDate() === now.getDate()) return 'Today';
+  if (diff < 172800000) return 'Yesterday';
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+async function renderHistory() {
   const list = $('#historyList');
   let drinks;
-  try {
-    drinks = await getAllDrinks();
-  } catch (err) {
-    list.innerHTML = '<div class="empty-state"><span class="icon">⚠️</span><p>Could not load history.</p></div>';
-    return;
-  }
+  try { drinks = await getAllDrinks(); }
+  catch (err) { list.innerHTML = '<div class="empty-state"><span class="icon">⚠️</span><p>Could not load history.</p></div>'; return; }
 
-  // Sort newest first
-  drinks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  // sort
+  drinks.sort((a, b) => {
+    if (currentSort === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
+    if (currentSort === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+    if (currentSort === 'name') return (a.name || '').localeCompare(b.name || '');
+    if (currentSort === 'rating') return (b.rating || 0) - (a.rating || 0);
+    return 0;
+  });
 
-  // Filter
-  if (filter !== 'all') {
-    drinks = drinks.filter(d => d.type === filter);
-  }
-  if (search) {
-    const q = search.toLowerCase();
-    drinks = drinks.filter(d =>
-      (d.name || '').toLowerCase().includes(q) ||
-      (d.variety || '').toLowerCase().includes(q) ||
-      (d.origin || '').toLowerCase().includes(q) ||
-      (d.flavor || '').toLowerCase().includes(q)
-    );
+  if (currentFilter !== 'all') drinks = drinks.filter(d => d.type === currentFilter);
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    drinks = drinks.filter(d => [d.name, d.variety, d.origin, d.flavor, d.pairing].join(' ').toLowerCase().includes(q));
   }
 
   if (drinks.length === 0) {
     list.innerHTML = `<div class="empty-state">
-      <span class="icon">${filter === 'all' ? '📭' : '🍷'}</span>
-      <p>${filter === 'all' ? 'No drinks journaled yet. Start by saving your first drink!' : `No ${typeLabels[filter]} entries yet.`}</p>
+      <span class="icon">${currentFilter === 'all' && !currentSearch ? '📭' : '🔍'}</span>
+      <p>${currentSearch ? 'No drinks match your search.' : currentFilter === 'all' ? 'No drinks journaled yet. Start by saving your first drink!' : `No ${typeLabels[currentFilter]} entries yet.`}</p>
     </div>`;
     return;
   }
 
+  const placeholder = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect fill='%232d251e' width='60' height='60'/%3E%3Ctext fill='%236b5f52' x='30' y='38' text-anchor='middle' font-size='22'%3E🍷%3C/text%3E%3C/svg%3E";
+
   list.innerHTML = drinks.map(d => `
     <div class="history-item" data-id="${d.id}">
-      ${d.imageBase64 ? `<img src="${d.imageBase64}" alt="${d.name}" loading="lazy">` : '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22%3E%3Crect fill=%22%232d251e%22 width=%2264%22 height=%2264%22/%3E%3Ctext fill=%22%236b5f52%22 x=%2232%22 y=%2236%22 text-anchor=%22middle%22 font-size=%2220%22%3E🍷%3C/text%3E%3C/svg%3E" alt="No photo">'}
+      <img src="${d.imageBase64 ? d.imageBase64 : placeholder}" alt="" loading="lazy" onerror="this.src='${placeholder}'">
       <div class="info">
-        <div class="name">${escapeHtml(d.name)}</div>
-        <div class="detail">${escapeHtml(d.variety || '')} ${d.variety && d.origin ? '·' : ''} ${escapeHtml(d.origin || '')}</div>
-        <div class="detail" style="font-size:0.8rem;color:var(--text-dim);">${escapeHtml((d.flavor || '').slice(0, 80))}${d.flavor && d.flavor.length > 80 ? '...' : ''}</div>
-        <div class="date">${formatDate(d.createdAt)} · <span class="type-badge ${d.type}">${typeLabels[d.type] || d.type}</span></div>
+        <div class="name">${escapeHtml(d.name)} ${d.rating ? starsHtml(d.rating, true) : ''}</div>
+        <div class="detail">${escapeHtml([d.variety, d.origin].filter(Boolean).join(' · ') || '—')}</div>
+        <div class="date">
+          <span class="type-badge ${d.type}">${typeLabels[d.type] || d.type}</span>
+          ${d.abv ? `<span class="chip-mini">${escapeHtml(d.abv)}% ABV</span>` : ''}
+          <span>· ${formatDate(d.createdAt)}</span>
+        </div>
       </div>
-      <button class="btn btn-icon btn-sm" style="align-self:flex-start;flex-shrink:0;" data-action="delete" data-id="${d.id}" title="Delete">🗑</button>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+        <button class="btn btn-icon btn-sm" data-action="edit" data-id="${d.id}" title="Edit">✏️</button>
+        <button class="btn btn-icon btn-sm" data-action="delete" data-id="${d.id}" title="Delete">🗑</button>
+      </div>
     </div>
   `).join('');
 
-  // Attach delete handlers
   list.querySelectorAll('[data-action="delete"]').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
       const id = btn.dataset.id;
-      if (confirm('Delete this entry?')) {
-        await deleteDrink(id);
-        renderHistory(currentFilter, currentSearch);
-        toast('🗑 Entry deleted.');
+      if (confirm('Delete this entry? This cannot be undone.')) {
+        await deleteDrink(id); renderHistory(); toast('🗑 Entry deleted.');
       }
     });
   });
-
-  // Click to view detail
+  list.querySelectorAll('[data-action="edit"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const drink = drinks.find(d => d.id === btn.dataset.id);
+      if (drink) loadEntryIntoForm(drink);
+    });
+  });
   list.querySelectorAll('.history-item').forEach(item => {
     item.addEventListener('click', (e) => {
       if (e.target.closest('[data-action]')) return;
-      const id = item.dataset.id;
-      const drink = drinks.find(d => d.id === id);
+      const drink = drinks.find(d => d.id === item.dataset.id);
       if (drink) showDetailModal(drink);
     });
   });
 }
 
-let currentFilter = 'all';
-let currentSearch = '';
-
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function formatDate(iso) {
-  const d = new Date(iso);
-  const now = new Date();
-  const diff = now - d;
-  if (diff < 86400000) return 'Today';
-  if (diff < 172800000) return 'Yesterday';
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
-// ── Detail Modal ─────────────────────────────────────────────────────────────
+// ── Detail modal ─────────────────────────────────────────────────────────────
 function showDetailModal(drink) {
-  const existing = document.getElementById('detailModal');
-  if (existing) existing.remove();
-
+  const old = document.getElementById('detailModal'); if (old) old.remove();
   const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay open';
-  overlay.id = 'detailModal';
+  overlay.className = 'modal-overlay open'; overlay.id = 'detailModal';
+
+  const profileBars = (drink.sat || {});
+  const hasProfile = ['body','acidity','sweet','tannin','alcohol','finish'].some(k => profileBars[k]);
+  const profileLabels = { body:'Body', acidity:'Acidity', sweet:'Sweetness', tannin:'Tannin', alcohol:'Alcohol', finish:'Finish' };
+
   overlay.innerHTML = `
-    <div class="modal" style="max-width:560px;">
-      ${drink.imageBase64 ? `<img src="${drink.imageBase64}" style="width:100%;max-height:300px;object-fit:contain;border-radius:var(--radius-sm);margin-bottom:16px;" alt="${escapeHtml(drink.name)}">` : ''}
-      <h3 style="font-family:var(--font);color:var(--gold);">${escapeHtml(drink.name)}</h3>
-      <p style="color:var(--text-muted);font-size:0.9rem;"><span class="type-badge ${drink.type}">${typeLabels[drink.type]}</span> · ${escapeHtml(drink.variety || '—')} · ${escapeHtml(drink.origin || '—')}</p>
-      ${drink.flavor ? `<div class="section-title" style="color:var(--gold);font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-top:16px;">Tasting Notes</div><p style="line-height:1.7;">${escapeHtml(drink.flavor)}</p>` : ''}
-      ${drink.pairing ? `<div class="section-title" style="color:var(--gold);font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-top:16px;">Pairings</div><p>${escapeHtml(drink.pairing)}</p>` : ''}
-      ${drink.summary ? `<div class="section-title" style="color:var(--gold);font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-top:16px;">Summary</div><p style="line-height:1.7;">${escapeHtml(drink.summary)}</p>` : ''}
-      <p style="color:var(--text-dim);font-size:0.75rem;margin-top:16px;">📅 ${formatDate(drink.createdAt)}</p>
+    <div class="modal wide">
+      ${drink.imageBase64 ? `<img src="${drink.imageBase64}" style="width:100%;max-height:300px;object-fit:contain;border-radius:var(--radius-sm);margin-bottom:14px;" alt="">` : ''}
+      <h3 style="font-family:var(--font);color:var(--gold);margin-bottom:6px;">${escapeHtml(drink.name)}</h3>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
+        <span class="type-badge ${drink.type}">${typeLabels[drink.type]}</span>
+        ${drink.rating ? starsHtml(drink.rating, false) : '<span style="font-size:0.8rem;color:var(--text-dim);">unrated</span>'}
+      </div>
+      <p style="color:var(--text-muted);font-size:0.9rem;">${escapeHtml([drink.variety, drink.origin].filter(Boolean).join(' · ') || '—')}${drink.abv ? ' · ' + escapeHtml(drink.abv) + '% ABV' : ''}${drink.price ? ' · ' + escapeHtml(drink.price) : ''}</p>
+
+      ${drink.flavor ? `${satTitle('Tasting Notes')}<p style="line-height:1.7;">${escapeHtml(drink.flavor)}</p>` : ''}
+      ${drink.pairing ? `${satTitle('Pairings')}<div class="pairing-tags">${drink.pairing.split(',').map(p=>p.trim()).filter(Boolean).map(p=>`<span class="pairing-tag">${escapeHtml(p)}</span>`).join('')}</div>` : ''}
+
+      ${hasProfile ? `${satTitle('Tasting Profile')}${['body','acidity','sweet','tannin','alcohol','finish'].filter(k=>profileBars[k]).map(k=>{
+        const v = profileBars[k]; const pct = (v/5)*100;
+        return `<div class="bar-row"><span class="lbl">${profileLabels[k]}</span><span class="bar-track"><span class="bar-fill" style="width:${pct}%;background:var(--gold);"></span></span><span class="cnt">${v}</span></div>`;
+      }).join('')}${profileBars.color||profileBars.aroma||profileBars.conclusion?`<p style="font-size:0.85rem;color:var(--text-muted);margin-top:10px;line-height:1.6;">${[profileBars.color?('Appearance: '+profileBars.color):null,profileBars.aroma?('Nose: '+profileBars.aroma):null,profileBars.conclusion?('Conclusion: '+profileBars.conclusion):null].filter(Boolean).join(' · ')}</p>`:''}` : ''}
+
+      ${drink.summary ? `${satTitle('Summary')}<p style="line-height:1.7;white-space:pre-wrap;">${escapeHtml(drink.summary)}</p>` : ''}
+      <p style="color:var(--text-dim);font-size:0.74rem;margin-top:16px;">📅 ${formatDate(drink.createdAt)}</p>
       <div class="btn-row">
         <button class="btn" id="btnDetailTTS">🔊 Read Aloud</button>
+        <button class="btn btn-primary" id="btnDetailEdit">✏️ Edit</button>
         <button class="btn" id="btnDetailClose">Close</button>
       </div>
     </div>
   `;
-
   document.body.appendChild(overlay);
-
-  overlay.querySelector('#btnDetailClose').onclick = () => overlay.remove();
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
-
-  overlay.querySelector('#btnDetailTTS').onclick = () => {
-    const text = `Drink: ${drink.name}. Variety: ${drink.variety || 'not specified'}. Origin: ${drink.origin || 'not specified'}. Tasting notes: ${drink.flavor || 'none recorded'}. ${drink.summary || ''}`;
-    const s = getSettings();
-    speak(text, s.ttsRate);
+  const close = () => overlay.remove();
+  $('#btnDetailClose').onclick = close;
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  $('#btnDetailEdit').onclick = () => { close(); loadEntryIntoForm(drink); };
+  $('#btnDetailTTS').onclick = () => {
+    const text = `${drink.name}. ${(drink.variety||'').replace(/\.$/,'')}. From ${drink.origin || 'an unspecified origin'}. Tasting notes: ${drink.flavor || 'none recorded'}. ${drink.summary || ''}`;
+    speak(text, getSettings().ttsRate);
   };
 }
+function satTitle(t) { return `<div class="section-title">${t}</div>`; }
 
 // ── Export / Import ──────────────────────────────────────────────────────────
 async function exportData() {
@@ -1117,226 +1440,663 @@ async function exportData() {
   const blob = new Blob([JSON.stringify(drinks, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `decanter-backup-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
+  a.href = url; a.download = `jp-decanter-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(url);
   toast('📥 Export downloaded!');
 }
-
 async function importData(file) {
   try {
     const text = await file.text();
     const data = JSON.parse(text);
     if (!Array.isArray(data)) throw new Error('Invalid format: expected an array');
-
     let imported = 0;
     for (const entry of data) {
-      if (!entry.id || !entry.name || !entry.type) continue;
-      // Ensure unique ID on import
-      await saveDrink(entry);
-      imported++;
+      if (!entry.name || !entry.type) continue;
+      if (!entry.id) entry.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      if (!entry.createdAt) entry.createdAt = new Date().toISOString();
+      await saveDrink(entry); imported++;
     }
     toast(`📤 Imported ${imported} entries!`);
-    renderHistory(currentFilter, currentSearch);
-  } catch (err) {
-    toast('❌ Import failed: ' + err.message);
-  }
+    renderHistory();
+  } catch (err) { toast('❌ Import failed: ' + err.message); }
 }
 
-// ── Event Bindings ───────────────────────────────────────────────────────────
+// =============================================================================
+// CELLAR — dashboard + recommendations
+// =============================================================================
+function topN(counts, n) { return Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0, n); }
+function avg(arr) { return arr.length ? arr.reduce((s,x)=>s+x,0)/arr.length : 0; }
 
-// Navigation
-$$('nav button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    $$('nav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const panel = btn.dataset.panel;
-    $$('.panel').forEach(p => p.classList.remove('active'));
-    $(`#panel-${panel}`).classList.add('active');
-    if (panel === 'history') renderHistory(currentFilter, currentSearch);
-  });
-});
+async function renderCellar() {
+  const wrap = $('#cellarContent');
+  let drinks = [];
+  try { drinks = await getAllDrinks(); } catch (e) {}
 
-// Upload zone
-$('#uploadZone').addEventListener('click', () => $('#fileInput').click());
-$('#uploadZone').addEventListener('dragover', (e) => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); });
-$('#uploadZone').addEventListener('dragleave', (e) => { e.currentTarget.classList.remove('drag-over'); });
-$('#uploadZone').addEventListener('drop', async (e) => {
-  e.preventDefault();
-  e.currentTarget.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) {
-    const { dataUrl } = await resizeImage(file);
-    showPreview(dataUrl);
-    toast('📸 Photo saved! Fill in the details below, then tap Generate Summary.');
-  }
-});
-
-$('#fileInput').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const { dataUrl } = await resizeImage(file);
-    showPreview(dataUrl);
-    toast('📸 Photo saved! Fill in the details below, then tap Generate Summary.');
-  }
-});
-
-$('#btnClearPhoto').addEventListener('click', clearPhoto);
-
-// Analyze from Photo
-$('#btnAnalyze').addEventListener('click', async () => {
-  const btn = $('#btnAnalyze');
-  btn.innerHTML = '<span class="spinner"></span> Analyzing photo...';
-  btn.disabled = true;
-  await analyzeFromPhoto();
-  btn.innerHTML = '🔍 Identify & Summarize from Photo';
-  btn.disabled = false;
-});
-
-// Generate from Text
-$('#btnGenerate').addEventListener('click', async () => {
-  const btn = $('#btnGenerate');
-  btn.innerHTML = '<span class="spinner"></span> Generating...';
-  btn.disabled = true;
-  await generateFromText();
-  btn.innerHTML = '✨ Generate Summary';
-  btn.disabled = false;
-});
-
-// Type tabs
-$$('.type-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    setDrinkType(tab.dataset.type);
-  });
-});
-
-// Preview
-$('#btnPreview').addEventListener('click', () => {
-  updateSummaryCard();
-  $('#summaryCard').classList.add('visible');
-  toast('👁 Preview updated from current fields.');
-});
-
-// TTS button in summary card
-$('#btnTTS').addEventListener('click', () => {
-  if (isSpeaking) {
-    stopSpeaking();
+  if (drinks.length === 0) {
+    wrap.innerHTML = `<div class="empty-state"><span class="icon">🍇</span><p>Your cellar is empty. Journal a few drinks and insights will appear here.</p></div>`;
     return;
   }
-  const name = $('#drinkName').value || 'this drink';
-  const variety = $('#drinkVariety').value || '';
-  const origin = $('#drinkOrigin').value || '';
-  const flavor = $('#drinkFlavor').value || '';
-  const summary = $('#drinkSummary').value || '';
-  const text = `${name}. ${variety ? `Variety: ${variety}. ` : ''}${origin ? `From ${origin}. ` : ''}${flavor ? `Tasting notes: ${flavor}. ` : ''}${summary}`;
-  const s = getSettings();
-  speak(text, s.ttsRate);
-});
 
-// Save
-$('#btnSave').addEventListener('click', saveEntry);
+  const byType = { wine:0, sake:0, whisky:0, coffee:0 };
+  const sumByType = { wine:0, sake:0, whisky:0, coffee:0 };
+  drinks.forEach(d => { byType[d.type] = (byType[d.type]||0)+1; if (d.rating) sumByType[d.type] += d.rating; });
+  const rated = drinks.filter(d => d.rating);
+  const avgRating = avg(rated.map(d=>d.rating));
 
-// Settings
-$('#btnSettings').addEventListener('click', () => {
-  const s = getSettings();
-  $('#apiKeyInput').value = s.apiKey || '';
-  if (s.model) $('#modelSelect').value = s.model;
-  if (s.endpoint) $('#endpointSelect').value = s.endpoint;
-  $('#ttsRate').value = s.ttsRate;
-  $('#rateLabel').textContent = s.ttsRate.toFixed(1) + '×';
-  $('#settingsModal').classList.add('open');
-});
-
-$('#btnCloseSettings').addEventListener('click', () => $('#settingsModal').classList.remove('open'));
-$('#settingsModal').addEventListener('click', (e) => {
-  if (e.target === $('#settingsModal')) $('#settingsModal').classList.remove('open');
-});
-
-$('#ttsRate').addEventListener('input', (e) => {
-  $('#rateLabel').textContent = parseFloat(e.target.value).toFixed(1) + '×';
-});
-
-$('#btnSaveSettings').addEventListener('click', () => {
-  const settings = {
-    apiKey: $('#apiKeyInput').value.trim(),
-    model: $('#modelSelect').value,
-    endpoint: $('#endpointSelect').value,
-    ttsRate: parseFloat($('#ttsRate').value)
-  };
-  saveSettings(settings);
-  $('#settingsModal').classList.remove('open');
-  toast('⚙️ Settings saved!');
-});
-
-// History filters
-$('#filterRow').addEventListener('click', (e) => {
-  if (!e.target.classList.contains('filter-chip')) return;
-  $$('#filterRow .filter-chip').forEach(c => c.classList.remove('active'));
-  e.target.classList.add('active');
-  currentFilter = e.target.dataset.filter;
-  renderHistory(currentFilter, currentSearch);
-});
-
-$('#searchInput').addEventListener('input', (e) => {
-  currentSearch = e.target.value;
-  renderHistory(currentFilter, currentSearch);
-});
-
-// Export / Import
-$('#btnExport').addEventListener('click', exportData);
-$('#btnImport').addEventListener('click', () => $('#importFile').click());
-$('#importFile').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (file) importData(file);
-  e.target.value = '';
-});
-
-// Study cards (placeholder)
-$$('.study-card').forEach(card => {
-  card.addEventListener('click', () => {
-    const topic = card.dataset.study;
-    toast(`🧠 "${topic}" study module — coming in the next update!`);
+  // variety / origin tallies
+  const varietyCounts = {}, originCounts = {};
+  drinks.forEach(d => {
+    (d.variety||'').split(/[,/]/).map(s=>s.trim()).filter(Boolean).forEach(v => varietyCounts[v.toLowerCase()] = (varietyCounts[v.toLowerCase()]||0)+1);
+    (d.origin||'').split(/[,;]/).map(s=>s.trim()).filter(Boolean).forEach(o => originCounts[o.toLowerCase()] = (originCounts[o.toLowerCase()]||0)+1);
   });
-});
+  const topVariety = topN(varietyCounts, 1)[0];
+  const topOrigin = topN(originCounts, 1)[0];
+  const topRated = rated.slice().sort((a,b)=>(b.rating||0)-(a.rating||0))[0];
 
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-    e.preventDefault();
-    if ($('#panel-journal').classList.contains('active')) saveEntry();
+  const maxCount = Math.max(1, ...Object.values(byType));
+  const typeBars = ['wine','sake','whisky','coffee'].map(t =>
+    `<div class="bar-row">
+      <span class="lbl">${typeLabels[t]}</span>
+      <span class="bar-track"><span class="bar-fill" style="width:${(byType[t]/maxCount)*100}%;background:${typeColor[t]};"></span></span>
+      <span class="cnt">${byType[t]}</span>
+    </div>`).join('');
+
+  // recommendations
+  const recs = buildRecommendations(drinks, byType, topRated, topVariety, topOrigin);
+
+  wrap.innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-card"><div class="num">${drinks.length}</div><div class="lbl">Total Drinks</div></div>
+      <div class="stat-card"><div class="num">${rated.length ? avgRating.toFixed(1) : '—'}</div><div class="lbl">Avg Rating</div><div class="sub">${rated.length} rated</div></div>
+      <div class="stat-card"><div class="num">${Object.keys(varietyCounts).length}</div><div class="lbl">Varieties</div></div>
+      <div class="stat-card"><div class="num">${Object.keys(originCounts).length}</div><div class="lbl">Origins</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">🧮 By Type</div>
+      ${typeBars}
+      ${topVariety ? `<p style="font-size:0.85rem;color:var(--text-muted);margin-top:14px;">Most-journaled variety: <b style="color:var(--gold);">${escapeHtml(cap(topVariety[0]))}</b>${topOrigin ? ` · most-journaled origin: <b style="color:var(--gold);">${escapeHtml(cap(topOrigin[0]))}</b>` : ''}</p>` : ''}
+    </div>
+
+    <div class="card">
+      <div class="card-header">✨ Recommendations</div>
+      ${recs.length ? recs.map(r => `
+        <div class="rec-card">
+          <div class="rec-title">${r.title}</div>
+          <div class="rec-reason">${r.reason}</div>
+          ${r.action ? `<div class="rec-action"><button class="btn btn-sm btn-ghost" data-rec="${escapeHtml(r.id||'')}">${r.action}</button></div>` : ''}
+        </div>`).join('') : '<p style="color:var(--text-muted);font-size:0.88rem;">Add more drinks and ratings to unlock personalized suggestions.</p>'}
+    </div>
+  `;
+
+  // wire rec actions → open journal pre-seeded
+  wrap.querySelectorAll('[data-rec]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const rec = recs.find(r => (r.id||'') === btn.dataset.rec);
+      if (!rec || !rec.seed) return;
+      clearForm();
+      if (rec.seed.type) setDrinkType(rec.seed.type);
+      if (rec.seed.name) $('#drinkName').value = rec.seed.name;
+      if (rec.seed.variety) $('#drinkVariety').value = rec.seed.variety;
+      if (rec.seed.origin) $('#drinkOrigin').value = rec.seed.origin;
+      $('#btnClearForm').style.display = '';
+      switchPanel('journal');
+      toast('🌱 Seeded a new entry from your recommendation.');
+    });
+  });
+}
+function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
+
+function buildRecommendations(drinks, byType, topRated, topVariety, topOrigin) {
+  const recs = [];
+  // 1. based on your highest-rated drink → explore same style
+  if (topRated) {
+    const kb = findKbByStyle(topRated);
+    recs.push({
+      id: 'toprated', title: `Because you loved ${topRated.name} (${topRated.rating}★)`,
+      reason: kb ? `You rated this highly. A natural next step in the same style: ${kb.name} — ${kb.desc.slice(0,90)}…` : `Re-taste something in the same style: ${topRated.variety || topRated.origin || 'a similar pour'}.`,
+      action: 'Seed a similar entry →',
+      seed: { type: topRated.type, name: kb ? kb.name : '', variety: topRated.variety, origin: topRated.origin }
+    });
   }
-  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-    e.preventDefault();
-    if ($('#panel-journal').classList.contains('active')) {
-      $('#btnGenerate').click();
+  // 2. diversify into your least-explored type
+  const order = ['wine','sake','whisky','coffee'].sort((a,b)=>byType[a]-byType[b]);
+  const leastType = order[0];
+  const klass = KB[leastType];
+  if (klass && klass.length && byType[leastType] <= byType[order[3]] / 2) {
+    const pick = klass[Math.floor((drinks.length * 7) % klass.length)];
+    recs.push({
+      id: 'diversify', title: `Branch out: try more ${typeLabels[leastType]}`,
+      reason: `It's your least-logged category (${byType[leastType]}). A classic starting point: ${pick.name} — ${pick.desc.slice(0,90)}…`,
+      action: 'Seed this entry →',
+      seed: { type: leastType, name: pick.name, variety: pick.tags && pick.tags[0], origin: pick.origin }
+    });
+  }
+  // 3. your house style
+  if (topOrigin) {
+    recs.push({
+      id: 'housestyle', title: `Your house region: ${cap(topOrigin[0])}`,
+      reason: `You've logged ${topOrigin[1]} drink${topOrigin[1]===1?'':'s'} from here — you clearly enjoy the profile. Keep a bottle on hand for guests.`,
+      action: ''
+    });
+  }
+  // 4. revisit
+  if (drinks.length >= 3) {
+    const oldest = drinks.slice().sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt))[0];
+    recs.push({
+      id: 'revisit', title: `Time to revisit ${oldest.name}?`,
+      reason: `It's been a while since your first pour. Taste it again and see how your palate has changed — re-rate it.`,
+      action: 'Edit that entry →',
+      seed: null
+    });
+    recs[recs.length-1].action = 'Edit →';
+  }
+  return recs;
+}
+function findKbByStyle(drink) {
+  const pool = KB[drink.type] || [];
+  const hay = (drink.variety + ' ' + drink.origin + ' ' + drink.flavor).toLowerCase();
+  return pool.find(k => {
+    const t = (k.name + ' ' + (k.tags||[]).join(' ') + ' ' + k.desc).toLowerCase();
+    return k.tags && k.tags.some(tag => hay.includes(tag.toLowerCase())) || (drink.origin && t.includes(drink.origin.toLowerCase().split(/[;,]/)[0]));
+  }) || null;
+}
+
+// =============================================================================
+// STUDY — reference knowledge base + flashcards + quiz
+// =============================================================================
+const KB = {
+  wine: [
+    { name:'Cabernet Sauvignon', tags:['cabernet','cab sav','bordeaux'], origin:'Bordeaux / Napa', region:'Worldwide', desc:'Full-bodied, high tannin, deep color. Blackcurrant, cedar, graphite, mint. Age-worthy; the backbone of Left-Bank Bordeaux.' },
+    { name:'Merlot', tags:['merlot','right bank'], origin:'Bordeaux (Pomerol, Saint-Émilion)', region:'Worldwide', desc:'Plush and round, medium-to-high tannin. Plum, black cherry, chocolate. Softer than Cabernet — the friendly Bordeaux sibling.' },
+    { name:'Pinot Noir', tags:['pinot noir','pinot','burgundy','red burgundy'], origin:'Burgundy', region:'Cool climates', desc:'Light, perfumed, high acidity. Red cherry, raspberry, forest floor, mushroom. The transparency of terroir — fussy but sublime.' },
+    { name:'Syrah / Shiraz', tags:['syrah','shiraz','rhône'], origin:'Rhône Valley / Barossa', region:'Warm climates', desc:'Powerful, dark. Blackberry, black pepper, smoked meat, violet. Syrah (Rhône) is savory; Shiraz (Australia) is jammy.' },
+    { name:'Chardonnay', tags:['chardonnay','white burgundy','chablis'], origin:'Burgundy / Sonoma', region:'Worldwide', desc:'Styles span steely Chablis (unoaked, mineral) to rich, buttery Napa (oak, malolactic). Apple, citrus, butter, brioche.' },
+    { name:'Sauvignon Blanc', tags:['sauvignon blanc','sancerre','pouilly-fumé','marlborough'], origin:'Loire / Marlborough', region:'Cool climates', desc:'Zesty, high acid. Grapefruit, passionfruit, cut grass, gooseberry. Vivid and refreshing.' },
+    { name:'Riesling', tags:['riesling','mosel'], origin:'Germany / Alsace', region:'Cool climates', desc:'Aromatic, high acid, made dry to lusciously sweet. Lime, apple, jasmine, petrol with age. arguably the great white grape.' },
+    { name:'Nebbiolo', tags:['nebbiolo','barolo','barbaresco','piedmont'], origin:'Piedmont', region:'Italy', desc:'Pale but fiercely tannic and acidic. Rose, tar, dried cherry, truffle. Barolo/Barbaresco — structured and long-lived.' },
+    { name:'Sangiovese', tags:['sangiovese','chianti','brunello'], origin:'Tuscany', region:'Italy', desc:'Medium-to-high tannin and acid. Sour cherry, leather, herbs, earth. The grape of Chianti Classico and Brunello.' },
+    { name:'Tempranillo', tags:['tempranillo','rioja','ribera'], origin:'Rioja / Ribera del Duero', region:'Spain', desc:'Medium body, moderate acid. Strawberry, leather, tobacco, vanilla (from American oak). Food-friendly Spanish icon.' }
+  ],
+  sake: [
+    { name:'Junmai', tags:['junmai'], origin:'Japan', region:'All Japan', desc:'Pure rice sake — only rice, water, koji, yeast. No added alcohol. Full body, rich, earthy, slightly acidic. Warm-friendly.' },
+    { name:'Honjōzō', tags:['honjozo','honjōzō'], origin:'Japan', region:'All Japan', desc:'A touch of brewer’s alcohol added (≤120 L per ton rice). Lighter, smoother, fragrant. Polished to ≥70% (seimaibuai).' },
+    { name:'Ginjō / Junmai Ginjō', tags:['ginjo','ginjō','junmai ginjo'], origin:'Japan', region:'All Japan', desc:'Rice polished to ≥60%. Low-temperature, long fermentation yields fruity, floral aromas (apple, melon, anise). Elegant.' },
+    { name:'Daiginjō / Junmai Daiginjō', tags:['daiginjo','daiginjō'], origin:'Japan', region:'All Japan', desc:'Premium tier — polished to ≥50%. Intensely aromatic, refined, expensive. The pinnacle of the brewer’s craft.' },
+    { name:'Nigori', tags:['nigori','cloudy'], origin:'Japan', region:'All Japan', desc:'Coarsely filtered / unfiltered — cloudy and creamy. Sweet, milky, dessert-like. Shake gently; serve chilled.' },
+    { name:'Namazake', tags:['nama','namazake','unpasteurized'], origin:'Japan', region:'All Japan', desc:'Unpasteurized — fresh, vivid, lively. Must be kept cold. Seasonal spring delight.' },
+    { name:'Koshu / Aged sake', tags:['koshu','aged'], origin:'Japan', region:'All Japan', desc:'Intentionally aged. Colors deepen to amber; flavors of caramel, nuts, dried fruit, sherry-like umami.' }
+  ],
+  whisky: [
+    { name:'Speyside Single Malt', tags:['speyside','glenfiddich','macallan'], origin:'Scotland, Speyside', region:'Scotland', desc:'Scotland’s whisky heartland. Smooth, honeyed, orchard fruit, often sherry-casked. Approachable and elegant (Glenfiddich, Macallan, Balvenie).' },
+    { name:'Highland Single Malt', tags:['highland'], origin:'Scotland, Highlands', region:'Scotland', desc:'Diverse — heather, honey, spice, sometimes a wisp of smoke. Big region, broad styles.' },
+    { name:'Islay Single Malt', tags:['islay','peaty','laphroaig','ardbeg'], origin:'Scotland, Islay', region:'Scotland', desc:'Famously peaty and smoky — medicinal, seaweed, brine, iodine. Laphroaig, Ardbeg, Lagavulin. An acquired (then beloved) taste.' },
+    { name:'Lowland Single Malt', tags:['lowland'], origin:'Scotland, Lowlands', region:'Scotland', desc:'Light, grassy, floral, gentle. The apéritif malts — easy and delicate.' },
+    { name:'Campbeltown Single Malt', tags:['campbeltown','springbank'], origin:'Scotland, Campbeltown', region:'Scotland', desc:'Once a whisky boomtown, now a handful of distilleries. Briny, smoky, oily, complex. Springbank country.' },
+    { name:'Bourbon', tags:['bourbon','kentucky'], origin:'USA, Kentucky', region:'USA', desc:'≥51% corn, aged in new charred oak. Sweet, vanilla, caramel, baking spice. By law new oak → bold and oaky.' },
+    { name:'Tennessee Whiskey', tags:['tennessee','jack daniel\'s'], origin:'USA, Tennessee', region:'USA', desc:'Like bourbon but filtered through sugar-maple charcoal (Lincoln County Process) before aging. Smoother, charcoal-mellowed.' },
+    { name:'Irish Whiskey', tags:['irish','jameson'], origin:'Ireland', region:'Ireland', desc:'Usually triple-distilled, unpeated. Smooth, light, green apple, honey, vanilla. Approachable.' },
+    { name:'Japanese Whisky', tags:['japanese','yamazaki','hibiki'], origin:'Japan', region:'Japan', desc:'Modeled on Scotch but renowned for poise and balance. Delicate, floral, refined (Yamazaki, Hibiki, Nikka).' },
+    { name:'Rye Whiskey', tags:['rye'], origin:'USA / Canada', region:'North America', desc:'≥51% rye. Spicier, peppery, drier than bourbon. Bold baking-spice kick — great in cocktails.' }
+  ],
+  coffee: [
+    { name:'Ethiopia (Yirgacheffe / Sidamo)', tags:['ethiopia','yirgacheffe','sidamo'], origin:'Ethiopia', region:'East Africa', desc:'Birthplace of coffee. Floral, jasmine, bergamot, blueberry, bright citrus. Often natural-process = explosive berry.' },
+    { name:'Colombia', tags:['colombia','colombian'], origin:'Colombia', region:'South America', desc:'Balanced, sweet, medium body. Caramel, milk chocolate, red apple, walnut. The crowd-pleasing classic.' },
+    { name:'Brazil', tags:['brazil','brazilian','cerrado'], origin:'Brazil', region:'South America', desc:'World’s largest grower. Low acid, heavy body, nutty, chocolate, caramel. The backbone of espresso blends.' },
+    { name:'Kenya (AA)', tags:['kenya','kenyan','aa'], origin:'Kenya', region:'East Africa', desc:'Bright, winey acidity, full body. Blackcurrant, blackberry, tomato-savory, grapefruit. Bold and distinctive.' },
+    { name:'Guatemala (Antigua)', tags:['guatemala','antigua'], origin:'Guatemala', region:'Central America', desc:'Full body, bright acid, often smoky. Cocoa, baking spice, toffee, tobacco. Volcanic-soil complexity.' },
+    { name:'Sumatra (Indonesia)', tags:['sumatra','indonesia','mandheling'], origin:'Indonesia', region:'Southeast Asia', desc:'Heavy body, low acid, earthy, herbal. Wet-hulling gives cedar, dark chocolate, mushroom. Distinctive and divisive.' },
+    { name:'Costa Rica (Tarrazú)', tags:['costa rica','tarrazú','tarrazu'], origin:'Costa Rica', region:'Central America', desc:'Clean, bright, high-grown. Citrus, honey, almond, cocoa. Often honey-processed for sweetness.' },
+    { name:'Jamaica Blue Mountain', tags:['jamaica','blue mountain'], origin:'Jamaica', region:'Caribbean', desc:'Rare, expensive, mild. Very smooth, low acid, gentle sweetness. Famed and frequently counterfeited.' }
+  ]
+};
+
+const PROCESSING = [
+  { name:'Washed / Wet', desc:'Cherry removed, beans fermented and washed. Clean, bright, acidic — lets terroir shine.' },
+  { name:'Natural / Dry', desc:'Dried in the cherry before hulling. Fruity, heavy body, fermented berry notes. Riskier but rewarding.' },
+  { name:'Honey / Pulped Natural', desc:'Skin off, some mucilage left during drying. Sweet, balanced, syrupy body.' }
+];
+
+function renderReferenceCategories() {
+  const grid = $('#refCategoryGrid');
+  grid.innerHTML = '';
+  [
+    { key:'wine', emoji:'🍷', title:'Wine & Grapes', desc:'Grape varieties, regions, and WSET SAT primer.' },
+    { key:'sake', emoji:'🍶', title:'Sake Categories', desc:'Seimaibuai, classification, and tasting terms.' },
+    { key:'whisky', emoji:'🥃', title:'Whisky Regions', desc:'Scotch regions, bourbon, and world whisky.' },
+    { key:'coffee', emoji:'☕', title:'Coffee Origins', desc:'Bean origins, processing methods, and flavor.' },
+    { key:'method', emoji:'🎯', title:'Tasting Method', desc:'The systematic approach — how professionals taste.' }
+  ].forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'cat-card';
+    card.innerHTML = `<div class="emoji">${c.emoji}</div><div class="title">${c.title}</div><div class="desc">${c.desc}</div>`;
+    card.addEventListener('click', () => showReference(c.key));
+    grid.appendChild(card);
+  });
+}
+function showReference(key) {
+  $('#refCategoryGrid').style.display = 'none';
+  $('#refListWrap').style.display = '';
+  const list = $('#refList');
+  if (key === 'method') {
+    list.innerHTML = `
+      <div class="card-header">🎯 Systematic Tasting (SAT)</div>
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:14px;">The WSET method — assess in order, before you taste with your palate. Use the Tasting Profile fields in the Journal to record it.</p>
+      ${['Appearance — clarity (clear/hazy), intensity (pale/medium/deep), color (by type).',
+         'Nose — condition (clean/faulty), intensity, aroma characteristics (fruit / non-fruit: floral, spice, vegetal, oak, etc.).',
+         'Palate — sweetness, acidity, tannin (wine), alcohol, body, flavor intensity & characteristics, finish.',
+         'Conclusion — quality (faulty/poor/acceptable/good/outstanding), readiness to drink, grape/origin/age conclusions.'].map(t=>`<div class="kb-entry"><div class="kb-name">Step</div><div class="kb-desc">${t}</div></div>`).join('')}
+    `;
+    return;
+  }
+  if (key === 'coffee') {
+    list.innerHTML = `<div class="card-header">☕ Coffee Origins &amp; Processing</div>` +
+      KB.coffee.map(k => kbRowHtml(k)).join('') +
+      `<div class="card-header" style="margin-top:18px;">⚙️ Processing Methods</div>` +
+      PROCESSING.map(p => `<div class="kb-entry"><div class="kb-name">${p.name}</div><div class="kb-desc">${p.desc}</div></div>`).join('');
+    return;
+  }
+  const items = KB[key] || [];
+  const titles = { wine:'Wine — Grape Varieties', sake:'Sake — Categories', whisky:'Whisky — Regions & Styles' };
+  list.innerHTML = `<div class="card-header">${titles[key] || ''}</div>` + items.map(k => kbRowHtml(k)).join('');
+}
+function kbRowHtml(k) {
+  return `<div class="kb-entry">
+    <div class="kb-name">${escapeHtml(k.name)} <span style="color:var(--text-dim);font-size:0.78rem;font-family:var(--font-ui);">— ${escapeHtml(k.origin)}</span></div>
+    ${k.tags ? `<div class="kb-tags">${k.tags.slice(0,4).map(t=>`<span>${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+    <div class="kb-desc">${escapeHtml(k.desc)}</div>
+  </div>`;
+}
+function backToRefTopics() {
+  $('#refListWrap').style.display = 'none';
+  $('#refCategoryGrid').style.display = '';
+}
+
+// ── Flashcards ───────────────────────────────────────────────────────────────
+const FC_PROGRESS_KEY = 'decanter_fc_progress_v1';
+function getFcProgress() { try { return JSON.parse(localStorage.getItem(FC_PROGRESS_KEY) || '{}'); } catch(e){ return {}; } }
+function setFcProgress(p) { localStorage.setItem(FC_PROGRESS_KEY, JSON.stringify(p)); }
+
+function buildKbFlashcards() {
+  const cards = [];
+  Object.keys(KB).forEach(type => {
+    KB[type].forEach(k => {
+      cards.push({
+        id: 'kb:'+type+':'+k.name,
+        front: k.name,
+        back: `${typeEmoji[type]} ${escapeHtml(k.origin)} — ${escapeHtml(k.desc)}`,
+        backPlain: `${k.origin} — ${k.desc}`
+      });
+    });
+  });
+  return cards;
+}
+async function buildUserFlashcards() {
+  const drinks = await getAllDrinks();
+  return drinks.filter(d => d.name).map(d => ({
+    id: 'user:'+d.id,
+    front: d.name,
+    back: `${typeEmoji[d.type]} ${[d.variety, d.origin].filter(Boolean).join(' · ')}${d.flavor ? '<br>🌶 ' + escapeHtml(d.flavor) : ''}${d.summary ? '<br><span style="color:var(--text-muted)">' + escapeHtml(d.summary.slice(0,140)) + (d.summary.length>140?'…':'') + '</span>' : ''}`,
+    backPlain: `${[d.variety, d.origin].filter(Boolean).join(' · ')} ${d.flavor||''} ${d.summary||''}`
+  }));
+}
+
+let fcDeck = []; let fcIdx = 0; let fcFlipped = false;
+function renderFlashcardDecks() {
+  const wrap = $('#fcDeckButtons'); wrap.innerHTML = '';
+  const mk = (label, desc, fn) => {
+    const b = document.createElement('button'); b.className = 'btn';
+    b.innerHTML = `${label}<br><span style="font-size:0.74rem;color:var(--text-muted);font-weight:400;">${desc}</span>`;
+    b.style.flexDirection = 'column'; b.style.textAlign = 'left';
+    b.addEventListener('click', fn); wrap.appendChild(b);
+  };
+  mk('🃏 Knowledge (52 cards)', 'Grapes, regions, origins', async () => startFcDeck(await (async()=>buildKbFlashcards())()));
+  mk('🍷 Your Drinks', 'From your journal', async () => {
+    const d = await buildUserFlashcards();
+    if (!d.length) { toast('No drinks yet — save some first.'); return; }
+    startFcDeck(d);
+  });
+  mk('🎲 Mixed', 'Knowledge + your drinks', async () => {
+    const a = buildKbFlashcards(); const b = await buildUserFlashcards();
+    startFcDeck(shuffle([...a, ...b]));
+  });
+}
+function shuffle(arr) { const a = arr.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function startFcDeck(deck) {
+  fcDeck = deck; fcIdx = 0; fcFlipped = false;
+  $('#fcDeckPicker').style.display = 'none';
+  $('#fcSession').style.display = '';
+  renderFlashcard();
+}
+function renderFlashcard() {
+  if (!fcDeck.length) { endFcDeck(); return; }
+  const card = fcDeck[fcIdx];
+  const progress = getFcProgress();
+  const box = (progress[card.id] && progress[card.id].box) || 0;
+  $('#fcSession').innerHTML = `
+    <div class="fc-meta">Card ${fcIdx+1} of ${fcDeck.length} · <span style="color:var(--gold);">${'●'.repeat(box||0) || 'new'}</span></div>
+    <div class="flashcard" id="fcCard">
+      <div class="fc-label">${fcFlipped ? 'Answer' : 'Name'}</div>
+      <div class="${fcFlipped ? 'fc-back' : 'fc-front'}">${fcFlipped ? card.back : escapeHtml(card.front)}</div>
+      <div class="fc-hint">${fcFlipped ? 'tap to flip back' : 'tap to reveal'}</div>
+    </div>
+    ${fcFlipped ? `<div class="fc-controls">
+      <button class="btn" id="fcWrong">✗ Didn’t know</button>
+      <button class="btn btn-primary" id="fcRight">✓ Got it</button>
+    </div>` : ''}
+    <div class="fc-controls" style="margin-top:10px;">
+      <button class="btn btn-ghost btn-sm" id="fcEnd">End session</button>
+    </div>
+  `;
+  $('#fcCard').addEventListener('click', () => { if (!fcFlipped) { fcFlipped = true; renderFlashcard(); } });
+  if (fcFlipped) {
+    $('#fcRight').addEventListener('click', () => gradeFc(true));
+    $('#fcWrong').addEventListener('click', () => gradeFc(false));
+  }
+  $('#fcEnd').addEventListener('click', endFcDeck);
+}
+function gradeFc(correct) {
+  const card = fcDeck[fcIdx];
+  const p = getFcProgress();
+  const cur = p[card.id] || { box: 0 };
+  cur.box = correct ? Math.min(5, cur.box + 1) : Math.max(0, cur.box - 1);
+  p[card.id] = cur; setFcProgress(p);
+  fcIdx++; fcFlipped = false;
+  if (fcIdx >= fcDeck.length) { endFcDeck(true); }
+  else renderFlashcard();
+}
+function endFcDeck(done) {
+  $('#fcSession').style.display = 'none';
+  $('#fcDeckPicker').style.display = '';
+  if (done) toast('🃏 Deck complete! Knowledge boxes updated.');
+}
+
+// ── Quiz ─────────────────────────────────────────────────────────────────────
+const QUIZ_BANK = [
+  { q:'Which Scotch region is famous for heavily peated, smoky single malts?', opts:['Speyside','Islay','Lowland','Campbeltown'], a:1, ex:'Islay (pronounced eye-la) whiskies like Laphroaig and Ardbeg are renowned for medicinal peat smoke and brine.' },
+  { q:'Pinot Noir reaches its most celebrated expression in which region?', opts:['Bordeaux','Napa Valley','Burgundy','Rioja'], a:2, ex:'Red Burgundy is 100% Pinot Noir — the grape is notoriously fussy but sublime there.' },
+  { q:'What does "seimaibuai" refer to in sake?', opts:['Fermentation temperature','Rice polishing ratio','Bottle size','Brewer grade'], a:1, ex:'Seimaibuai is the % of the rice grain remaining after polishing. Lower = more refined (Ginjō ≥60%, Daiginjō ≥50%).' },
+  { q:'Which coffee origin is known for floral, jasmine, and blueberry notes?', opts:['Brazil','Ethiopia','Sumatra','Jamaica'], a:1, ex:'Ethiopia — especially Yirgacheffe — is famed for bright, floral, berry-like coffees.' },
+  { q:'Bourbon whiskey must be made from a grain bill that is at least what % corn?', opts:['41%','51%','61%','71%'], a:1, ex:'Bourbon requires ≥51% corn, aged in new charred-oak barrels.' },
+  { q:'Which grape is the backbone of Left-Bank Bordeaux blends?', opts:['Merlot','Cabernet Sauvignon','Pinot Noir','Syrah'], a:1, ex:'Left-Bank (Médoc) is Cab-dominant; Right-Bank (Pomerol/St-Émilion) leads with Merlot.' },
+  { q:'A sake labeled "Junmai" contains which of these?', opts:['Added distilled alcohol','No added alcohol','Carbonation','Aging in oak'], a:1, ex:'Junmai is "pure rice" — only rice, water, koji, and yeast. No added brewer’s alcohol.' },
+  { q:'Wet-hulling (giling basah) is a processing method associated with which origin?', opts:['Ethiopia','Colombia','Sumatra','Kenya'], a:2, ex:'Sumatra’s wet-hulling gives its signature earthy, heavy-bodied, low-acid cup.' },
+  { q:'Which whisky is filtered through sugar-maple charcoal before aging?', opts:['Bourbon','Tennessee Whiskey','Irish','Rye'], a:1, ex:'The Lincoln County Process defines Tennessee Whiskey (e.g. Jack Daniel’s).' },
+  { q:'Riesling is most classically associated with which country?', opts:['France','Italy','Germany','Spain'], a:2, ex:'Germany’s Mosel and Rheingau produce benchmark Rieslings, dry to lusciously sweet.' },
+  { q:'Which spirit is typically triple-distilled and usually unpeated?', opts:['Scotch','Irish Whiskey','Bourbon','Cognac'], a:1, ex:'Irish whiskey is generally triple-distilled (smoother, lighter) and unpeated.' },
+  { q:'WSET’s SAT assesses a drink in which order?', opts:['Palate → Nose → Appearance','Appearance → Nose → Palate → Conclusion','Nose → Palate → Appearance','Conclusion → Palate → Nose'], a:1, ex:'Systematic Approach: Appearance, Nose, Palate, then Conclusion.' }
+];
+
+let quizQuestions = []; let quizIdx = 0; let quizScore = 0; let quizAnswered = false; let quizResults = [];
+function startQuiz() {
+  getAllDrinks().then(drinks => {
+    const dynamic = makeDynamicQuestions(drinks);
+    const pool = shuffle([...QUIZ_BANK, ...dynamic]).slice(0, 10);
+    quizQuestions = pool; quizIdx = 0; quizScore = 0; quizResults = [];
+    $('#quizIntro').style.display = 'none';
+    $('#quizSession').style.display = '';
+    renderQuiz();
+  });
+}
+function makeDynamicQuestions(drinks) {
+  const out = [];
+  const withRegion = drinks.filter(d => d.origin);
+  if (withRegion.length >= 3) {
+    const target = withRegion[0];
+    const distractors = shuffle(withRegion.slice(1)).slice(0,3).map(d=>d.origin);
+    const opts = shuffle([target.origin, ...distractors]);
+    out.push({ q:`In your journal, where is "${target.name}" from?`, opts, a: opts.indexOf(target.origin), ex:`You logged ${target.name} as ${target.origin}.` });
+  }
+  const withFlavor = drinks.filter(d => d.flavor);
+  if (withFlavor.length >= 3) {
+    const target = withFlavor[0];
+    const distractors = shuffle(withFlavor.slice(1)).slice(0,3).map(d=>d.flavor);
+    const opts = shuffle([target.flavor, ...distractors]);
+    out.push({ q:`Which tasting notes did you record for "${target.name}"?`, opts, a: opts.indexOf(target.flavor), ex:`You described ${target.name} as: ${target.flavor}.` });
+  }
+  return out;
+}
+function renderQuiz() {
+  if (quizIdx >= quizQuestions.length) { renderQuizResults(); return; }
+  const q = quizQuestions[quizIdx]; quizAnswered = false;
+  const pips = quizQuestions.map((_, i) => i < quizIdx ? (quizResults[i] ? 'done' : 'wrong') : '').map(c => `<div class="pip ${c}"></div>`).join('');
+  $('#quizSession').innerHTML = `
+    <div class="quiz-progress">${pips}</div>
+    <div class="quiz-q">${quizIdx+1}. ${escapeHtml(q.q)}</div>
+    <div class="quiz-opts" id="quizOpts">
+      ${q.opts.map((o,i)=>`<button class="quiz-opt" data-i="${i}">${escapeHtml(o)}</button>`).join('')}
+    </div>
+    <div id="quizExplain"></div>
+    <div class="fc-controls" style="margin-top:16px;">
+      <button class="btn btn-primary" id="quizNext" style="display:none;">${quizIdx+1>=quizQuestions.length ? 'See results' : 'Next →'}</button>
+    </div>
+  `;
+  $$('#quizOpts .quiz-opt').forEach(btn => btn.addEventListener('click', () => answerQuiz(parseInt(btn.dataset.i,10))));
+}
+function answerQuiz(i) {
+  if (quizAnswered) return; quizAnswered = true;
+  const q = quizQuestions[quizIdx]; const correct = i === q.a;
+  if (correct) quizScore++;
+  quizResults[quizIdx] = correct;
+  $$('#quizOpts .quiz-opt').forEach(btn => {
+    const idx = parseInt(btn.dataset.i,10); btn.disabled = true;
+    if (idx === q.a) btn.classList.add('correct');
+    else if (idx === i) btn.classList.add('wrong');
+  });
+  $('#quizExplain').innerHTML = `<div class="quiz-explain"><b style="color:${correct?'#8cc9b0':'#f0b8bb'};">${correct?'✓ Correct':'✗ Not quite'}</b> — ${escapeHtml(q.ex)}</div>`;
+  $('#quizNext').style.display = '';
+  $('#quizNext').onclick = () => { quizIdx++; renderQuiz(); };
+}
+function renderQuizResults() {
+  const pct = Math.round(quizScore / quizQuestions.length * 100);
+  let grade = 'Keep tasting!'; let emoji = '🥲';
+  if (pct >= 90) { grade = 'Master Sommelier-tier!'; emoji = '🏆'; }
+  else if (pct >= 70) { grade = 'Excellent palate!'; emoji = '🎖️'; }
+  else if (pct >= 50) { grade = 'Solid — keep going.'; emoji = '👍'; }
+  $('#quizSession').innerHTML = `
+    <div style="text-align:center;padding:20px 0;">
+      <div style="font-size:3rem;">${emoji}</div>
+      <div class="panel-title" style="margin-top:8px;">${quizScore} / ${quizQuestions.length}</div>
+      <div style="color:var(--text-muted);">${grade}</div>
+      <div class="btn-row" style="justify-content:center;margin-top:18px;">
+        <button class="btn btn-primary" id="quizAgain">↻ Play again</button>
+      </div>
+    </div>
+  `;
+  $('#quizAgain').onclick = startQuiz;
+}
+
+// ── Diagnostics ──────────────────────────────────────────────────────────────
+async function testConnection() {
+  const settings = getSettings();
+  const key = $('#apiKeyInput').value.trim();
+  const endpoint = $('#endpointSelect').value;
+  const box = $('#diagBox'); box.style.display = ''; box.innerHTML = '';
+  const log = (html) => { box.innerHTML += html + '\n'; box.scrollTop = box.scrollHeight; };
+
+  if (!key) { log('<span class="bad">⚠ No API key entered.</span>'); return; }
+  log(`Endpoint: <span class="hi">${endpoint}</span>`);
+  log('Testing models (text prompt "Reply: PONG")…');
+
+  const candidates = ['glm-4.6v-flash', 'glm-4-flash', 'glm-4.6v', 'glm-4-plus', 'glm-4v-plus'];
+  const messages = [{ role:'user', content:'Reply with the single word: PONG' }];
+  let anyOk = false;
+  for (const m of candidates) {
+    try {
+      const res = await fetch(endpoint, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json','Authorization':`Bearer ${key}` },
+        body: JSON.stringify({ model:m, messages, max_tokens: 50, stream:false })
+      });
+      if (res.status === 401 || res.status === 403) { log(`<span class="bad">✗ ${m}: auth failed (${res.status}) — bad key.</span>`); return; }
+      if (!res.ok) { const t = await res.text().catch(()=> ''); log(`<span class="bad">✗ ${m}: HTTP ${res.status} ${t.slice(0,120)}</span>`); continue; }
+      const data = await res.json();
+      const text = extractContent(data);
+      if (text) { log(`<span class="ok">✓ ${m}: OK — "${text.slice(0,30).replace(/\n/g,' ')}"</span>`); anyOk = true; }
+      else { log(`<span class="bad">○ ${m}: connected but empty content (thinking model). Will still work for summaries via fallback.</span>`); }
+    } catch (err) {
+      log(`<span class="bad">✗ ${m}: ${err.message}</span>`);
+      if (/Failed to fetch|NetworkError|load failed/i.test(err.message)) {
+        log('<span class="bad">↳ Network/CORS error. This endpoint may be blocked from the browser. Try the other endpoint, or your network may be blocking it.</span>');
+        return;
+      }
     }
   }
-  if (e.key === 'Escape') {
+  if (anyOk) log('\n<span class="ok">✅ At least one model works. Pick a working one above as your default.</span>');
+  else log('\n<span class="bad">❌ No model responded. Check key, endpoint, and network.</span>');
+}
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+function switchPanel(name) {
+  $$('nav button[data-panel]').forEach(b => b.classList.toggle('active', b.dataset.panel === name));
+  $$('.panel').forEach(p => p.classList.remove('active'));
+  $(`#panel-${name}`).classList.add('active');
+  if (name === 'history') renderHistory();
+  if (name === 'cellar') renderCellar();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Event bindings ───────────────────────────────────────────────────────────
+function bindEvents() {
+  // nav
+  $$('nav button[data-panel]').forEach(btn => btn.addEventListener('click', () => switchPanel(btn.dataset.panel)));
+
+  // upload
+  const zone = $('#uploadZone');
+  zone.addEventListener('click', () => $('#fileInput').click());
+  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', async (e) => {
+    e.preventDefault(); zone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) { try { const { dataUrl } = await resizeImage(file); showPreview(dataUrl); toast('📸 Photo loaded!'); } catch(err){ toast('❌ '+err.message); } }
+  });
+  $('#fileInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (file) { try { const { dataUrl } = await resizeImage(file); showPreview(dataUrl); toast('📸 Photo loaded!'); } catch(err){ toast('❌ '+err.message); } }
+    e.target.value = '';
+  });
+  $('#btnClearPhoto').addEventListener('click', clearPhoto);
+
+  // AI buttons
+  $('#btnAnalyze').addEventListener('click', async () => {
+    const btn = $('#btnAnalyze'); const orig = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Analyzing…'; btn.disabled = true;
+    await analyzeFromPhoto(); btn.innerHTML = orig; btn.disabled = false;
+  });
+  $('#btnGenerate').addEventListener('click', async () => {
+    const btn = $('#btnGenerate'); const orig = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Generating…'; btn.disabled = true;
+    await generateFromText(false); btn.innerHTML = orig; btn.disabled = false;
+  });
+  $('#btnGenerateFull').addEventListener('click', async () => {
+    const btn = $('#btnGenerateFull'); const orig = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Filling…'; btn.disabled = true;
+    await generateFromText(true); btn.innerHTML = orig; btn.disabled = false;
+  });
+
+  // type tabs
+  $$('.type-tab').forEach(tab => tab.addEventListener('click', () => setDrinkType(tab.dataset.type)));
+
+  // rating stars
+  $$('#ratingStars .star').forEach(st => {
+    st.addEventListener('click', () => setRating(parseInt(st.dataset.v,10)));
+  });
+
+  // preview / TTS / save / clear
+  $('#btnPreview').addEventListener('click', () => { updateSummaryCard(); $('#summaryCard').classList.add('visible'); toast('👁 Preview updated.'); });
+  $('#btnTTS').addEventListener('click', () => {
+    if (isSpeaking) { stopSpeaking(); return; }
+    const t = [$('#drinkName').value, $('#drinkVariety').value && ('Variety: '+$('#drinkVariety').value), $('#drinkOrigin').value && ('From '+$('#drinkOrigin').value), $('#drinkFlavor').value && ('Notes: '+$('#drinkFlavor').value), $('#drinkSummary').value].filter(Boolean).join('. ');
+    speak(t, getSettings().ttsRate);
+  });
+  $('#btnSave').addEventListener('click', saveEntry);
+  $('#btnClearForm').addEventListener('click', () => { if (confirm('Clear the current entry? Unsaved changes will be lost.')) clearForm(); });
+
+  // settings
+  $('#btnSettings').addEventListener('click', openSettings);
+  $('#btnCloseSettings').addEventListener('click', () => $('#settingsModal').classList.remove('open'));
+  $('#settingsModal').addEventListener('click', (e) => { if (e.target === $('#settingsModal')) $('#settingsModal').classList.remove('open'); });
+  $('#ttsRate').addEventListener('input', (e) => $('#rateLabel').textContent = parseFloat(e.target.value).toFixed(1)+'×');
+  $('#btnSaveSettings').addEventListener('click', () => {
+    saveSettings({
+      apiKey: $('#apiKeyInput').value.trim(),
+      model: $('#modelSelect').value,
+      endpoint: $('#endpointSelect').value,
+      ttsRate: parseFloat($('#ttsRate').value)
+    });
     $('#settingsModal').classList.remove('open');
-    const detail = document.getElementById('detailModal');
-    if (detail) detail.remove();
-    stopSpeaking();
-  }
-});
+    toast('⚙️ Settings saved!');
+  });
+  $('#btnTestConn').addEventListener('click', () => {
+    // temporarily apply in-form key/endpoint for the test
+    const btn = $('#btnTestConn'); btn.disabled = true; btn.textContent = 'Testing…';
+    saveSettings(Object.assign({}, getSettings(), { apiKey: $('#apiKeyInput').value.trim(), endpoint: $('#endpointSelect').value }));
+    testConnection().finally(() => { btn.disabled = false; btn.textContent = '🔌 Test Connection'; });
+  });
+
+  // history filters / sort / search
+  $('#filterRow').addEventListener('click', (e) => {
+    if (!e.target.classList.contains('filter-chip')) return;
+    $$('#filterRow .filter-chip').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active'); currentFilter = e.target.dataset.filter; renderHistory();
+  });
+  $('#sortSelect').addEventListener('change', (e) => { currentSort = e.target.value; renderHistory(); });
+  $('#searchInput').addEventListener('input', (e) => { currentSearch = e.target.value; renderHistory(); });
+
+  // export / import
+  $('#btnExport').addEventListener('click', exportData);
+  $('#btnImport').addEventListener('click', () => $('#importFile').click());
+  $('#importFile').addEventListener('change', (e) => { const f = e.target.files[0]; if (f) importData(f); e.target.value=''; });
+
+  // study tabs
+  $$('.study-tab').forEach(t => t.addEventListener('click', () => {
+    $$('.study-tab').forEach(x=>x.classList.remove('active')); t.classList.add('active');
+    $$('.study-pane').forEach(p=>p.classList.remove('active'));
+    $('#study-'+t.dataset.studyTab).classList.add('active');
+  }));
+  $('#refBack').addEventListener('click', backToRefTopics);
+
+  // quiz
+  $('#btnStartQuiz').addEventListener('click', startQuiz);
+
+  // keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey||e.ctrlKey) && e.key.toLowerCase() === 's') { e.preventDefault(); if ($('#panel-journal').classList.contains('active')) saveEntry(); }
+    if ((e.metaKey||e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); if ($('#panel-journal').classList.contains('active')) $('#btnGenerate').click(); }
+    if (e.key === 'Escape') {
+      $('#settingsModal').classList.remove('open');
+      const d = document.getElementById('detailModal'); if (d) d.remove();
+      stopSpeaking();
+    }
+  });
+}
+function openSettings() {
+  const s = getSettings();
+  $('#apiKeyInput').value = s.apiKey || '';
+  $('#modelSelect').value = (Array.from($('#modelSelect').options).some(o=>o.value===s.model)) ? s.model : 'glm-4.6v-flash';
+  $('#endpointSelect').value = s.endpoint;
+  $('#ttsRate').value = s.ttsRate; $('#rateLabel').textContent = s.ttsRate.toFixed(1)+'×';
+  $('#diagBox').style.display = 'none';
+  $('#settingsModal').classList.add('open');
+}
 
 // ── Init ─────────────────────────────────────────────────────────────────────
 async function init() {
-  try {
-    await openDB();
-    console.log('🍷 Decanter DB ready');
-  } catch (err) {
-    console.error('DB init error:', err);
-    toast('⚠️ Could not open local database. Your browser may be in private mode.');
-  }
+  try { await openDB(); console.log('🍷 JP Decanter DB ready'); }
+  catch (err) { console.error(err); toast('⚠️ Could not open local database (private mode?).'); }
 
-  // Check for saved settings on load
+  bindEvents();
+  bindProfileSliders();
+  renderRatingStars();
+  showTanninForType('wine');
+  renderReferenceCategories();
+  renderFlashcardDecks();
+
   const s = getSettings();
-  if (!s.apiKey) {
-    console.log('💡 Tip: Set your Zhipu (GLM-4V) API key in Settings (⚙️) to enable AI label analysis.');
-  }
+  if (!s.apiKey) setTimeout(() => toast('💡 Add your Zhipu API key in ⚙️ Settings to enable AI.'), 800);
 }
-
 init();
 </script>
 </body>
