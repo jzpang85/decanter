@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#15100c">
-<meta name="description" content="JP Decanter — search any bottle, confirm the label, and journal it with AI tasting notes.">
+<meta name="description" content="JP Decanter — type a bottle, get the details and a tasting summary.">
 <title>JP Decanter</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍷%3C/text%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,19 +15,19 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#15100c;--bg-2:#120d09;--surface:#1f1812;--surface-2:#271e17;--surface-3:#2f251c;
+  --bg-2:#120d09;--surface:#1f1812;--surface-2:#271e17;--surface-3:#2f251c;
   --border:rgba(212,168,90,.12);--border-s:rgba(212,168,90,.25);
   --text:#f1e8da;--text-2:#b8a991;--text-3:#847665;--text-4:#574c40;
   --gold:#d4a85a;--gold-2:#e6c074;--gold-soft:rgba(212,168,90,.12);
   --wine:#d27a96;--sake:#86c8ae;--whisky:#e0a06a;--coffee:#cf8a6c;--green:#7fc6a0;--red:#d97a7e;
-  --r:18px;--rs:12px;--rx:9px;
+  --r:18px;--rs:12px;
   --sh1:0 1px 2px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.25);--sh2:0 8px 30px rgba(0,0,0,.45);--shg:0 8px 24px rgba(212,168,90,.25);
   --serif:'Iowan Old Style','Palatino Linotype','Palatino','Book Antiqua','Georgia',serif;
   --sans:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',system-ui,sans-serif;
   --t:.28s cubic-bezier(.22,.61,.36,1);--tab-h:64px;--sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px);
 }
 html{font-size:16px;-webkit-text-size-adjust:100%}
-body{font-family:var(--sans);color:var(--text);background:radial-gradient(120% 80% at 50% -10%,#1c150f 0%,transparent 60%),radial-gradient(100% 60% at 100% 100%,rgba(210,122,150,.05) 0%,transparent 50%),var(--bg-2);background-attachment:fixed;min-height:100dvh;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:var(--sans);color:var(--text);background:radial-gradient(120% 80% at 50% -10%,#1c150f 0%,transparent 60%),var(--bg-2);background-attachment:fixed;min-height:100dvh;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 body.no-scroll{overflow:hidden}
 
 .topbar{position:sticky;top:0;z-index:50;padding:calc(var(--st) + 12px) 18px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(180deg,rgba(21,16,12,.92) 0%,rgba(21,16,12,.7) 70%,transparent 100%);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2)}
@@ -37,8 +37,7 @@ body.no-scroll{overflow:hidden}
 .wordmark .glass{font-size:1.3rem}
 .topbar .actions{display:flex;gap:6px}
 .icon-btn{width:40px;height:40px;border:none;border-radius:50%;background:var(--surface-2);color:var(--text-2);display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem;cursor:pointer;transition:var(--t);border:1px solid var(--border)}
-.icon-btn:hover{background:var(--surface-3);color:var(--text);transform:translateY(-1px)}
-.icon-btn:active{transform:scale(.94)}
+.icon-btn:hover{background:var(--surface-3);color:var(--text)}
 
 .app{padding-bottom:calc(var(--tab-h) + var(--sb) + 24px)}
 .view{display:none;animation:vIn .42s var(--t) both;padding:4px 16px 8px}
@@ -80,9 +79,6 @@ body.no-scroll{overflow:hidden}
 .stars.pick .s{cursor:pointer;font-size:1.5rem}.stars.pick .s:hover{transform:scale(1.18)}
 .stars.sm .s{font-size:.84rem}.stars.md .s{font-size:1rem}
 
-.rec{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--rs);background:var(--surface);margin-bottom:9px}
-.rec .ico{font-size:1.3rem;line-height:1.2}.rec .t{font-family:var(--serif);color:var(--text);font-size:.98rem}.rec .r{font-size:.78rem;color:var(--text-2);margin-top:2px;line-height:1.45}
-
 .toolbar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
 .search-wrap{flex:1;min-width:160px;position:relative}
 .search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:999px;color:var(--text);padding:11px 16px 11px 40px;font-size:.92rem;font-family:var(--sans)}
@@ -96,13 +92,12 @@ body.no-scroll{overflow:hidden}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .dcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;cursor:pointer;transition:var(--t);position:relative}
 .dcard:hover{transform:translateY(-3px);box-shadow:var(--sh2);border-color:var(--border-s)}
-.dcard .img{aspect-ratio:1/1;background:var(--surface-3);background-size:cover;background-position:center;position:relative}
-.dcard .stripe{position:absolute;top:0;left:0;width:4px;height:100%}
+.dcard .info{padding:12px 12px 13px}
+.dcard .stripe{height:4px;width:100%}
 .dcard .stripe.wine{background:var(--wine)}.dcard .stripe.sake{background:var(--sake)}.dcard .stripe.whisky{background:var(--whisky)}.dcard .stripe.coffee{background:var(--coffee)}
-.dcard .info{padding:10px 11px}
-.dcard .nm{font-family:var(--serif);font-size:.92rem;line-height:1.2;color:var(--text);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.3em}
-.dcard .sub{font-size:.72rem;color:var(--text-3);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dcard .rt{margin-top:5px}
+.dcard .nm{font-family:var(--serif);font-size:.95rem;line-height:1.2;color:var(--text);overflow:hidden;text-overflow:ellipsis;display:-webkit_box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.3em}
+.dcard .sub{font-size:.74rem;color:var(--text-3);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dcard .rt{margin-top:6px}
 .empty{text-align:center;padding:50px 20px;color:var(--text-3)}.empty .ico{font-size:2.8rem;display:block;margin-bottom:10px;opacity:.7}
 
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;height:calc(var(--tab-h) + var(--sb));padding-bottom:var(--sb);display:flex;align-items:center;justify-content:space-around;background:linear-gradient(180deg,rgba(21,16,12,.6) 0%,rgba(15,11,8,.96) 40%);backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);border-top:1px solid var(--border)}
@@ -111,32 +106,18 @@ body.no-scroll{overflow:hidden}
 .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tab-h) + var(--sb) - 26px);z-index:61;width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#15100c;font-size:1.7rem;font-weight:600;display:flex;align-items:center;justify-content:center;box-shadow:var(--shg),0 4px 12px rgba(0,0,0,.4);transition:var(--t)}
 .fab:hover{transform:translateX(-50%) translateY(-2px) scale(1.04)}.fab:active{transform:translateX(-50%) scale(.92)}.fab.hidden{transform:translateX(-50%) scale(0);opacity:0;pointer-events:none}
 
-/* ---- search view ---- */
 .bigsearch{display:flex;gap:8px;margin:6px 0 4px}
 .bigsearch input{flex:1;background:var(--surface);border:1px solid var(--border-s);border-radius:999px;color:var(--text);padding:14px 18px;font-size:1rem;font-family:var(--sans)}
 .bigsearch input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
-.bigsearch button{padding:0 20px;border:none;border-radius:999px;background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#15100c;font-weight:600;font-size:.92rem;cursor:pointer;font-family:var(--sans);transition:var(--t);white-space:nowrap}
-.bigsearch button:hover{filter:brightness(1.06)}.bigsearch button:active{transform:scale(.97)}.bigsearch button:disabled{opacity:.6}
-.hint-line{font-size:.8rem;color:var(--text-3);margin:8px 2px}
-.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
-.gimg{position:relative;aspect-ratio:1/1;border-radius:var(--rs);overflow:hidden;cursor:pointer;border:2px solid transparent;background:var(--surface-3);transition:var(--t)}
-.gimg img{width:100%;height:100%;object-fit:cover;display:block}
-.gimg .src{position:absolute;bottom:0;left:0;right:0;font-size:.58rem;color:var(--text-2);background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);padding:8px 6px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gimg:hover{border-color:var(--border-s)}
-.gimg.sel{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-soft)}
-.gimg .chk{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;background:var(--gold);color:#15100c;font-size:.8rem;display:none;align-items:center;justify-content:center;font-weight:700}
-.gimg.sel .chk{display:flex}
-.preview{margin:10px 0;position:relative;border-radius:var(--rs);overflow:hidden;border:1px solid var(--border-s);display:none}
-.preview.show{display:block}
-.preview img{width:100%;max-height:240px;object-fit:contain;display:block;background:var(--surface-3)}
-.preview .px{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;background:rgba(15,11,8,.85);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:.9rem;display:inline-flex;align-items:center;justify-content:center}
-.preview .tag{position:absolute;bottom:8px;left:8px;font-size:.66rem;color:var(--text-2);background:rgba(15,11,8,.8);padding:3px 8px;border-radius:6px}
-.spin-block{display:flex;flex-direction:column;align-items:center;gap:10px;padding:30px;color:var(--text-3);font-size:.88rem}
+.bigsearch button{padding:0 22px;border:none;border-radius:999px;background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#15100c;font-weight:600;font-size:.92rem;cursor:pointer;font-family:var(--sans);transition:var(--t);white-space:nowrap}
+.bigsearch button:hover{filter:brightness(1.06)}.bigsearch button:disabled{opacity:.6}
+.hint-line{font-size:.82rem;color:var(--text-3);margin:10px 2px;line-height:1.5}
+.spin-block{display:flex;flex-direction:column;align-items:center;gap:12px;padding:36px;color:var(--text-3);font-size:.9rem}
 
 .label{display:block;font-size:.72rem;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;margin:18px 0 7px;font-weight:600}
 input,select,textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:12px 14px;font-size:.95rem;font-family:var(--sans);transition:border-color var(--t),box-shadow var(--t)}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--border-s);box-shadow:0 0 0 3px var(--gold-soft)}
-textarea{resize:vertical;min-height:78px;line-height:1.55}
+textarea{resize:vertical;min-height:90px;line-height:1.6}
 select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23847665' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:2px}
@@ -148,7 +129,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .seg button.on.coffee{color:var(--coffee);border-color:var(--coffee);background:rgba(207,138,108,.12)}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);cursor:pointer;font-size:.9rem;font-family:var(--sans);transition:var(--t);white-space:nowrap}
-.btn:hover{background:var(--surface-3);border-color:var(--border-s)}.btn:active{transform:scale(.97)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:hover{background:var(--surface-3);border-color:var(--border-s)}.btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-primary{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#15100c;border:none;font-weight:600}.btn-primary:hover{filter:brightness(1.06)}
 .btn-ghost{background:transparent}
 .btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.btn-block{width:100%}
@@ -163,7 +144,7 @@ details.prof .pbody{padding:2px 15px 15px}
 .sliders .it{display:flex;flex-direction:column;gap:4px}.sliders .it .lab{display:flex;justify-content:space-between;font-size:.74rem;color:var(--text-2)}.sliders .it .lab .v{color:var(--gold)}
 input[type=range]{padding:0;background:transparent;border:none;box-shadow:none;height:22px}
 input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--surface-3)}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--gold-2);margin-top:-6px;box-shadow:0 1px 4px rgba(0,0,0,.4);cursor:pointer;border:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--gold-2);margin-top:-6px;cursor:pointer;border:none}
 
 .savebar{position:sticky;bottom:0;margin:20px -16px 0;padding:14px 16px calc(14px + var(--sb));background:linear-gradient(0deg,var(--bg-2) 70%,transparent);display:flex;gap:10px}
 
@@ -174,10 +155,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .sheet .grip{width:40px;height:4px;border-radius:3px;background:var(--text-4);margin:10px auto 4px}
 .sheet .close-x{position:absolute;top:12px;right:14px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);width:34px;height:34px;border-radius:50%;font-size:1.05rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
 .sheet-pad{padding:0 18px}
-.detail-hero{aspect-ratio:16/9;border-radius:var(--r);background-size:cover;background-position:center;background-color:var(--surface-2);margin-bottom:14px}
-.detail-name{font-family:var(--serif);font-size:1.6rem;line-height:1.15}
+.detail-name{font-family:var(--serif);font-size:1.6rem;line-height:1.15;margin-top:6px}
 .detail-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 4px;color:var(--text-2);font-size:.86rem}
-.detail-sec{margin-top:16px}.detail-sec .h{font-size:.68rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);margin-bottom:6px;font-weight:600}.detail-sec p{line-height:1.65;color:var(--text)}
+.detail-sec{margin-top:16px}.detail-sec .h{font-size:.68rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);margin-bottom:6px;font-weight:600}.detail-sec p{line-height:1.65;color:var(--text);white-space:pre-wrap}
 .bars{margin-top:4px}.bar{display:flex;align-items:center;gap:10px;margin-bottom:7px}.bar .bl{width:74px;font-size:.78rem;color:var(--text-2)}.bar .bt{flex:1;height:8px;background:var(--surface-3);border-radius:5px;overflow:hidden}.bar .bf{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--gold-2))}.bar .bv{width:18px;font-size:.74rem;color:var(--text-3);text-align:right}
 .tags{display:flex;flex-wrap:wrap;gap:6px}.tag{background:var(--gold-soft);color:var(--gold-2);padding:4px 11px;border-radius:999px;font-size:.78rem}
 .detail-actions{display:flex;gap:9px;margin-top:20px;flex-wrap:wrap}
@@ -193,7 +173,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .kb{padding:13px 0;border-bottom:1px solid var(--border)}.kb:last-child{border:none}
 .kb .kn{font-family:var(--serif);color:var(--gold-2);font-size:1rem}.kb .ko{color:var(--text-3);font-size:.78rem;margin-left:4px}
 .kb .kd{color:var(--text-2);font-size:.86rem;margin-top:5px;line-height:1.55}
-.kb .kt{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}.kb .kt span{font-size:.68rem;padding:2px 8px;border-radius:7px;background:var(--surface-3);color:var(--text-3)}
 .fc{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r);min-height:260px;padding:30px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;box-shadow:var(--sh1);transition:var(--t);position:relative}
 .fc:hover{border-color:var(--border-s)}.fc .lab{font-size:.66rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-4);margin-bottom:14px}.fc .front{font-family:var(--serif);font-size:1.5rem;color:var(--gold-2)}.fc .back{font-size:.95rem;color:var(--text);line-height:1.7}.fc .hint{position:absolute;bottom:14px;font-size:.72rem;color:var(--text-4)}
 .fc-ctrl{display:flex;gap:10px;justify-content:center;margin-top:16px}.fc-meta{text-align:center;font-size:.78rem;color:var(--text-3);margin:14px 0 2px}.deck-row{display:flex;gap:9px;flex-wrap:wrap}
@@ -213,7 +192,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .diag{font-family:ui-monospace,Menlo,monospace;font-size:.74rem;background:#0e0a07;border:1px solid var(--border);border-radius:var(--rs);padding:12px;margin-top:12px;max-height:200px;overflow:auto;white-space:pre-wrap;color:var(--text-3);line-height:1.55;display:none}
 .diag .ok{color:var(--green)}.diag .bad{color:var(--red)}.diag .hi{color:var(--gold-2)}
 .sep{border:none;border-top:1px solid var(--border);margin:18px 0}
-.subhead{font-size:.74rem;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;margin:18px 0 4px;font-weight:600}
 
 .toast{position:fixed;left:50%;bottom:calc(var(--tab-h) + var(--sb) + 16px);transform:translateX(-50%) translateY(20px);background:var(--surface-2);border:1px solid var(--border-s);color:var(--text);padding:12px 20px;border-radius:999px;font-size:.86rem;z-index:120;opacity:0;pointer-events:none;transition:opacity var(--t),transform var(--t);box-shadow:var(--sh2);max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -221,8 +199,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .btn:not(.btn-primary) .spinner,.spin-block .spinner{border-color:var(--surface-3);border-top-color:var(--gold-2)}
 .spin-block .spinner{width:26px;height:26px;border-width:3px}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media(min-width:640px){.grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}.greeting .you{font-size:2rem}.gallery{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:380px){.seg button .e{font-size:1.05rem}.seg button{font-size:.72rem}.gallery{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:640px){.grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}.greeting .you{font-size:2rem}}
+@media(max-width:380px){.seg button .e{font-size:1.05rem}.seg button{font-size:.72rem}}
 </style>
 </head>
 <body>
@@ -231,7 +209,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   <div class="topbar">
     <div class="wordmark"><span class="glass">🍷</span><span class="name">Decanter</span><span class="jp">JP</span></div>
     <div class="actions">
-      <button class="icon-btn" id="topSearch" title="Find a bottle">🔍</button>
       <button class="icon-btn" id="topSettings" title="Settings">⚙️</button>
     </div>
   </div>
@@ -252,22 +229,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     <div class="btn-row" style="justify-content:center;margin-top:22px"><button class="btn" id="btnExport">📥 Export</button><button class="btn" id="btnImport">📤 Import</button><input type="file" id="importFile" accept=".json" style="display:none"></div>
   </section>
 
-  <!-- SEARCH (new add flow) -->
-  <section class="view" id="view-search">
-    <div class="greeting"><div class="hi" id="searchHi">Find a bottle</div><div class="you">Search → confirm → cellar</div></div>
+  <!-- ADD (text-only) -->
+  <section class="view" id="view-add">
+    <div class="greeting"><div class="hi">Add a bottle</div><div class="you">Type a name → get the notes</div></div>
     <div class="bigsearch">
       <input id="kwInput" placeholder="e.g. Yamazaki 12, Château Margaux, Ethiopia Yirgacheffe…">
-      <button id="kwSearch">🔍 Search</button>
+      <button id="kwSearch">✨ Go</button>
     </div>
-    <div class="btn-row" style="margin-top:10px"><button class="btn btn-primary btn-block" id="btnIdentify">📷 Identify my bottle from a photo</button></div>
-    <div class="hint-line" id="searchHint">Type a name for quick AI notes — or photograph your bottle to identify it. Works in China (your GLM plan only).</div>
-    <div id="searchResults"></div>
+    <div class="hint-line" id="addHint">Type a bottle name and tap Go — the AI fills in the details and writes a tasting summary. Works in China with the domestic endpoint (no VPN).</div>
+    <div id="addSpin"></div>
 
-    <!-- shared form fields (hidden until a search/edit loads them) -->
     <div id="editBlock" style="display:none">
-      <div class="preview" id="imgPreview"><img id="imgPreviewImg" alt=""><span class="tag" id="imgPreviewTag">photo</span><button class="px" id="imgClear">✕</button></div>
-      <div class="btn-row" style="margin-top:0"><label class="btn btn-ghost btn-sm" style="cursor:pointer">📷 Add / replace photo<input type="file" id="attachPhoto" accept="image/*" style="display:none"></label></div>
-
       <div class="label">Type</div>
       <div class="seg" id="typeSeg">
         <button data-type="wine" class="on wine"><span class="e">🍷</span>Wine</button>
@@ -282,7 +254,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
       <div class="stars pick" id="ratePick"><span class="s" data-v="1">★</span><span class="s" data-v="2">★</span><span class="s" data-v="3">★</span><span class="s" data-v="4">★</span><span class="s" data-v="5">★</span></div>
       <div class="label">Flavor notes</div><input id="fFlavor" placeholder="blackcurrant, cedar…">
       <div class="label">Food pairing</div><input id="fPairing" placeholder="grilled lamb, aged cheese…">
-      <div class="label">Summary / notes</div><textarea id="fSummary" placeholder="AI fills this — or write your own…"></textarea>
+      <div class="label">Summary / intro</div><textarea id="fSummary" placeholder="AI writes this — or edit freely…"></textarea>
       <details class="prof" id="profDetails"><summary>📋 Tasting profile (structured)</summary><div class="pbody"><div class="sliders" id="profSliders"></div><div class="label" style="margin-top:14px">Appearance</div><input id="fColor" placeholder="deep garnet, pale gold…"><div class="label">Nose / aroma</div><input id="fAroma" placeholder="black cherry, vanilla…"><div class="label">Conclusion</div><input id="fConclusion" placeholder="outstanding, drink now–2030…"></div></details>
       <input type="hidden" id="fRating" value="0"><input type="hidden" id="fEditId" value="">
       <div class="savebar"><button class="btn btn-ghost" id="btnCancel" style="display:none">Cancel</button><button class="btn btn-primary" id="btnSave" style="flex:1">💾 Save to cellar</button></div>
@@ -294,12 +266,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     <div class="greeting"><div class="hi">Study</div><div class="you">Sharpen your palate</div></div>
     <div class="study-tabs"><button class="on" data-pane="ref">📚 Reference</button><button data-pane="fc">🃏 Flashcards</button><button data-pane="qz">❓ Quiz</button></div>
     <div class="pane active" id="pane-ref"><div class="cat-grid" id="catGrid"></div><div id="refWrap" style="display:none"><button class="btn btn-ghost" id="refBack" style="margin:0 0 14px">← All topics</button><div class="card" style="padding:6px 16px"><div id="refList"></div></div></div></div>
-    <div class="pane" id="pane-fc"><div class="card" style="padding:18px"><div id="fcDecks"><p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Pick a deck — your journal mixed with the reference library.</p><div class="deck-row" id="fcDeckBtns"></div></div><div id="fcSession" style="display:none"></div></div></div>
-    <div class="pane" id="pane-qz"><div class="card" style="padding:18px"><div id="qzIntro"><p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Ten questions across wine, sake, whisky & coffee — mixed with items from your journal.</p><button class="btn btn-primary" id="qzStart">▶ Start quiz</button></div><div id="qzSession" style="display:none"></div></div></div>
+    <div class="pane" id="pane-fc"><div class="card" style="padding:18px"><div id="fcDecks"><p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Pick a deck — your cellar mixed with the reference library.</p><div class="deck-row" id="fcDeckBtns"></div></div><div id="fcSession" style="display:none"></div></div></div>
+    <div class="pane" id="pane-qz"><div class="card" style="padding:18px"><div id="qzIntro"><p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Ten questions across wine, sake, whisky & coffee — mixed with your cellar.</p><button class="btn btn-primary" id="qzStart">▶ Start quiz</button></div><div id="qzSession" style="display:none"></div></div></div>
   </section>
 </div>
 
-<button class="fab" id="fabAdd" title="Find a bottle">+</button>
+<button class="fab" id="fabAdd" title="Add a bottle">+</button>
 <nav class="tabbar">
   <button class="tab on" data-view="home"><span class="ti">🏡</span>Cellar</button>
   <button class="tab" data-view="library"><span class="ti">📚</span>Library</button>
@@ -311,41 +283,29 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 
 <div class="modal" id="settingsModal"><div class="box">
   <h3>⚙️ Settings</h3>
-  <div class="subhead" style="margin-top:0">AI — Zhipu / GLM</div>
-  <div class="label" style="margin-top:4px">API key</div>
-  <input type="password" id="setKey" placeholder="paste your GLM API key">
-  <div class="note">Your coding-plan key. Stored only in this browser. <a href="https://docs.z.ai/guides/overview/quick-start" target="_blank" rel="noopener">Docs →</a></div>
-  <div class="label">Model</div>
-  <select id="setModel">
-    <option value="glm-5-turbo">glm-5-turbo · fast text (recommended)</option>
-    <option value="glm-5">glm-5 · flagship text</option>
-    <option value="glm-5.2">glm-5.2 · 1M-context</option>
-    <option value="glm-4.6v">glm-4.6v · vision (photos)</option>
-    <option value="glm-4.6v-flash">glm-4.6v-flash · free vision</option>
-  </select>
-  <div class="note"><b>glm-5-turbo</b> for summaries; <b>glm-4.6v</b> auto-used for label photos. The app tries other models if one is busy.</div>
+  <div class="label" style="margin-top:4px">Zhipu / GLM API key</div>
+  <input type="password" id="setKey" placeholder="paste your API key">
+  <div class="note">Stored only in this browser.</div>
   <div class="label">Endpoint</div>
   <select id="setEndpoint">
-    <option value="https://api.z.ai/api/coding/paas/v4/chat/completions">api.z.ai · coding plan</option>
+    <option value="https://open.bigmodel.cn/api/paas/v4/chat/completions">open.bigmodel.cn · domestic (no VPN in China)</option>
+    <option value="https://api.z.ai/api/coding/paas/v4/chat/completions">api.z.ai · coding plan (needs VPN in China)</option>
     <option value="https://api.z.ai/api/paas/v4/chat/completions">api.z.ai · standard</option>
-    <option value="https://open.bigmodel.cn/api/paas/v4/chat/completions">open.bigmodel.cn · domestic</option>
   </select>
-
-  <hr class="sep">
-  <div class="subhead">Label images — Google (any website)</div>
-  <div class="label" style="margin-top:4px">Google API key <span style="text-transform:none;color:var(--text-4)">(optional)</span></div>
-  <input id="setGKey" placeholder="AIza…">
-  <div class="label">Custom Search Engine ID (cx)</div>
-  <input id="setGCx" placeholder="e.g. a1b2c3d4e5…">
-  <div class="note">Powers the "any website" label-image search. Without these, the app falls back to Wikipedia (keyless). <a href="#" id="gGuide">How do I get these? →</a></div>
-
-  <hr class="sep">
-  <div class="subhead">Reading</div>
-  <div class="label" style="margin-top:4px">Voice speed</div>
+  <div class="note">In China without a VPN, use <b>open.bigmodel.cn (domestic)</b>. Save the coding-plan / international options for when you're on a VPN.</div>
+  <div class="label">Model</div>
+  <select id="setModel">
+    <option value="glm-4.6v-flash">glm-4.6v-flash · free (works in China)</option>
+    <option value="glm-5-turbo">glm-5-turbo · fast (coding plan / VPN)</option>
+    <option value="glm-5">glm-5 · flagship</option>
+    <option value="glm-5.2">glm-5.2 · 1M-context</option>
+    <option value="glm-4.6v">glm-4.6v · vision</option>
+  </select>
+  <div class="note"><b>glm-4.6v-flash</b> is free and works on the domestic endpoint. The app auto-tries other models if one is busy.</div>
+  <div class="label">Voice speed</div>
   <div style="display:flex;align-items:center;gap:12px"><input type="range" id="setTts" min="0.5" max="1.5" step="0.1" value="0.9" style="flex:1"><span id="ttsLbl" style="font-size:.82rem;color:var(--text-3)">0.9×</span></div>
-
   <hr class="sep">
-  <button class="btn btn-block" id="btnTest">🔌 Test AI connection</button>
+  <button class="btn btn-block" id="btnTest">🔌 Test connection</button>
   <div class="diag" id="diag"></div>
   <hr class="sep">
   <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-ghost" id="setClose">Close</button><button class="btn btn-primary" id="setSave">Save</button></div>
@@ -355,7 +315,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 
 <script>
 'use strict';
-/* JP DECANTER v2 (keyword-first) — single file, vanilla JS, shared IndexedDB */
+/* JP DECANTER v2 — lean text-only. Single file, vanilla JS, shared IndexedDB. */
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>{const d=document.createElement('div');d.textContent=s==null?'':s;return d.innerHTML;};
 const TYPE={wine:{label:'Wine',emoji:'🍷'},sake:{label:'Sake',emoji:'🍶'},whisky:{label:'Whisky',emoji:'🥃'},coffee:{label:'Coffee',emoji:'☕'}};
@@ -369,11 +329,11 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='home',libFilter='all',libSearch='',libSort='newest';
-let formType='wine',formRating=0,formImg='';
+let formType='wine',formRating=0;
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
-/* ---- settings ---- */
-const DEFAULTS={apiKey:'',model:'glm-5-turbo',endpoint:'https://api.z.ai/api/coding/paas/v4/chat/completions',ttsRate:0.9,googleKey:'',googleCx:''};
+/* ---- settings (domestic default = no VPN in China) ---- */
+const DEFAULTS={apiKey:'',model:'glm-4.6v-flash',endpoint:'https://open.bigmodel.cn/api/paas/v4/chat/completions',ttsRate:0.9};
 const getSettings=()=>{let s;try{s=JSON.parse(localStorage.getItem('decanter_settings')||'{}');}catch(e){s={};}const o=Object.assign({},DEFAULTS,s);if(['glm-4-flash','glm-4v-plus','glm-4.7-flash','glm-4.6v-flash-text'].includes(o.model))o.model=DEFAULTS.model;if(o.endpoint==='https://api.z.ai/api/chat/completions')o.endpoint='https://api.z.ai/api/paas/v4/chat/completions';return o;};
 const saveSettings=s=>localStorage.setItem('decanter_settings',JSON.stringify(s));
 
@@ -389,85 +349,57 @@ const avg=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
 const topN=(o,n)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n);
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
-const resizeFile=(file,max=1024)=>new Promise((res,rej)=>{const fr=new FileReader();fr.onload=e=>{const img=new Image();img.onload=()=>{let{width,height}=img;if(width<=max&&height<=max&&file.type==='image/jpeg'){res(e.target.result);return;}const r=Math.min(max/width,max/height,1);width=Math.round(width*r);height=Math.round(height*r);const c=document.createElement('canvas');c.width=width;c.height=height;c.getContext('2d').drawImage(img,0,0,width,height);res(c.toDataURL('image/jpeg',.85));};img.onerror=()=>rej(new Error('bad image'));img.src=e.target.result;};fr.onerror=()=>rej(new Error('bad file'));fr.readAsDataURL(file);});
 
-/* ---- AI (proven engine) ---- */
-const VISION_MODELS=['glm-4.6v','glm-4.6v-flash','glm-4.6v-flashx','glm-5v-turbo'];
-const TEXT_MODELS=['glm-5-turbo','glm-5','glm-4.6v-flash','glm-5.2','glm-4-plus'];
+/* ---- AI (proven engine, /nothink, multi-model fallback) ---- */
+const TEXT_MODELS=['glm-4.6v-flash','glm-5-turbo','glm-5','glm-4.6v','glm-5.2','glm-4-plus'];
 const KNOWN_VISION=new Set(['glm-4.6v-flash','glm-4.6v','glm-4.6v-flashx','glm-5v-turbo','glm-4v-plus']);
 const isVisionModel=m=>KNOWN_VISION.has(m);
+const VISION_MODELS=['glm-4.6v-flash','glm-4.6v','glm-4.6v-flashx','glm-5v-turbo'];
 const extractContent=d=>{const m=d&&d.choices&&d.choices[0]&&d.choices[0].message;if(!m)return'';let t='';if(typeof m.content==='string')t=m.content;else if(Array.isArray(m.content))t=m.content.map(p=>(p&&typeof p==='string')?p:(p&&p.text)||'').join('\n');t=(t||'').trim();if(!t&&m.reasoning_content){let r=m.reasoning_content;if(Array.isArray(r))r=r.map(p=>(p&&p.text)||'').join('\n');t=String(r||'').trim();}return t;};
 const parseAIResult=text=>{if(!text)return null;let p=null,m;m=text.match(/```(?:json)?\s*([\s\S]*?)```/i);if(m){try{p=JSON.parse(m[1].trim());}catch(e){}}if(!p){m=text.match(/\{[\s\S]*\}/);if(m){try{p=JSON.parse(m[0]);}catch(e){}}}if(p){const c=v=>v==null?'':String(v).trim();return{type:c(p.type),name:c(p.name),variety:c(p.variety)||c(p.style),origin:c(p.origin)||c(p.region),flavor:c(p.flavor)||c(p.tasting_notes)||c(p.notes),pairing:c(p.pairing)||c(p.pairings),summary:c(p.summary)||c(p.description)};}return{summary:text.trim(),flavor:'',pairing:''};};
 const buildChain=(sel,isVision)=>{let chain;if(isVision)chain=isVisionModel(sel)?[sel,...VISION_MODELS]:VISION_MODELS.slice();else chain=[sel,...TEXT_MODELS];return Array.from(new Set(chain.filter(Boolean)));};
 async function rawCompletion(s,model,messages,log){const res=await fetch(s.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+s.apiKey},body:JSON.stringify({model,messages,temperature:.7,max_tokens:4096,stream:false,thinking:{type:'disabled'}})});if(!res.ok){let d='';try{const j=await res.json();d=(j.error&&j.error.message)||JSON.stringify(j);}catch(e){try{d=await res.text();}catch(e2){}}const err=new Error('HTTP '+res.status+(d?': '+d.slice(0,280):''));err.status=res.status;throw err;}const data=await res.json();const t=extractContent(data);if(log)log.push('  '+model+' → '+t.length+' chars'+(t?'':' (EMPTY)'));return t;}
-async function callAI({image,fillAll,keyword}){
+async function callAI({keyword,fillAll}){
   const s=getSettings();
-  if(!s.apiKey){toast('⚠️ Add your GLM API key in Settings (⚙️) first.');openSettings();return null;}
-  const isVision=!!image;
-  const name=(keyword||$('#fName').value||'').trim();
-  if(!isVision&&!name){toast('⚠️ Enter a bottle name first.');return null;}
-  let prompt,content;
-  if(isVision){
-    prompt='You are a world-class sommelier, sake expert, whisky connoisseur and Q-grader coffee cupper. Analyze this drink label. Reply with ONLY a JSON object, no markdown:\n{"type":"wine|sake|whisky|coffee","name":"full name with producer/vintage","variety":"style","origin":"country, region","flavor":"5-8 tasting notes, comma-separated","pairing":"3-4 pairings, comma-separated","summary":"~120-word overview"}\nIf unreadable, set name null and describe what you see.\n/nothink';
-    content=[{type:'image_url',image_url:{url:image}},{type:'text',text:prompt}];
-  }else{
-    const scope=fillAll?'Return ONLY JSON: {"type":"wine|sake|whisky|coffee","variety":"likely variety","origin":"likely origin","flavor":"5-8 notes","pairing":"3-4 pairings","summary":"~120-word overview"}'
-      :'Return ONLY JSON: {"flavor":"5-8 notes","pairing":"3-4 pairings","summary":"~120-word overview"}';
-    prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. '+scope+'\n\nDrink: '+name+'\n\nUse your knowledge of this style/region if you don\'t know the exact bottling.\n/nothink';
-    content=prompt;
-  }
-  const messages=[{role:'user',content}];const chain=buildChain(s.model,isVision);const log=['AI log:'];let lastErr=null;
-  for(const model of chain){try{log.push('Try '+model);const t=await rawCompletion(s,model,messages,log);const r=parseAIResult(t);if(r&&(r.summary||r.flavor||r.name)){log.push('✓ '+model+' ok');console.log(log.join('\n'));return r;}log.push('  '+model+': empty, next');}catch(e){lastErr=e;log.push('  '+model+': '+e.message);}}
+  if(!s.apiKey){toast('⚠️ Add your GLM key in Settings (⚙️) first.');openSettings();return null;}
+  const name=(keyword||'').trim();if(!name){toast('⚠️ Enter a bottle name.');return null;}
+  const scope=fillAll?'Return ONLY JSON: {"type":"wine|sake|whisky|coffee","variety":"likely variety","origin":"likely origin","flavor":"5-8 tasting notes, comma-separated","pairing":"3-4 pairings, comma-separated","summary":"~120-word intro: what it is, where it is from, how it is made, its key character"}'
+    :'Return ONLY JSON: {"flavor":"5-8 notes","pairing":"3-4 pairings","summary":"~120-word intro"}';
+  const prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. '+scope+'\n\nDrink: '+name+'\n\nUse your knowledge of this style/region if you don\'t know the exact bottling.\n/nothink';
+  const messages=[{role:'user',content:prompt}],chain=buildChain(s.model,false),log=['AI log:'];let lastErr=null;
+  for(const model of chain){try{log.push('Try '+model);const t=await rawCompletion(s,model,messages,log);const r=parseAIResult(t);if(r&&(r.summary||r.flavor)){log.push('✓ '+model+' ok');console.log(log.join('\n'));return r;}log.push('  '+model+': empty, next');}catch(e){lastErr=e;log.push('  '+model+': '+e.message);}}
   console.log(log.join('\n'));
-  if(lastErr&&/Failed to fetch|NetworkError|load failed/i.test(lastErr.message))toast('❌ Network/CORS — try the other endpoint in Settings.');
+  if(lastErr&&/Failed to fetch|NetworkError|load failed/i.test(lastErr.message))toast('❌ Network blocked — in China, switch Endpoint to "open.bigmodel.cn (domestic)" in Settings.');
   else if(lastErr&&(lastErr.status===401||lastErr.status===403))toast('❌ Auth failed — check your API key.');
-  else if(lastErr&&/1113|Insufficient balance/i.test(lastErr.message))toast('❌ No balance on this endpoint — in Settings switch Endpoint to "api.z.ai · coding plan".');
+  else if(lastErr&&/1113|Insufficient balance/i.test(lastErr.message))toast('❌ No balance — use the free "glm-4.6v-flash" model on the domestic endpoint.');
+  else if(lastErr&&/1305|overloaded/i.test(lastErr.message))toast('⚠️ Service busy — tap Go again, or try another model.');
   else toast('❌ No model responded. Open Settings → Test connection.');
   return null;
 }
 async function testConnection(){
   const s=getSettings(),key=$('#setKey').value.trim(),ep=$('#setEndpoint').value;const box=$('#diag');box.style.display='block';box.innerHTML='';const log=h=>{box.innerHTML+=h+'\n';box.scrollTop=box.scrollHeight;};
   if(!key){log('<span class="bad">⚠ No API key entered.</span>');return;}
-  log('Endpoint: <span class="hi">'+ep+'</span>');log('Probing models (text "Reply: PONG")…');
-  const cand=['glm-5-turbo','glm-5','glm-4.6v','glm-5.2','glm-4.6v-flash','glm-5v-turbo'];
+  log('Endpoint: <span class="hi">'+ep+'</span>');log(ep.indexOf('open.bigmodel.cn')>=0?'(domestic — should work in China without VPN)':'(international — may need a VPN in China)');
+  log('Probing models (text "Reply: PONG")…');
+  const cand=['glm-4.6v-flash','glm-5-turbo','glm-5','glm-4.6v','glm-5.2','glm-4-plus'];
   const messages=[{role:'user',content:'Reply with the single word: PONG\n/nothink'}];let any=false;
   for(const m of cand){try{const res=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:m,messages,max_tokens:256,stream:false,thinking:{type:'disabled'}})});
     if(res.status===401||res.status===403){log('<span class="bad">✗ '+m+': auth failed ('+res.status+') — bad key.</span>');return;}
     if(!res.ok){const t=await res.text().catch(()=>'');log('<span class="bad">✗ '+m+': HTTP '+res.status+' '+t.slice(0,110)+'</span>');continue;}
     const data=await res.json();const t=extractContent(data);
     if(t){log('<span class="ok">✓ '+m+': OK — "'+t.slice(0,28).replace(/\n/g,' ')+'"</span>');any=true;}
-    else{const full=JSON.stringify(data).slice(0,400).replace(/</g,'&lt;');log('<span class="bad">○ '+m+': no content. Full response (HTTP '+res.status+'):</span>');log('<span class="hi">'+full+'</span>');}
-  }catch(err){log('<span class="bad">✗ '+m+': '+err.message+'</span>');if(/Failed to fetch|NetworkError|load failed/i.test(err.message)){log('<span class="bad">↳ Network/CORS blocked. Try another endpoint.</span>');return;}}}
+    else{log('<span class="bad">○ '+m+': no content. '+JSON.stringify(data).slice(0,180).replace(/</g,'&lt;')+'</span>');}
+  }catch(err){log('<span class="bad">✗ '+m+': '+err.message+'</span>');if(/Failed to fetch|NetworkError|load failed/i.test(err.message)){log('<span class="bad">↳ Network blocked from here. In China: use the domestic endpoint, or a VPN.</span>');return;}}}
   log(any?'\n<span class="ok">✅ Working models above — pick one as default.</span>':'\n<span class="bad">❌ None responded.</span>');
 }
 
-/* ---- image search (Google CSE → Wikipedia fallback) ---- */
-async function imageSearch(kw){
-  const s=getSettings();
-  if(s.googleKey&&s.googleCx){try{return await googleImages(kw,s);}catch(e){console.warn('Google image search failed, falling back:',e);}}
-  return wikiImages(kw);
-}
-async function googleImages(kw,s){
-  const url=`https://www.googleapis.com/customsearch/v1?key=${encodeURIComponent(s.googleKey)}&cx=${encodeURIComponent(s.googleCx)}&q=${encodeURIComponent(kw+' bottle label')}&searchType=image&num=8`;
-  const d=await (await fetch(url)).json();
-  if(d.error)throw new Error(d.error.message||'Google API error');
-  return (d.items||[]).filter(it=>it.link||it.image&&it.image.thumbnailLink).map(it=>({thumb:(it.image&&it.image.thumbnailLink)||it.link,display:(it.image&&it.image.thumbnailLink)||it.link,title:it.title||'',source:(it.displayLink||'').replace(/^www\./,'')}));
-}
-async function wikiImages(kw){
-  const url=`https://en.wikipedia.org/w/api.php?action=query&format=json&generator=search&gsrsearch=${encodeURIComponent(kw)}&gsrlimit=10&prop=pageimages|extracts&exintro&explaintext&piprop=thumbnail&pithumbsize=400&origin=*`;
-  const d=await (await fetch(url)).json();
-  const pages=d.query&&d.query.pages?Object.values(d.query.pages).sort((a,b)=>a.index-b.index):[];
-  return pages.filter(p=>p.thumbnail).map(p=>({thumb:p.thumbnail.url,display:p.thumbnail.url,title:p.title,source:'wikipedia',extract:p.extract||''}));
-}
-async function fetchToDataUrl(url){const r=await fetch(url);const b=await r.blob();return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(b);});}
-
-/* ---- KB + study (proven) ---- */
-const KB={wine:[{n:'Cabernet Sauvignon',t:['cabernet','bordeaux'],o:'Bordeaux / Napa',d:'Full-bodied, high tannin. Blackcurrant, cedar, graphite, mint. Age-worthy; backbone of Left-Bank Bordeaux.'},{n:'Merlot',t:['merlot'],o:'Bordeaux (Pomerol)',d:'Plush, round. Plum, black cherry, chocolate. Softer than Cabernet.'},{n:'Pinot Noir',t:['pinot','burgundy'],o:'Burgundy',d:'Light, perfumed, high acid. Red cherry, raspberry, forest floor, mushroom.'},{n:'Syrah / Shiraz',t:['syrah','shiraz','rhône'],o:'Rhône / Barossa',d:'Powerful, dark. Blackberry, black pepper, smoked meat.'},{n:'Chardonnay',t:['chardonnay','chablis'],o:'Burgundy / Sonoma',d:'Steely Chablis to rich, buttery Napa. Apple, citrus, butter, brioche.'},{n:'Sauvignon Blanc',t:['sauvignon','sancerre'],o:'Loire / Marlborough',d:'Zesty, high acid. Grapefruit, passionfruit, cut grass.'},{n:'Riesling',t:['riesling','mosel'],o:'Germany / Alsace',d:'Aromatic, high acid, dry to sweet. Lime, apple, jasmine, petrol.'},{n:'Nebbiolo',t:['nebbiolo','barolo'],o:'Piedmont',d:'Pale but fiercely tannic. Rose, tar, dried cherry, truffle.'},{n:'Sangiovese',t:['sangiovese','chianti'],o:'Tuscany',d:'Sour cherry, leather, herbs, earth. The grape of Chianti.'},{n:'Tempranillo',t:['tempranillo','rioja'],o:'Rioja / Ribera',d:'Strawberry, leather, tobacco, vanilla. Spanish icon.'}],sake:[{n:'Junmai',t:['junmai'],o:'Japan',d:'Pure rice — no added alcohol. Full body, rich, earthy. Great warm.'},{n:'Honjōzō',t:['honjozo'],o:'Japan',d:'A little brewer\'s alcohol added. Lighter, smoother, fragrant.'},{n:'Ginjō',t:['ginjo'],o:'Japan',d:'Polished ≥60%. Fruity, floral (apple, melon, anise). Elegant.'},{n:'Daiginjō',t:['daiginjo'],o:'Japan',d:'Polished ≥50%. Intensely aromatic, refined. The pinnacle.'},{n:'Nigori',t:['nigori'],o:'Japan',d:'Coarsely filtered — cloudy, creamy. Sweet, milky, dessert-like.'},{n:'Namazake',t:['nama'],o:'Japan',d:'Unpasteurized — fresh, vivid. Must stay cold.'}],whisky:[{n:'Speyside Single Malt',t:['speyside','macallan'],o:'Scotland, Speyside',d:'Smooth, honeyed, orchard fruit, often sherry-casked (Glenfiddich, Macallan).'},{n:'Highland Single Malt',t:['highland'],o:'Scotland, Highlands',d:'Heather, honey, spice, a wisp of smoke.'},{n:'Islay Single Malt',t:['islay','peaty','laphroaig'],o:'Scotland, Islay',d:'Peaty & smoky — medicinal, seaweed, brine, iodine.'},{n:'Lowland Single Malt',t:['lowland'],o:'Scotland, Lowlands',d:'Light, grassy, floral, gentle. Apéritif malts.'},{n:'Campbeltown',t:['campbeltown','springbank'],o:'Scotland, Campbeltown',d:'Briny, smoky, oily, complex.'},{n:'Bourbon',t:['bourbon','kentucky'],o:'USA, Kentucky',d:'≥51% corn, new charred oak. Sweet, vanilla, caramel, baking spice.'},{n:'Tennessee Whiskey',t:['tennessee'],o:'USA, Tennessee',d:'Charcoal-mellowed bourbon. Smoother.'},{n:'Irish Whiskey',t:['irish','jameson'],o:'Ireland',d:'Triple-distilled, unpeated. Smooth, light, green apple, honey.'},{n:'Japanese Whisky',t:['japanese','yamazaki','hibiki'],o:'Japan',d:'Modeled on Scotch; renowned for poise and balance.'},{n:'Rye Whiskey',t:['rye'],o:'USA / Canada',d:'≥51% rye. Spicier, peppery, drier than bourbon.'}],coffee:[{n:'Ethiopia (Yirgacheffe)',t:['ethiopia','yirgacheffe'],o:'Ethiopia',d:'Floral, jasmine, bergamot, blueberry, bright citrus.'},{n:'Colombia',t:['colombia'],o:'Colombia',d:'Balanced, sweet. Caramel, milk chocolate, red apple, walnut.'},{n:'Brazil',t:['brazil'],o:'Brazil',d:'Low acid, heavy body, nutty, chocolate, caramel. Espresso backbone.'},{n:'Kenya (AA)',t:['kenya'],o:'Kenya',d:'Bright, winey acidity, full body. Blackcurrant, blackberry.'},{n:'Guatemala (Antigua)',t:['guatemala','antigua'],o:'Guatemala',d:'Full body, bright acid. Cocoa, baking spice, toffee, tobacco.'},{n:'Sumatra',t:['sumatra','indonesia'],o:'Indonesia',d:'Heavy body, low acid, earthy, herbal. Cedar, dark chocolate.'},{n:'Costa Rica (Tarrazú)',t:['costa rica','tarrazu'],o:'Costa Rica',d:'Clean, bright, high-grown. Citrus, honey, almond, cocoa.'},{n:'Jamaica Blue Mountain',t:['jamaica'],o:'Jamaica',d:'Rare, mild. Very smooth, low acid, gentle sweetness.'}]};
-const PROCESSING=[{n:'Washed / Wet',d:'Cherry removed, fermented & washed. Clean, bright, acidic.'},{n:'Natural / Dry',d:'Dried in cherry. Fruity, heavy body, fermented berry.'},{n:'Honey / Pulped Natural',d:'Some mucilage left. Sweet, balanced, syrupy.'}];
-const QBANK=[{q:'Which Scotch region is famous for peaty, smoky malts?',o:['Speyside','Islay','Lowland','Campbeltown'],a:1,e:'Islay — Laphroaig, Ardbeg, Lagavulin — medicinal peat & brine.'},{q:'Pinot Noir is most celebrated in?',o:['Bordeaux','Napa','Burgundy','Rioja'],a:2,e:'Red Burgundy is 100% Pinot Noir.'},{q:'"Seimaibuai" in sake is the?',o:['Ferment temp','Rice polishing ratio','Bottle size','Brewer rank'],a:1,e:'% of grain left after polishing.'},{q:'Which coffee origin = floral jasmine & blueberry?',o:['Brazil','Ethiopia','Sumatra','Jamaica'],a:1,e:'Ethiopia / Yirgacheffe.'},{q:'Bourbon needs at least what % corn?',o:['41%','51%','61%','71%'],a:1,e:'≥51% corn, new charred oak.'},{q:'Left-Bank Bordeaux is dominated by?',o:['Merlot','Cabernet Sauvignon','Pinot Noir','Syrah'],a:1,e:'Left-Bank = Cab-dominant.'},{q:'"Junmai" sake contains?',o:['Added alcohol','No added alcohol','Carbonation','Oak aging'],a:1,e:'Junmai = pure rice.'},{q:'Wet-hulling is associated with?',o:['Ethiopia','Colombia','Sumatra','Kenya'],a:2,e:'Sumatra — earthy, heavy-bodied.'},{q:'Filtered through sugar-maple charcoal?',o:['Bourbon','Tennessee Whiskey','Irish','Rye'],a:1,e:'Lincoln County Process (Jack Daniel\'s).'},{q:'Riesling is most classically from?',o:['France','Italy','Germany','Spain'],a:2,e:'Germany\'s Mosel & Rheingau.'},{q:'Usually triple-distilled & unpeated?',o:['Scotch','Irish Whiskey','Bourbon','Cognac'],a:1,e:'Irish whiskey — smoother, lighter.'},{q:'WSET SAT assesses in which order?',o:['Palate→Nose→Appearance','Appearance→Nose→Palate→Conclusion','Nose→Palate→Appearance','Conclusion→Palate'],a:1,e:'Appearance, Nose, Palate, Conclusion.'}];
+/* ---- KB ---- */
+const KB={wine:[{n:'Cabernet Sauvignon',t:['cabernet','bordeaux'],o:'Bordeaux / Napa',d:'Full-bodied, high tannin. Blackcurrant, cedar, graphite, mint.'},{n:'Merlot',t:['merlot'],o:'Bordeaux (Pomerol)',d:'Plush, round. Plum, black cherry, chocolate.'},{n:'Pinot Noir',t:['pinot','burgundy'],o:'Burgundy',d:'Light, perfumed, high acid. Red cherry, raspberry, forest floor.'},{n:'Syrah / Shiraz',t:['syrah','shiraz'],o:'Rhône / Barossa',d:'Powerful, dark. Blackberry, black pepper, smoked meat.'},{n:'Chardonnay',t:['chardonnay','chablis'],o:'Burgundy / Sonoma',d:'Steely Chablis to rich, buttery Napa. Apple, citrus, butter.'},{n:'Sauvignon Blanc',t:['sauvignon','sancerre'],o:'Loire / Marlborough',d:'Zesty, high acid. Grapefruit, passionfruit, cut grass.'},{n:'Riesling',t:['riesling','mosel'],o:'Germany / Alsace',d:'Aromatic, high acid. Lime, apple, jasmine, petrol.'},{n:'Nebbiolo',t:['nebbiolo','barolo'],o:'Piedmont',d:'Pale but fiercely tannic. Rose, tar, dried cherry, truffle.'},{n:'Sangiovese',t:['sangiovese','chianti'],o:'Tuscany',d:'Sour cherry, leather, herbs, earth. The grape of Chianti.'},{n:'Tempranillo',t:['tempranillo','rioja'],o:'Rioja / Ribera',d:'Strawberry, leather, tobacco, vanilla.'}],sake:[{n:'Junmai',t:['junmai'],o:'Japan',d:'Pure rice — no added alcohol. Full body, rich, earthy.'},{n:'Honjōzō',t:['honjozo'],o:'Japan',d:'A little brewer\'s alcohol added. Lighter, smoother.'},{n:'Ginjō',t:['ginjo'],o:'Japan',d:'Polished ≥60%. Fruity, floral (apple, melon, anise).'},{n:'Daiginjō',t:['daiginjo'],o:'Japan',d:'Polished ≥50%. Intensely aromatic, refined.'},{n:'Nigori',t:['nigori'],o:'Japan',d:'Coarsely filtered — cloudy, creamy. Sweet, dessert-like.'},{n:'Namazake',t:['nama'],o:'Japan',d:'Unpasteurized — fresh, vivid.'}],whisky:[{n:'Speyside Single Malt',t:['speyside','macallan'],o:'Scotland, Speyside',d:'Smooth, honeyed, orchard fruit, often sherry-casked.'},{n:'Highland Single Malt',t:['highland'],o:'Scotland, Highlands',d:'Heather, honey, spice, a wisp of smoke.'},{n:'Islay Single Malt',t:['islay','peaty','laphroaig'],o:'Scotland, Islay',d:'Peaty & smoky — medicinal, seaweed, brine, iodine.'},{n:'Lowland Single Malt',t:['lowland'],o:'Scotland, Lowlands',d:'Light, grassy, floral, gentle.'},{n:'Campbeltown',t:['campbeltown','springbank'],o:'Scotland, Campbeltown',d:'Briny, smoky, oily, complex.'},{n:'Bourbon',t:['bourbon','kentucky'],o:'USA, Kentucky',d:'≥51% corn, new charred oak. Sweet, vanilla, caramel.'},{n:'Tennessee Whiskey',t:['tennessee'],o:'USA, Tennessee',d:'Charcoal-mellowed bourbon. Smoother.'},{n:'Irish Whiskey',t:['irish','jameson'],o:'Ireland',d:'Triple-distilled, unpeated. Smooth, light, honey.'},{n:'Japanese Whisky',t:['japanese','yamazaki','hibiki'],o:'Japan',d:'Modeled on Scotch; renowned for poise and balance.'},{n:'Rye Whiskey',t:['rye'],o:'USA / Canada',d:'≥51% rye. Spicier, peppery, drier than bourbon.'}],coffee:[{n:'Ethiopia (Yirgacheffe)',t:['ethiopia','yirgacheffe'],o:'Ethiopia',d:'Floral, jasmine, bergamot, blueberry, bright citrus.'},{n:'Colombia',t:['colombia'],o:'Colombia',d:'Balanced, sweet. Caramel, milk chocolate, red apple.'},{n:'Brazil',t:['brazil'],o:'Brazil',d:'Low acid, heavy body, nutty, chocolate, caramel.'},{n:'Kenya (AA)',t:['kenya'],o:'Kenya',d:'Bright, winey acidity. Blackcurrant, blackberry.'},{n:'Guatemala (Antigua)',t:['guatemala','antigua'],o:'Guatemala',d:'Full body, bright acid. Cocoa, baking spice, toffee.'},{n:'Sumatra',t:['sumatra','indonesia'],o:'Indonesia',d:'Heavy body, low acid, earthy, herbal. Cedar, dark chocolate.'},{n:'Costa Rica (Tarrazú)',t:['costa rica','tarrazu'],o:'Costa Rica',d:'Clean, bright, high-grown. Citrus, honey, almond.'},{n:'Jamaica Blue Mountain',t:['jamaica'],o:'Jamaica',d:'Rare, mild. Very smooth, low acid.'}]};
+const PROCESSING=[{n:'Washed / Wet',d:'Cherry removed, fermented & washed. Clean, bright, acidic.'},{n:'Natural / Dry',d:'Dried in cherry. Fruity, heavy body.'},{n:'Honey / Pulped Natural',d:'Some mucilage left. Sweet, balanced.'}];
+const QBANK=[{q:'Which Scotch region is famous for peaty, smoky malts?',o:['Speyside','Islay','Lowland','Campbeltown'],a:1,e:'Islay — Laphroaig, Ardbeg, Lagavulin.'},{q:'Pinot Noir is most celebrated in?',o:['Bordeaux','Napa','Burgundy','Rioja'],a:2,e:'Red Burgundy is 100% Pinot Noir.'},{q:'"Seimaibuai" in sake is the?',o:['Ferment temp','Rice polishing ratio','Bottle size','Brewer rank'],a:1,e:'% of grain left after polishing.'},{q:'Which coffee origin = floral jasmine & blueberry?',o:['Brazil','Ethiopia','Sumatra','Jamaica'],a:1,e:'Ethiopia / Yirgacheffe.'},{q:'Bourbon needs at least what % corn?',o:['41%','51%','61%','71%'],a:1,e:'≥51% corn, new charred oak.'},{q:'Left-Bank Bordeaux is dominated by?',o:['Merlot','Cabernet Sauvignon','Pinot Noir','Syrah'],a:1,e:'Left-Bank = Cab-dominant.'},{q:'"Junmai" sake contains?',o:['Added alcohol','No added alcohol','Carbonation','Oak aging'],a:1,e:'Junmai = pure rice.'},{q:'Wet-hulling is associated with?',o:['Ethiopia','Colombia','Sumatra','Kenya'],a:2,e:'Sumatra — earthy, heavy-bodied.'},{q:'Filtered through sugar-maple charcoal?',o:['Bourbon','Tennessee Whiskey','Irish','Rye'],a:1,e:'Lincoln County Process (Jack Daniel\'s).'},{q:'Riesling is most classically from?',o:['France','Italy','Germany','Spain'],a:2,e:'Germany\'s Mosel & Rheingau.'},{q:'Usually triple-distilled & unpeated?',o:['Scotch','Irish Whiskey','Bourbon','Cognac'],a:1,e:'Irish whiskey — smoother, lighter.'},{q:'WSET SAT assesses in which order?',o:['Palate→Nose→Appearance','Appearance→Nose→Palate→Conclusion','Nose→Palate→Appearance','Conclusion→Palate'],a:1,e:'Appearance, Nose, Palate, Conclusion.'}];
 
 /* ---- router ---- */
-function go(view){curView=view;$$('.view').forEach(v=>v.classList.remove('active'));$('#view-'+view).classList.add('active');$$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.view===view));$('#fabAdd').classList.toggle('hidden',view==='search');window.scrollTo({top:0,behavior:'instant'});if(view==='home')renderHome();if(view==='library')renderLibrary();}
+function go(view){curView=view;$$('.view').forEach(v=>v.classList.remove('active'));$('#view-'+view).classList.add('active');$$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.view===view));$('#fabAdd').classList.toggle('hidden',view==='add');window.scrollTo({top:0,behavior:'instant'});if(view==='home')renderHome();if(view==='library')renderLibrary();}
 
 /* ---- home ---- */
 async function refreshCache(){try{drinksCache=await dbAll();drinksCache.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));}catch(e){drinksCache=[];}}
@@ -475,31 +407,20 @@ function renderHome(){
   const wrap=$('#homeContent');const hr=new Date().getHours();
   $('#greetHi').textContent=hr<5?'Good night':hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
   $('#greetYou').innerHTML=drinksCache.length?`You've poured <b>${drinksCache.length}</b> ${drinksCache.length===1?'bottle':'bottles'}`:'Start your cellar';
-  if(!drinksCache.length){wrap.innerHTML=`<div class="card" style="margin-top:18px;padding:18px"><div class="hero empty"><div class="in"><span class="big">🍷</span><div style="font-family:var(--serif);font-size:1.2rem;color:var(--text);margin-bottom:4px">Find your first bottle</div><div style="font-size:.84rem">Tap the gold <b style="color:var(--gold-2)">+</b> button, search a name, and we'll find the label for you.</div></div></div></div>`;return;}
+  if(!drinksCache.length){wrap.innerHTML=`<div class="card" style="margin-top:18px;padding:18px"><div class="hero empty"><div class="in"><span class="big">🍷</span><div style="font-family:var(--serif);font-size:1.2rem;color:var(--text);margin-bottom:4px">Add your first bottle</div><div style="font-size:.84rem">Tap the gold <b style="color:var(--gold-2)">+</b>, type a name, and the AI fills in the details.</div></div></div></div>`;return;}
   const featured=drinksCache.find(d=>d.rating>=4)||drinksCache[0];const rated=drinksCache.filter(d=>d.rating);const avgR=avg(rated.map(d=>d.rating));
   const byType={wine:0,sake:0,whisky:0,coffee:0};drinksCache.forEach(d=>byType[d.type]=(byType[d.type]||0)+1);
   const vC={},oC={};drinksCache.forEach(d=>{(d.variety||'').split(/[,/]/).map(s=>s.trim()).filter(Boolean).forEach(v=>vC[v.toLowerCase()]=(vC[v.toLowerCase()]||0)+1);(d.origin||'').split(/[,;]/).map(s=>s.trim()).filter(Boolean).forEach(o=>oC[o.toLowerCase()]=(oC[o.toLowerCase()]||0)+1);});
-  const topV=topN(vC,1)[0],topO=topN(oC,1)[0];const recs=buildRecs(drinksCache,byType,featured,topV,topO);
+  const topV=topN(vC,1)[0],topO=topN(oC,1)[0];
   wrap.innerHTML=`
     <div class="hero" id="heroFeat" style="margin-top:16px">${featured.imageBase64?`<div class="bg" style="background-image:url('${featured.imageBase64}')"></div>`:''}<div class="scrim"></div><div class="body"><div class="kicker">${featured.rating>=4?'★ Top rated':'Most recent'}</div><div class="name">${esc(featured.name)}</div><div class="meta"><span class="tchip ${featured.type}">${TYPE[featured.type].emoji} ${TYPE[featured.type].label}</span>${featured.rating?stars(featured.rating,'sm'):''}${featured.origin?`<span>· ${esc(featured.origin)}</span>`:''}</div></div></div>
     <div class="stats"><div class="stat"><div class="n">${drinksCache.length}</div><div class="l">Bottles</div></div><div class="stat"><div class="n">${rated.length?avgR.toFixed(1):'—'}</div><div class="l">Avg ★</div></div><div class="stat"><div class="n">${Object.keys(vC).length}</div><div class="l">Varieties</div></div><div class="stat"><div class="n">${Object.keys(oC).length}</div><div class="l">Origins</div></div></div>
-    ${recs.length?`<div class="section"><div class="section-head"><div class="section-title">For <span class="em">you</span></div></div>${recs.map(r=>`<div class="rec" data-rec="${esc(r.id||'')}"><div class="ico">${r.ico}</div><div><div class="t">${esc(r.t)}</div><div class="r">${esc(r.r)}</div></div></div>`).join('')}</div>`:''}
     <div class="section"><div class="section-head"><div class="section-title">Recently poured</div><button class="link-btn" data-go="library">See all →</button></div><div class="grid">${drinksCache.slice(0,6).map(dcardHtml).join('')}</div></div>`;
   $('#heroFeat')&&$('#heroFeat').addEventListener('click',()=>openDetail(featured.id));
   wrap.querySelectorAll('.dcard').forEach(c=>c.addEventListener('click',()=>openDetail(c.dataset.id)));
   wrap.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
-  wrap.querySelectorAll('[data-rec]').forEach(el=>el.addEventListener('click',()=>{const r=recs.find(x=>(x.id||'')===el.dataset.rec);if(r&&r.seed)seedSearch(r.seed);}));
 }
-function buildRecs(drinks,byType,featured,topV,topO){
-  const R=[];
-  if(featured){const kb=findKb(featured);R.push({id:'r1',ico:'⭐',t:`Because you liked ${featured.name}`,r:kb?`Try ${kb.n} next — same style.`:`Explore more ${featured.variety||featured.origin||TYPE[featured.type].label.toLowerCase()}.`,seed:{kw:kb?kb.n:featured.name,type:featured.type}});}
-  const order=['wine','sake','whisky','coffee'].sort((a,b)=>byType[a]-byType[b]);const least=order[0];
-  if(byType[least]<=byType[order[3]]/2&&KB[least]){const pk=KB[least][drinks.length%KB[least].length];R.push({id:'r2',ico:'🌱',t:`Branch into ${TYPE[least].label}`,r:`Only ${byType[least]} logged. Start with ${pk.n}.`,seed:{kw:pk.n,type:least}});}
-  if(topO)R.push({id:'r3',ico:'🗺️',t:`Your house region: ${cap(topO[0])}`,r:`${topO[1]} from here — keep one on hand.`,seed:null});
-  return R;
-}
-function findKb(d){const pool=KB[d.type]||[];const hay=(d.variety+' '+d.origin+' '+d.flavor).toLowerCase();return pool.find(k=>{const t=(k.n+' '+(k.t||[]).join(' ')+' '+k.d).toLowerCase();return k.t&&k.t.some(tg=>hay.includes(tg.toLowerCase()))||(d.origin&&t.includes((d.origin.split(/[;,]/)[0]).toLowerCase()));})||null;}
-const dcardHtml=d=>{const ph="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232f251c'/%3E%3Ctext x='50' y='60' font-size='34' text-anchor='middle'%3E"+TYPE[d.type].emoji+"%3C/text%3E%3C/svg%3E";return `<div class="dcard" data-id="${d.id}"><div class="img" style="background-image:url('${d.imageBase64||ph}')"><div class="stripe ${d.type}"></div></div><div class="info"><div class="nm">${esc(d.name)}</div><div class="sub">${esc([d.variety,d.origin].filter(Boolean).join(' · ')||TYPE[d.type].label)}</div>${d.rating?`<div class="rt">${stars(d.rating,'sm')}</div>`:''}</div></div>`;};
+const dcardHtml=d=>`<div class="dcard" data-id="${d.id}"><div class="stripe ${d.type}"></div><div class="info"><div class="nm">${esc(d.name)}</div><div class="sub">${esc([d.variety,d.origin].filter(Boolean).join(' · ')||TYPE[d.type].label)}</div>${d.rating?`<div class="rt">${stars(d.rating,'sm')}</div>`:''}</div></div>`;
 
 /* ---- library ---- */
 function renderLibrary(){
@@ -509,17 +430,16 @@ function renderLibrary(){
   if(libFilter!=='all')list=list.filter(d=>d.type===libFilter);
   if(libSearch){const q=libSearch.toLowerCase();list=list.filter(d=>[d.name,d.variety,d.origin,d.flavor,d.pairing].join(' ').toLowerCase().includes(q));}
   list.sort((a,b)=>{if(libSort==='newest')return new Date(b.createdAt)-new Date(a.createdAt);if(libSort==='oldest')return new Date(a.createdAt)-new Date(b.createdAt);if(libSort==='name')return(a.name||'').localeCompare(b.name||'');if(libSort==='rating')return(b.rating||0)-(a.rating||0);return 0;});
-  grid.innerHTML=list.length?list.map(dcardHtml).join(''):`<div class="empty"><span class="ico">${libSearch?'🔍':'🍷'}</span><p>${libSearch?'Nothing matches.':libFilter==='all'?'No bottles yet. Tap + to find one.':'No '+TYPE[libFilter].label+' yet.'}</p></div>`;
+  grid.innerHTML=list.length?list.map(dcardHtml).join(''):`<div class="empty"><span class="ico">${libSearch?'🔍':'🍷'}</span><p>${libSearch?'Nothing matches.':libFilter==='all'?'No bottles yet. Tap + to add one.':'No '+TYPE[libFilter].label+' yet.'}</p></div>`;
   grid.querySelectorAll('.dcard').forEach(c=>c.addEventListener('click',()=>openDetail(c.dataset.id)));
 }
 
-/* ---- detail sheet ---- */
+/* ---- detail ---- */
 function openDetail(id){
   const d=drinksCache.find(x=>x.id===id);if(!d)return;const sat=d.sat||{};
   const hasProf=['body','acidity','sweet','tannin','alcohol','finish'].some(k=>sat[k]);
   const plab={body:'Body',acidity:'Acidity',sweet:'Sweet',tannin:'Tannin',alcohol:'Alcohol',finish:'Finish'};
-  const ph="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232f251c'/%3E%3Ctext x='50' y='58' font-size='30' text-anchor='middle'%3E"+TYPE[d.type].emoji+"%3C/text%3E%3C/svg%3E";
-  $('#sheetBody').innerHTML=`<button class="sheet-close close-x" id="dClose">✕</button>${d.imageBase64?`<div class="detail-hero" style="background-image:url('${d.imageBase64}')"></div>`:`<div class="detail-hero" style="background-image:url('${ph}');background-color:var(--surface-2)"></div>`}<div class="detail-name">${esc(d.name)}</div><div class="detail-meta"><span class="tchip ${d.type}">${TYPE[d.type].emoji} ${TYPE[d.type].label}</span>${d.rating?stars(d.rating,'md'):'<span style="color:var(--text-4);font-size:.82rem">unrated</span>'}</div><div class="detail-meta" style="margin-top:4px">${[d.variety,d.origin].filter(Boolean).map(esc).join(' · ')}${d.abv?' · '+esc(d.abv)+'% ABV':''}${d.price?' · '+esc(d.price):''}</div>${d.flavor?`<div class="detail-sec"><div class="h">Tasting notes</div><p>${esc(d.flavor)}</p></div>`:''}${d.pairing?`<div class="detail-sec"><div class="h">Pairings</div><div class="tags">${d.pairing.split(',').map(s=>s.trim()).filter(Boolean).map(p=>`<span class="tag">${esc(p)}</span>`).join('')}</div></div>`:''}${hasProf?`<div class="detail-sec"><div class="h">Tasting profile</div><div class="bars">${['body','acidity','sweet','tannin','alcohol','finish'].filter(k=>sat[k]).map(k=>`<div class="bar"><span class="bl">${plab[k]}</span><span class="bt"><span class="bf" style="width:${sat[k]/5*100}%"></span></span><span class="bv">${sat[k]}</span></div>`).join('')}</div></div>`:''}${d.summary?`<div class="detail-sec"><div class="h">Summary</div><p style="white-space:pre-wrap">${esc(d.summary)}</p></div>`:''}<div style="color:var(--text-4);font-size:.74rem;margin-top:18px">📅 ${fmtDate(d.createdAt)}</div><div class="detail-actions"><button class="btn" id="dTts">🔊 Read</button><button class="btn btn-primary" id="dEdit">✏️ Edit</button><button class="btn" id="dDel" style="margin-left:auto;color:var(--red)">🗑 Delete</button></div>`;
+  $('#sheetBody').innerHTML=`<button class="sheet-close close-x" id="dClose">✕</button><div class="detail-name">${esc(d.name)}</div><div class="detail-meta"><span class="tchip ${d.type}">${TYPE[d.type].emoji} ${TYPE[d.type].label}</span>${d.rating?stars(d.rating,'md'):'<span style="color:var(--text-4);font-size:.82rem">unrated</span>'}</div><div class="detail-meta" style="margin-top:4px">${[d.variety,d.origin].filter(Boolean).map(esc).join(' · ')}${d.abv?' · '+esc(d.abv)+'% ABV':''}${d.price?' · '+esc(d.price):''}</div>${d.flavor?`<div class="detail-sec"><div class="h">Tasting notes</div><p>${esc(d.flavor)}</p></div>`:''}${d.pairing?`<div class="detail-sec"><div class="h">Pairings</div><div class="tags">${d.pairing.split(',').map(s=>s.trim()).filter(Boolean).map(p=>`<span class="tag">${esc(p)}</span>`).join('')}</div></div>`:''}${hasProf?`<div class="detail-sec"><div class="h">Tasting profile</div><div class="bars">${['body','acidity','sweet','tannin','alcohol','finish'].filter(k=>sat[k]).map(k=>`<div class="bar"><span class="bl">${plab[k]}</span><span class="bt"><span class="bf" style="width:${sat[k]/5*100}%"></span></span><span class="bv">${sat[k]}</span></div>`).join('')}</div></div>`:''}${d.summary?`<div class="detail-sec"><div class="h">Summary</div><p>${esc(d.summary)}</p></div>`:''}<div style="color:var(--text-4);font-size:.74rem;margin-top:18px">📅 ${fmtDate(d.createdAt)}</div><div class="detail-actions"><button class="btn" id="dTts">🔊 Read</button><button class="btn btn-primary" id="dEdit">✏️ Edit</button><button class="btn" id="dDel" style="margin-left:auto;color:var(--red)">🗑 Delete</button></div>`;
   openSheet();$('#dClose').onclick=closeSheet;
   $('#dTts').onclick=()=>speak(`${d.name}. ${d.variety||''}. From ${d.origin||'an unspecified origin'}. Notes: ${d.flavor||'none'}. ${d.summary||''}`,getSettings().ttsRate);
   $('#dEdit').onclick=()=>{closeSheet();loadIntoForm(d);};
@@ -528,89 +448,43 @@ function openDetail(id){
 const openSheet=()=>{$('#scrim').classList.add('open');$('#sheet').classList.add('open');document.body.classList.add('no-scroll');};
 const closeSheet=()=>{$('#scrim').classList.remove('open');$('#sheet').classList.remove('open');document.body.classList.remove('no-scroll');};
 
-/* ---- search / form ---- */
+/* ---- add form ---- */
 function buildProfSliders(){const wrap=$('#profSliders');wrap.innerHTML='';PROF.forEach(([k,l])=>{const it=document.createElement('div');it.className='it';it.innerHTML=`<div class="lab"><span>${l}</span><span class="v" id="pv-${k}">—</span></div><input type="range" min="0" max="5" step="1" value="0" id="pf-${k}">`;wrap.appendChild(it);const inp=it.querySelector('input'),val=it.querySelector('.v');inp.addEventListener('input',()=>{val.textContent=inp.value>0?inp.value+'/5':'—';});});}
 function showTannif(show){const el=$('#pf-tannin');if(el)el.closest('.it').style.display=show?'':'none';}
-function setFormType(t){formType=t;const act=t;$$('#typeSeg button').forEach(b=>{b.classList.remove('on','wine','sake','whisky','coffee');if(b.dataset.type===t)b.classList.add('on',t);});showTannif(t==='wine');}
+function setFormType(t){formType=t;$$('#typeSeg button').forEach(b=>{b.classList.remove('on','wine','sake','whisky','coffee');if(b.dataset.type===t)b.classList.add('on',t);});showTannif(t==='wine');}
 function renderRate(){$$('#ratePick .s').forEach(s=>s.classList.toggle('on',+s.dataset.v<=formRating));$('#fRating').value=formRating;}
-function setPreview(dataUrl,sourceLabel){
-  formImg=dataUrl;const p=$('#imgPreview');
-  if(dataUrl){$('#imgPreviewImg').src=dataUrl;$('#imgPreviewTag').textContent=sourceLabel||'photo';p.classList.add('show');}
-  else p.classList.remove('show');
-}
 function clearForm(){
   $('#fName').value='';$('#fVariety').value='';$('#fOrigin').value='';$('#fAbv').value='';$('#fPrice').value='';$('#fFlavor').value='';$('#fPairing').value='';$('#fSummary').value='';$('#fColor').value='';$('#fAroma').value='';$('#fConclusion').value='';
   PROF.forEach(([k])=>{const inp=$('#pf-'+k);if(inp){inp.value=0;$('#pv-'+k).textContent='—';}});
-  formRating=0;renderRate();$('#fEditId').value='';$('#btnCancel').style.display='none';setPreview('');setFormType('wine');
+  formRating=0;renderRate();$('#fEditId').value='';$('#btnCancel').style.display='none';setFormType('wine');
 }
 function loadIntoForm(d){
-  go('search');clearForm();
-  setFormType(d.type||'wine');$('#fEditId').value=d.id||'';$('#btnCancel').style.display='';
+  go('add');clearForm();setFormType(d.type||'wine');$('#fEditId').value=d.id||'';$('#btnCancel').style.display='';
   $('#fName').value=d.name||'';$('#fVariety').value=d.variety||'';$('#fOrigin').value=d.origin||'';$('#fAbv').value=d.abv||'';$('#fPrice').value=d.price||'';$('#fFlavor').value=d.flavor||'';$('#fPairing').value=d.pairing||'';$('#fSummary').value=d.summary||'';
   $('#fColor').value=(d.sat&&d.sat.color)||'';$('#fAroma').value=(d.sat&&d.sat.aroma)||'';$('#fConclusion').value=(d.sat&&d.sat.conclusion)||'';
   PROF.forEach(([k])=>{const v=(d.sat&&d.sat[k])||0;const inp=$('#pf-'+k);if(inp){inp.value=v;$('#pv-'+k).textContent=v>0?v+'/5':'—';}});
-  formRating=d.rating||0;renderRate();
-  if(d.imageBase64)setPreview(d.imageBase64,'saved photo');
-  $('#editBlock').style.display='';$('#searchResults').innerHTML='';
-  $('#kwInput').value=d.name||'';
-  $('#searchHint').textContent='Editing — review and tap Save.';
+  formRating=d.rating||0;renderRate();$('#kwInput').value=d.name||'';$('#addHint').textContent='Editing — review and tap Save.';
   toast('✏️ Editing — review and Save.');
 }
-function seedSearch(seed){go('search');clearForm();$('#kwInput').value=seed.kw||'';if(seed.type)setFormType(seed.type);doSearch();}
 function fillFromResult(r){if(r.type&&TYPE[r.type])setFormType(r.type);if(r.name)$('#fName').value=r.name;if(r.variety)$('#fVariety').value=r.variety;if(r.origin)$('#fOrigin').value=r.origin;if(r.flavor)$('#fFlavor').value=r.flavor;if(r.pairing)$('#fPairing').value=r.pairing;if(r.summary)$('#fSummary').value=r.summary;}
-
 async function doSearch(){
   const kw=$('#kwInput').value.trim();if(!kw){toast('⚠️ Type a bottle name first.');$('#kwInput').focus();return;}
   const s=getSettings();if(!s.apiKey){toast('⚠️ Add your GLM key in Settings first.');openSettings();return;}
   $('#editBlock').style.display='none';
-  $('#searchResults').innerHTML=`<div class="spin-block"><div class="spinner"></div><div>Searching "<b>${esc(kw)}</b>"…<br><span style="font-size:.78rem">AI is writing notes and finding label photos.</span></div></div>`;
-  $('#searchHint').textContent='';
-  const aiP=callAI({keyword:kw,fillAll:true});
-  const imgP=imageSearch(kw);
-  const [aiRes,imgRes]=await Promise.allSettled([aiP,imgP]);
-  const ai=aiRes.status==='fulfilled'?aiRes.value:null;
-  const imgs=imgRes.status==='fulfilled'?imgRes.value:(imgRes.reason?[ ]:[]);
-  // reset form, fill AI
+  $('#addSpin').innerHTML=`<div class="spin-block"><div class="spinner"></div><div>Writing notes for "<b>${esc(kw)}</b>"…</div></div>`;
+  $('#addHint').textContent='';
+  const ai=await callAI({keyword:kw,fillAll:true});
+  $('#addSpin').innerHTML='';
   clearForm();setFormType('wine');$('#fName').value=kw;
-  if(ai)fillFromResult(ai);
-  else toast('⚠️ AI summary failed — fill in manually or check Settings.');
-  // render gallery + form
-  let galleryHtml='';
-  if(imgs&&imgs.length){
-    galleryHtml=`<div class="label">Is this your bottle? Tap one to confirm</div><div class="gallery" id="gallery">${imgs.slice(0,8).map((it,i)=>`<div class="gimg" data-i="${i}"><img src="${esc(it.thumb)}" loading="lazy" onerror="this.parentNode.style.display='none'"><div class="src">${esc((it.source||it.title||'').slice(0,40))}</div><div class="chk">✓</div></div>`).join('')}</div>`;
-  }else{
-    galleryHtml=`<div class="hint-line">Web image search is blocked in China. Use <b>📷 Identify my bottle</b> (above) to photograph yours, or <b>Add / replace photo</b> in the form.</div>`;
-  }
-  galleryHtml+=`<div class="btn-row"><label class="btn btn-ghost" style="cursor:pointer">📷 Upload your own photo<input type="file" id="ownPhoto" accept="image/*" style="display:none"></label></div>`;
-  $('#searchResults').innerHTML=galleryHtml;
-  // store imgs for selection
-  window._lastImgs=imgs||[];
-  $('#gallery')&&$$('#gallery .gimg').forEach(el=>el.addEventListener('click',()=>selectGallery(+el.dataset.i)));
-  const op=$('#ownPhoto');if(op)op.addEventListener('change',async e=>{const f=e.target.files[0];if(f){try{setPreview(await resizeFile(f),'your photo');toast('📷 Photo added');}catch(err){toast('❌ '+err.message);}e.target.value='';}});
+  if(ai){fillFromResult(ai);toast('✅ Details & summary ready — review, rate, and Save.');}
+  else toast('⚠️ AI failed — check Settings (use domestic endpoint + glm-4.6v-flash in China).');
   $('#editBlock').style.display='';
-  if(ai)toast('✅ Notes generated — confirm the photo, then Save.');
 }
-
-async function selectGallery(i){
-  const imgs=window._lastImgs||[];const it=imgs[i];if(!it)return;
-  $$('#gallery .gimg').forEach((el,j)=>el.classList.toggle('sel',j===i));
-  try{const dataUrl=await fetchToDataUrl(it.thumb);setPreview(dataUrl,(it.source||'').startsWith('http')?it.source:(it.source||'web'));toast('📷 Image selected');}
-  catch(e){setPreview(it.thumb,it.source||'web');toast('📷 Image selected (linked).');}
-}
-async function identifyFromPhoto(){
-  const s=getSettings();if(!s.apiKey){toast('⚠️ Add your GLM key in Settings first.');openSettings();return;}
-  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';try{inp.setAttribute('capture','environment');}catch(e){}
-  inp.onchange=async e=>{const f=e.target.files[0];if(!f)return;let dataUrl;try{dataUrl=await resizeFile(f);}catch(err){toast('❌ '+err.message);return;}
-    clearForm();setPreview(dataUrl,'your photo');$('#editBlock').style.display='';$('#searchResults').innerHTML=`<div class="spin-block"><div class="spinner"></div><div>Identifying your bottle with GLM-4.6V…</div></div>`;$('#searchHint').textContent='';
-    const ai=await callAI({image:dataUrl});$('#searchResults').innerHTML='';
-    if(ai){fillFromResult(ai);setPreview(dataUrl,'your photo');toast('✅ Identified! Review, rate, and Save.');}else toast('⚠️ Could not identify — fill in manually.');};
-  inp.click();
-}
-function collectEntry(id,createdAt){const sat={};PROF.forEach(([k])=>{const v=parseInt($('#pf-'+k).value,10);if(v>0)sat[k]=v;});sat.color=$('#fColor').value.trim();sat.aroma=$('#fAroma').value.trim();sat.conclusion=$('#fConclusion').value.trim();return{id:id||(Date.now().toString(36)+Math.random().toString(36).slice(2,6)),createdAt:createdAt||new Date().toISOString(),type:formType,name:$('#fName').value.trim(),variety:$('#fVariety').value.trim(),origin:$('#fOrigin').value.trim(),abv:$('#fAbv').value.trim(),price:$('#fPrice').value.trim(),flavor:$('#fFlavor').value.trim(),pairing:$('#fPairing').value.trim(),summary:$('#fSummary').value.trim(),rating:formRating,sat,imageBase64:formImg||''};}
+function collectEntry(id,createdAt){const sat={};PROF.forEach(([k])=>{const v=parseInt($('#pf-'+k).value,10);if(v>0)sat[k]=v;});sat.color=$('#fColor').value.trim();sat.aroma=$('#fAroma').value.trim();sat.conclusion=$('#fConclusion').value.trim();return{id:id||(Date.now().toString(36)+Math.random().toString(36).slice(2,6)),createdAt:createdAt||new Date().toISOString(),type:formType,name:$('#fName').value.trim(),variety:$('#fVariety').value.trim(),origin:$('#fOrigin').value.trim(),abv:$('#fAbv').value.trim(),price:$('#fPrice').value.trim(),flavor:$('#fFlavor').value.trim(),pairing:$('#fPairing').value.trim(),summary:$('#fSummary').value.trim(),rating:formRating,sat,imageBase64:''};}
 async function saveEntry(){
   const name=$('#fName').value.trim();if(!name){toast('⚠️ Enter at least a name.');return;}
   const eid=$('#fEditId').value;let createdAt;if(eid){const p=drinksCache.find(d=>d.id===eid);if(p)createdAt=p.createdAt;}
-  try{await dbPut(collectEntry(eid||null,createdAt));toast(eid?'✅ Updated!':'✅ Saved to cellar!');clearForm();$('#editBlock').style.display='none';$('#searchResults').innerHTML='';$('#kwInput').value='';$('#searchHint').textContent='Type a bottle name. The AI writes the tasting notes; we\'ll find label photos to confirm it\'s the right one.';await refreshCache();go('home');}
+  try{await dbPut(collectEntry(eid||null,createdAt));toast(eid?'✅ Updated!':'✅ Saved to cellar!');clearForm();$('#editBlock').style.display='none';$('#kwInput').value='';$('#addHint').textContent='Type a bottle name and tap Go — the AI fills in the details and writes a tasting summary.';await refreshCache();go('home');}
   catch(e){toast('❌ Save failed: '+e.message);}
 }
 
@@ -619,7 +493,7 @@ let studyPane='ref';
 function renderStudyTabs(){$$('.study-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.pane===studyPane));$$('.pane').forEach(p=>p.classList.remove('active'));$('#pane-'+studyPane).classList.add('active');if(studyPane==='ref')renderRef();if(studyPane==='fc')renderFcDecks();}
 function renderRef(){const grid=$('#catGrid');if(grid.dataset.built)return;grid.dataset.built='1';const cats=[{k:'wine',e:'🍷',t:'Wine & Grapes',d:'Varieties & regions'},{k:'sake',e:'🍶',t:'Sake',d:'Categories'},{k:'whisky',e:'🥃',t:'Whisky Regions',d:'Scotch & world'},{k:'coffee',e:'☕',t:'Coffee Origins',d:'Origins & processing'},{k:'method',e:'🎯',t:'Tasting Method',d:'The SAT approach'}];grid.innerHTML=cats.map(c=>`<div class="cat" data-k="${c.k}"><div class="e">${c.e}</div><div class="t">${c.t}</div><div class="d">${c.d}</div></div>`).join('');grid.querySelectorAll('.cat').forEach(el=>el.addEventListener('click',()=>showRef(el.dataset.k)));}
 function showRef(k){$('#catGrid').style.display='none';$('#refWrap').style.display='';const list=$('#refList');if(k==='method'){list.innerHTML='<div class="kb" style="border:none"><div class="kn">Systematic Approach (SAT)</div></div>'+['Appearance — clarity, intensity, color.','Nose — condition, intensity, aromas.','Palate — sweetness, acidity, tannin, alcohol, body, flavor, finish.','Conclusion — quality, readiness, reasoning.'].map(s=>`<div class="kb"><div class="kd">${esc(s)}</div></div>`).join('');return;}if(k==='coffee'){list.innerHTML='<div class="kb" style="border:none"><div class="kn">Origins</div></div>'+KB.coffee.map(kbRow).join('')+'<div class="kb" style="border:none;margin-top:8px"><div class="kn">Processing</div></div>'+PROCESSING.map(p=>`<div class="kb"><div class="kn">${esc(p.n)}</div><div class="kd">${esc(p.d)}</div></div>`).join('');return;}const titles={wine:'Grape varieties',sake:'Sake categories',whisky:'Regions & styles'};list.innerHTML=`<div class="kb" style="border:none"><div class="kn">${titles[k]}</div></div>`+(KB[k]||[]).map(kbRow).join('');}
-const kbRow=k=>`<div class="kb"><div><span class="kn">${esc(k.n)}</span><span class="ko">— ${esc(k.o)}</span></div>${k.t?`<div class="kt">${k.t.slice(0,4).map(t=>`<span>${esc(t)}</span>`).join('')}</div>`:''}<div class="kd">${esc(k.d)}</div></div>`;
+const kbRow=k=>`<div class="kb"><div><span class="kn">${esc(k.n)}</span><span class="ko">— ${esc(k.o)}</span></div>${k.t?`<div class="kd" style="margin-top:4px">${esc(k.d)}</div>`:`<div class="kd">${esc(k.d)}</div>`}</div>`;
 function backRef(){$('#refWrap').style.display='none';$('#catGrid').style.display='';}
 const FC_KEY='decanter_fc_v2';const fcProg=()=>{try{return JSON.parse(localStorage.getItem(FC_KEY)||'{}');}catch(e){return{};}};const fcProgSet=p=>localStorage.setItem(FC_KEY,JSON.stringify(p));
 function kbCards(){const c=[];Object.keys(KB).forEach(tp=>KB[tp].forEach(k=>c.push({id:'kb:'+tp+':'+k.n,front:k.n,back:`${TYPE[tp].emoji} ${esc(k.o)} — ${esc(k.d)}`})));return c;}
@@ -637,7 +511,7 @@ function answerQuiz(i){if(qAns)return;qAns=true;const q=qQ[qI],ok=i===q.a;if(ok)
 function quizResults(){const pct=Math.round(qScore/qQ.length*100);let g='Keep tasting!',e='🥲';if(pct>=90){g='Master Sommelier-tier!';e='🏆';}else if(pct>=70){g='Excellent palate!';e='🎖️';}else if(pct>=50){g='Solid — keep going.';e='👍';}$('#qzSession').innerHTML=`<div style="text-align:center;padding:24px 0"><div style="font-size:3rem">${e}</div><div style="font-family:var(--serif);font-size:1.7rem;color:var(--gold-2);margin-top:6px">${qScore} / ${qQ.length}</div><div style="color:var(--text-3)">${g}</div><button class="btn btn-primary" id="qAgain" style="margin-top:18px">↻ Play again</button></div>`;$('#qAgain').onclick=startQuiz;}
 
 /* ---- settings ---- */
-function openSettings(){const s=getSettings();$('#setKey').value=s.apiKey||'';$('#setModel').value=[...$('#setModel').options].some(o=>o.value===s.model)?s.model:'glm-5-turbo';$('#setEndpoint').value=[...$('#setEndpoint').options].some(o=>o.value===s.endpoint)?s.endpoint:'https://api.z.ai/api/coding/paas/v4/chat/completions';$('#setGKey').value=s.googleKey||'';$('#setGCx').value=s.googleCx||'';$('#setTts').value=s.ttsRate;$('#ttsLbl').textContent=s.ttsRate.toFixed(1)+'×';$('#diag').style.display='none';$('#settingsModal').classList.add('open');}
+function openSettings(){const s=getSettings();$('#setKey').value=s.apiKey||'';$('#setModel').value=[...$('#setModel').options].some(o=>o.value===s.model)?s.model:'glm-4.6v-flash';$('#setEndpoint').value=[...$('#setEndpoint').options].some(o=>o.value===s.endpoint)?s.endpoint:'https://open.bigmodel.cn/api/paas/v4/chat/completions';$('#setTts').value=s.ttsRate;$('#ttsLbl').textContent=s.ttsRate.toFixed(1)+'×';$('#diag').style.display='none';$('#settingsModal').classList.add('open');}
 
 /* ---- export/import ---- */
 async function exportData(){const d=await dbAll();const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=`jp-decanter-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(u);toast('📥 Exported!');}
@@ -646,46 +520,36 @@ async function importData(file){try{const arr=JSON.parse(await file.text());if(!
 /* ---- wiring ---- */
 function bind(){
   $$('.tab').forEach(t=>t.addEventListener('click',()=>go(t.dataset.view)));
-  $('#fabAdd').addEventListener('click',()=>{go('search');$('#editBlock').style.display='none';$('#searchResults').innerHTML='';$('#kwInput').value='';$('#searchHint').textContent='Type a bottle name. The AI writes the tasting notes; we\'ll find label photos to confirm it\'s the right one.';setTimeout(()=>$('#kwInput').focus(),200);});
-  $('#topSearch').addEventListener('click',()=>{go('search');setTimeout(()=>$('#kwInput').focus(),200);});
+  $('#fabAdd').addEventListener('click',()=>{go('add');$('#editBlock').style.display='none';$('#addSpin').innerHTML='';$('#kwInput').value='';$('#addHint').textContent='Type a bottle name and tap Go — the AI fills in the details and writes a tasting summary.';setTimeout(()=>$('#kwInput').focus(),200);});
   $('#topSettings').addEventListener('click',openSettings);
-  // search view
   $('#kwSearch').addEventListener('click',doSearch);
   $('#kwInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doSearch();}});
-  $('#imgClear').addEventListener('click',()=>setPreview(''));
-  $('#btnIdentify').addEventListener('click',identifyFromPhoto);
-  $('#attachPhoto').addEventListener('change',async e=>{const f=e.target.files[0];if(f){try{setPreview(await resizeFile(f),'your photo');toast('📷 Photo added');}catch(err){toast('❌ '+err.message);}e.target.value='';}});
   $$('#typeSeg button').forEach(b=>b.addEventListener('click',()=>setFormType(b.dataset.type)));
   $$('#ratePick .s').forEach(s=>s.addEventListener('click',()=>{formRating=+s.dataset.v;renderRate();}));
   $('#btnSave').addEventListener('click',saveEntry);
-  $('#btnCancel').addEventListener('click',()=>{clearForm();$('#editBlock').style.display='none';$('#searchResults').innerHTML='';go('home');});
-  // library
+  $('#btnCancel').addEventListener('click',()=>{clearForm();$('#editBlock').style.display='none';go('home');});
   $('#libSearch').addEventListener('input',e=>{libSearch=e.target.value;renderLibrary();});
   $('#libSort').addEventListener('change',e=>{libSort=e.target.value;renderLibrary();});
   $('#btnExport').addEventListener('click',exportData);
   $('#btnImport').addEventListener('click',()=>$('#importFile').click());
   $('#importFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)importData(f);e.target.value='';});
-  // detail
   $('#scrim').addEventListener('click',closeSheet);
-  // study
   $$('.study-tabs button').forEach(b=>b.addEventListener('click',()=>{studyPane=b.dataset.pane;renderStudyTabs();}));
   $('#refBack').addEventListener('click',backRef);
   $('#qzStart').addEventListener('click',startQuiz);
-  // settings
   $('#setClose').addEventListener('click',()=>$('#settingsModal').classList.remove('open'));
   $('#settingsModal').addEventListener('click',e=>{if(e.target===$('#settingsModal'))$('#settingsModal').classList.remove('open');});
   $('#setTts').addEventListener('input',e=>$('#ttsLbl').textContent=parseFloat(e.target.value).toFixed(1)+'×');
-  $('#gGuide').addEventListener('click',e=>{e.preventDefault();alert('Google image setup (one-time, ~5 min):\n\n1) Go to programmablesearchengine.google.com → Create a search engine.\n2) Set it to "Search the entire web" and turn ON "Image search".\n3) Copy your Search engine ID (cx) → paste in "Custom Search Engine ID".\n4) Go to console.cloud.google.com → enable "Custom Search API" → create an API key.\n5) Paste the API key here.\n\nFree: 100 searches/day. Until then the app uses Wikipedia (keyless).');});
-  $('#setSave').addEventListener('click',()=>{saveSettings({apiKey:$('#setKey').value.trim(),model:$('#setModel').value,endpoint:$('#setEndpoint').value,ttsRate:parseFloat($('#setTts').value),googleKey:$('#setGKey').value.trim(),googleCx:$('#setGCx').value.trim()});$('#settingsModal').classList.remove('open');toast('⚙️ Settings saved!');});
-  $('#btnTest').addEventListener('click',()=>{const b=$('#btnTest');b.disabled=true;b.textContent='Testing…';saveSettings(Object.assign({},getSettings(),{apiKey:$('#setKey').value.trim(),endpoint:$('#setEndpoint').value}));testConnection().finally(()=>{b.disabled=false;b.textContent='🔌 Test AI connection';});});
-  // keyboard
-  document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();if(curView==='search')saveEntry();}if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();if(curView==='search'&&document.activeElement===$('#kwInput'))doSearch();}if(e.key==='Escape'){closeSheet();$('#settingsModal').classList.remove('open');if('speechSynthesis'in window)window.speechSynthesis.cancel();}});
+  $('#setSave').addEventListener('click',()=>{saveSettings({apiKey:$('#setKey').value.trim(),model:$('#setModel').value,endpoint:$('#setEndpoint').value,ttsRate:parseFloat($('#setTts').value)});$('#settingsModal').classList.remove('open');toast('⚙️ Settings saved!');});
+  $('#btnTest').addEventListener('click',()=>{const b=$('#btnTest');b.disabled=true;b.textContent='Testing…';saveSettings(Object.assign({},getSettings(),{apiKey:$('#setKey').value.trim(),endpoint:$('#setEndpoint').value}));testConnection().finally(()=>{b.disabled=false;b.textContent='🔌 Test connection';});});
+  document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();if(curView==='add')saveEntry();}if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();if(curView==='add'&&document.activeElement===$('#kwInput'))doSearch();}if(e.key==='Escape'){closeSheet();$('#settingsModal').classList.remove('open');if('speechSynthesis'in window)window.speechSynthesis.cancel();}});
 }
 async function init(){
-  try{await openDB();console.log('🍷 JP Decanter v2 (keyword) DB ready');}catch(e){toast('⚠️ DB failed — private mode?');}
+  try{await openDB();console.log('🍷 JP Decanter v2 (lean) DB ready');}catch(e){toast('⚠️ DB failed — private mode?');}
   buildProfSliders();bind();setFormType('wine');renderRate();
   await refreshCache();renderHome();
-  if(!getSettings().apiKey)setTimeout(()=>toast('💡 Add your GLM key in ⚙️ Settings to enable AI.'),900);
+  const s=getSettings();if(!s.apiKey)setTimeout(()=>toast('💡 Add your GLM key in ⚙️ Settings (use domestic endpoint + glm-4.6v-flash in China).'),900);
+  else if(s.endpoint.indexOf('open.bigmodel.cn')<0)setTimeout(()=>toast('💡 In China? Settings → Endpoint → "open.bigmodel.cn (domestic)" — no VPN needed.'),1200);
 }
 init();
 </script>
