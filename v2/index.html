@@ -672,7 +672,7 @@ async function callAI({image,fillAll}){
   console.log(log.join('\n'));
   if(lastErr&&/Failed to fetch|NetworkError|load failed/i.test(lastErr.message))toast('❌ Network/CORS — try the other endpoint in Settings.');
   else if(lastErr&&(lastErr.status===401||lastErr.status===403))toast('❌ Auth failed — check your API key.');
-  else if(lastErr&&/1113|Insufficient balance/i.test(lastErr.message))toast('❌ Insufficient balance — pick a free model (glm-5-turbo / glm-4.6v-flash) in Settings.');
+  else if(lastErr&&/1113|Insufficient balance/i.test(lastErr.message))toast('❌ No balance on this endpoint — in Settings switch Endpoint to "api.z.ai (coding plan)".');
   else toast('❌ No model responded. Open Settings → Test connection.');
   return null;
 }
