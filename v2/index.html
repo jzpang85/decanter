@@ -259,12 +259,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
       <input id="kwInput" placeholder="e.g. Yamazaki 12, Château Margaux, Ethiopia Yirgacheffe…">
       <button id="kwSearch">🔍 Search</button>
     </div>
-    <div class="hint-line" id="searchHint">Type a bottle name. The AI writes the tasting notes; we'll find label photos to confirm it's the right one.</div>
+    <div class="btn-row" style="margin-top:10px"><button class="btn btn-primary btn-block" id="btnIdentify">📷 Identify my bottle from a photo</button></div>
+    <div class="hint-line" id="searchHint">Type a name for quick AI notes — or photograph your bottle to identify it. Works in China (your GLM plan only).</div>
     <div id="searchResults"></div>
 
     <!-- shared form fields (hidden until a search/edit loads them) -->
     <div id="editBlock" style="display:none">
       <div class="preview" id="imgPreview"><img id="imgPreviewImg" alt=""><span class="tag" id="imgPreviewTag">photo</span><button class="px" id="imgClear">✕</button></div>
+      <div class="btn-row" style="margin-top:0"><label class="btn btn-ghost btn-sm" style="cursor:pointer">📷 Add / replace photo<input type="file" id="attachPhoto" accept="image/*" style="display:none"></label></div>
 
       <div class="label">Type</div>
       <div class="seg" id="typeSeg">
@@ -577,7 +579,7 @@ async function doSearch(){
   if(imgs&&imgs.length){
     galleryHtml=`<div class="label">Is this your bottle? Tap one to confirm</div><div class="gallery" id="gallery">${imgs.slice(0,8).map((it,i)=>`<div class="gimg" data-i="${i}"><img src="${esc(it.thumb)}" loading="lazy" onerror="this.parentNode.style.display='none'"><div class="src">${esc((it.source||it.title||'').slice(0,40))}</div><div class="chk">✓</div></div>`).join('')}</div>`;
   }else{
-    galleryHtml=`<div class="label">No label photos found</div><div class="hint-line">You can upload your own photo below, or save without one.</div>`;
+    galleryHtml=`<div class="hint-line">Web image search is blocked in China. Use <b>📷 Identify my bottle</b> (above) to photograph yours, or <b>Add / replace photo</b> in the form.</div>`;
   }
   galleryHtml+=`<div class="btn-row"><label class="btn btn-ghost" style="cursor:pointer">📷 Upload your own photo<input type="file" id="ownPhoto" accept="image/*" style="display:none"></label></div>`;
   $('#searchResults').innerHTML=galleryHtml;
@@ -594,6 +596,15 @@ async function selectGallery(i){
   $$('#gallery .gimg').forEach((el,j)=>el.classList.toggle('sel',j===i));
   try{const dataUrl=await fetchToDataUrl(it.thumb);setPreview(dataUrl,(it.source||'').startsWith('http')?it.source:(it.source||'web'));toast('📷 Image selected');}
   catch(e){setPreview(it.thumb,it.source||'web');toast('📷 Image selected (linked).');}
+}
+async function identifyFromPhoto(){
+  const s=getSettings();if(!s.apiKey){toast('⚠️ Add your GLM key in Settings first.');openSettings();return;}
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';try{inp.setAttribute('capture','environment');}catch(e){}
+  inp.onchange=async e=>{const f=e.target.files[0];if(!f)return;let dataUrl;try{dataUrl=await resizeFile(f);}catch(err){toast('❌ '+err.message);return;}
+    clearForm();setPreview(dataUrl,'your photo');$('#editBlock').style.display='';$('#searchResults').innerHTML=`<div class="spin-block"><div class="spinner"></div><div>Identifying your bottle with GLM-4.6V…</div></div>`;$('#searchHint').textContent='';
+    const ai=await callAI({image:dataUrl});$('#searchResults').innerHTML='';
+    if(ai){fillFromResult(ai);setPreview(dataUrl,'your photo');toast('✅ Identified! Review, rate, and Save.');}else toast('⚠️ Could not identify — fill in manually.');};
+  inp.click();
 }
 function collectEntry(id,createdAt){const sat={};PROF.forEach(([k])=>{const v=parseInt($('#pf-'+k).value,10);if(v>0)sat[k]=v;});sat.color=$('#fColor').value.trim();sat.aroma=$('#fAroma').value.trim();sat.conclusion=$('#fConclusion').value.trim();return{id:id||(Date.now().toString(36)+Math.random().toString(36).slice(2,6)),createdAt:createdAt||new Date().toISOString(),type:formType,name:$('#fName').value.trim(),variety:$('#fVariety').value.trim(),origin:$('#fOrigin').value.trim(),abv:$('#fAbv').value.trim(),price:$('#fPrice').value.trim(),flavor:$('#fFlavor').value.trim(),pairing:$('#fPairing').value.trim(),summary:$('#fSummary').value.trim(),rating:formRating,sat,imageBase64:formImg||''};}
 async function saveEntry(){
@@ -642,6 +653,8 @@ function bind(){
   $('#kwSearch').addEventListener('click',doSearch);
   $('#kwInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doSearch();}});
   $('#imgClear').addEventListener('click',()=>setPreview(''));
+  $('#btnIdentify').addEventListener('click',identifyFromPhoto);
+  $('#attachPhoto').addEventListener('change',async e=>{const f=e.target.files[0];if(f){try{setPreview(await resizeFile(f),'your photo');toast('📷 Photo added');}catch(err){toast('❌ '+err.message);}e.target.value='';}});
   $$('#typeSeg button').forEach(b=>b.addEventListener('click',()=>setFormType(b.dataset.type)));
   $$('#ratePick .s').forEach(s=>s.addEventListener('click',()=>{formRating=+s.dataset.v;renderRate();}));
   $('#btnSave').addEventListener('click',saveEntry);
