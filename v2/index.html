@@ -3,185 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#15100c" media="(prefers-color-scheme: dark)">
-<meta name="description" content="JP Decanter — a beautiful journal and study companion for wine, sake, whisky, and coffee.">
+<meta name="theme-color" content="#15100c">
+<meta name="description" content="JP Decanter — search any bottle, confirm the label, and journal it with AI tasting notes.">
 <title>JP Decanter</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍷%3C/text%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="JP Decanter">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23e6c074'/%3E%3Cstop offset='1' stop-color='%23b8893a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='%2315100c'/%3E%3Ctext x='50' y='74' font-size='60' text-anchor='middle'%3E🍷%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%2315100c'/%3E%3Ctext x='50' y='74' font-size='60' text-anchor='middle'%3E🍷%3C/text%3E%3C/svg%3E">
 <style>
-/* ============================================================ JP DECANTER v2 */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-
 :root{
-  --bg:#15100c;
-  --bg-grad-1:#1c150f;
-  --bg-grad-2:#120d09;
-  --surface:#1f1812;
-  --surface-2:#271e17;
-  --surface-3:#2f251c;
-  --border:rgba(212,168,90,.12);
-  --border-strong:rgba(212,168,90,.25);
-  --text:#f1e8da;
-  --text-2:#b8a991;
-  --text-3:#847665;
-  --text-4:#574c40;
-  --gold:#d4a85a;
-  --gold-2:#e6c074;
-  --gold-soft:rgba(212,168,90,.12);
-  --wine:#d27a96;
-  --sake:#86c8ae;
-  --whisky:#e0a06a;
-  --coffee:#cf8a6c;
-  --green:#7fc6a0;
-  --red:#d97a7e;
-  --radius:18px;
-  --radius-sm:12px;
-  --radius-xs:9px;
-  --shadow-1:0 1px 2px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.25);
-  --shadow-2:0 8px 30px rgba(0,0,0,.45);
-  --shadow-gold:0 8px 24px rgba(212,168,90,.25);
+  --bg:#15100c;--bg-2:#120d09;--surface:#1f1812;--surface-2:#271e17;--surface-3:#2f251c;
+  --border:rgba(212,168,90,.12);--border-s:rgba(212,168,90,.25);
+  --text:#f1e8da;--text-2:#b8a991;--text-3:#847665;--text-4:#574c40;
+  --gold:#d4a85a;--gold-2:#e6c074;--gold-soft:rgba(212,168,90,.12);
+  --wine:#d27a96;--sake:#86c8ae;--whisky:#e0a06a;--coffee:#cf8a6c;--green:#7fc6a0;--red:#d97a7e;
+  --r:18px;--rs:12px;--rx:9px;
+  --sh1:0 1px 2px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.25);--sh2:0 8px 30px rgba(0,0,0,.45);--shg:0 8px 24px rgba(212,168,90,.25);
   --serif:'Iowan Old Style','Palatino Linotype','Palatino','Book Antiqua','Georgia',serif;
   --sans:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',system-ui,sans-serif;
-  --t:.28s cubic-bezier(.22,.61,.36,1);
-  --tab-h:64px;
-  --safe-b:env(safe-area-inset-bottom,0px);
-  --safe-t:env(safe-area-inset-top,0px);
+  --t:.28s cubic-bezier(.22,.61,.36,1);--tab-h:64px;--sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px);
 }
-
 html{font-size:16px;-webkit-text-size-adjust:100%}
-body{
-  font-family:var(--sans);
-  color:var(--text);
-  background:
-    radial-gradient(120% 80% at 50% -10%,var(--bg-grad-1) 0%,transparent 60%),
-    radial-gradient(100% 60% at 100% 100%,rgba(210,122,150,.05) 0%,transparent 50%),
-    var(--bg-grad-2);
-  background-attachment:fixed;
-  min-height:100dvh;
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
+body{font-family:var(--sans);color:var(--text);background:radial-gradient(120% 80% at 50% -10%,#1c150f 0%,transparent 60%),radial-gradient(100% 60% at 100% 100%,rgba(210,122,150,.05) 0%,transparent 50%),var(--bg-2);background-attachment:fixed;min-height:100dvh;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 body.no-scroll{overflow:hidden}
 
-/* ====================== TOP BAR ====================== */
-.topbar{
-  position:sticky;top:0;z-index:50;
-  padding:calc(var(--safe-t) + 12px) 18px 12px;
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  background:linear-gradient(180deg,rgba(21,16,12,.92) 0%,rgba(21,16,12,.7) 70%,transparent 100%);
-  backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);
-}
+.topbar{position:sticky;top:0;z-index:50;padding:calc(var(--st) + 12px) 18px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(180deg,rgba(21,16,12,.92) 0%,rgba(21,16,12,.7) 70%,transparent 100%);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2)}
 .wordmark{display:flex;align-items:baseline;gap:7px;font-family:var(--serif)}
+.wordmark .name{font-size:1.18rem;font-weight:600;background:linear-gradient(135deg,var(--gold-2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.wordmark .jp{font-size:.82rem;color:var(--text-3);font-style:italic}
 .wordmark .glass{font-size:1.3rem}
-.wordmark .name{font-size:1.18rem;font-weight:600;letter-spacing:.2px;background:linear-gradient(135deg,var(--gold-2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
-.wordmark .jp{font-size:.82rem;color:var(--text-3);font-style:italic;margin-left:1px}
 .topbar .actions{display:flex;gap:6px}
-.icon-btn{
-  width:40px;height:40px;border:none;border-radius:50%;
-  background:var(--surface-2);color:var(--text-2);
-  display:inline-flex;align-items:center;justify-content:center;
-  font-size:1.05rem;cursor:pointer;transition:var(--t);border:1px solid var(--border);
-}
+.icon-btn{width:40px;height:40px;border:none;border-radius:50%;background:var(--surface-2);color:var(--text-2);display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem;cursor:pointer;transition:var(--t);border:1px solid var(--border)}
 .icon-btn:hover{background:var(--surface-3);color:var(--text);transform:translateY(-1px)}
 .icon-btn:active{transform:scale(.94)}
 
-/* ====================== APP / VIEWS ====================== */
-.app{padding-bottom:calc(var(--tab-h) + var(--safe-b) + 24px)}
-.view{display:none;animation:viewIn .42s var(--t) both;padding:4px 16px 8px}
+.app{padding-bottom:calc(var(--tab-h) + var(--sb) + 24px)}
+.view{display:none;animation:vIn .42s var(--t) both;padding:4px 16px 8px}
 .view.active{display:block}
-@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
+@keyframes vIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .section{margin-top:26px}
 .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.section-title{font-family:var(--serif);font-size:1.16rem;color:var(--text);letter-spacing:.2px}
+.section-title{font-family:var(--serif);font-size:1.16rem}
 .section-title .em{color:var(--gold)}
 .link-btn{background:none;border:none;color:var(--gold);font-family:var(--sans);font-size:.84rem;cursor:pointer;padding:4px 6px;border-radius:8px}
 .link-btn:hover{background:var(--gold-soft)}
 
-/* ====================== GREETING ====================== */
 .greeting{padding:6px 2px 4px}
 .greeting .hi{font-size:.8rem;color:var(--text-3);text-transform:uppercase;letter-spacing:1.5px}
 .greeting .you{font-family:var(--serif);font-size:1.7rem;line-height:1.15;margin-top:2px}
 .greeting .you b{font-weight:600}
 
-/* ====================== CARDS ====================== */
-.card{
-  background:linear-gradient(180deg,var(--surface-2) 0%,var(--surface) 100%);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow-1);
-}
-
-/* stat strip */
+.card{background:linear-gradient(180deg,var(--surface-2) 0%,var(--surface) 100%);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh1)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 8px;text-align:center}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:12px 8px;text-align:center}
 .stat .n{font-family:var(--serif);font-size:1.4rem;color:var(--gold-2);line-height:1}
 .stat .l{font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.8px;margin-top:5px}
 
-/* ====================== HERO (featured drink) ====================== */
-.hero{
-  position:relative;border-radius:var(--radius);overflow:hidden;
-  border:1px solid var(--border-strong);min-height:200px;
-  display:flex;align-items:flex-end;
-  background:var(--surface-2);
-  cursor:pointer;transition:var(--t);
-}
-.hero:hover{transform:translateY(-2px);box-shadow:var(--shadow-2)}
-.hero .bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:saturate(1.05)}
+.hero{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--border-s);min-height:200px;display:flex;align-items:flex-end;background:var(--surface-2);cursor:pointer;transition:var(--t)}
+.hero:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.hero .bg{position:absolute;inset:0;background-size:cover;background-position:center}
 .hero .scrim{position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,11,8,.96) 0%,rgba(15,11,8,.55) 45%,rgba(15,11,8,.15) 100%)}
 .hero .body{position:relative;padding:16px 18px;width:100%}
 .hero .kicker{font-size:.66rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold)}
 .hero .name{font-family:var(--serif);font-size:1.45rem;line-height:1.15;margin:3px 0 6px}
 .hero .meta{font-size:.82rem;color:var(--text-2);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .hero.empty{display:flex;align-items:center;justify-content:center;text-align:center;color:var(--text-3);min-height:170px;border-style:dashed}
-.hero.empty .in{padding:22px}
-.hero.empty .big{font-size:2.4rem;display:block;margin-bottom:8px}
+.hero.empty .in{padding:22px}.hero.empty .big{font-size:2.4rem;display:block;margin-bottom:8px}
 
-/* type chip */
 .tchip{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:20px}
-.tchip.wine{background:rgba(210,122,150,.16);color:var(--wine)}
-.tchip.sake{background:rgba(134,200,174,.16);color:var(--sake)}
-.tchip.whisky{background:rgba(224,160,106,.18);color:var(--whisky)}
-.tchip.coffee{background:rgba(207,138,108,.2);color:var(--coffee)}
+.tchip.wine{background:rgba(210,122,150,.16);color:var(--wine)}.tchip.sake{background:rgba(134,200,174,.16);color:var(--sake)}.tchip.whisky{background:rgba(224,160,106,.18);color:var(--whisky)}.tchip.coffee{background:rgba(207,138,108,.2);color:var(--coffee)}
 
-/* ====================== STARS ====================== */
-.stars{display:inline-flex;gap:1px}
-.stars .s{color:var(--text-4);line-height:1;transition:var(--t)}
-.stars .s.on{color:var(--gold-2);text-shadow:0 0 6px rgba(230,192,116,.4)}
-.stars.pick .s{cursor:pointer;font-size:1.5rem}
-.stars.pick .s:hover{transform:scale(1.18)}
-.stars.sm .s{font-size:.84rem}
-.stars.md .s{font-size:1rem}
+.stars{display:inline-flex;gap:1px}.stars .s{color:var(--text-4);line-height:1;transition:var(--t)}.stars .s.on{color:var(--gold-2);text-shadow:0 0 6px rgba(230,192,116,.4)}
+.stars.pick .s{cursor:pointer;font-size:1.5rem}.stars.pick .s:hover{transform:scale(1.18)}
+.stars.sm .s{font-size:.84rem}.stars.md .s{font-size:1rem}
 
-/* ====================== RECOMMENDATIONS ====================== */
-.rec{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--radius-sm);background:var(--surface);margin-bottom:9px}
-.rec .ico{font-size:1.3rem;line-height:1.2}
-.rec .t{font-family:var(--serif);color:var(--text);font-size:.98rem}
-.rec .r{font-size:.78rem;color:var(--text-2);margin-top:2px;line-height:1.45}
+.rec{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--rs);background:var(--surface);margin-bottom:9px}
+.rec .ico{font-size:1.3rem;line-height:1.2}.rec .t{font-family:var(--serif);color:var(--text);font-size:.98rem}.rec .r{font-size:.78rem;color:var(--text-2);margin-top:2px;line-height:1.45}
 
-/* ====================== DRINK GRID ====================== */
 .toolbar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
-.search{flex:1;min-width:160px;position:relative}
-.search input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:999px;color:var(--text);padding:11px 16px 11px 40px;font-size:.92rem;font-family:var(--sans)}
-.search input:focus{outline:none;border-color:var(--border-strong)}
-.search .si{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-3)}
+.search-wrap{flex:1;min-width:160px;position:relative}
+.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:999px;color:var(--text);padding:11px 16px 11px 40px;font-size:.92rem;font-family:var(--sans)}
+.search-wrap input:focus{outline:none;border-color:var(--border-s)}
+.search-wrap .si{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-3)}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{padding:6px 13px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-size:.8rem;cursor:pointer;font-family:var(--sans);transition:var(--t)}
-.chip:hover{color:var(--text)}
-.chip.on{background:var(--gold-soft);border-color:var(--border-strong);color:var(--gold-2)}
+.chip:hover{color:var(--text)}.chip.on{background:var(--gold-soft);border-color:var(--border-s);color:var(--gold-2)}
 .sortsel{background:var(--surface);border:1px solid var(--border);color:var(--text-2);border-radius:999px;padding:7px 12px;font-size:.8rem;font-family:var(--sans)}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-.dcard{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);
-  overflow:hidden;cursor:pointer;transition:var(--t);position:relative;
-}
-.dcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-2);border-color:var(--border-strong)}
+.dcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;cursor:pointer;transition:var(--t);position:relative}
+.dcard:hover{transform:translateY(-3px);box-shadow:var(--sh2);border-color:var(--border-s)}
 .dcard .img{aspect-ratio:1/1;background:var(--surface-3);background-size:cover;background-position:center;position:relative}
 .dcard .stripe{position:absolute;top:0;left:0;width:4px;height:100%}
 .dcard .stripe.wine{background:var(--wine)}.dcard .stripe.sake{background:var(--sake)}.dcard .stripe.whisky{background:var(--whisky)}.dcard .stripe.coffee{background:var(--coffee)}
@@ -189,978 +103,575 @@ body.no-scroll{overflow:hidden}
 .dcard .nm{font-family:var(--serif);font-size:.92rem;line-height:1.2;color:var(--text);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.3em}
 .dcard .sub{font-size:.72rem;color:var(--text-3);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dcard .rt{margin-top:5px}
+.empty{text-align:center;padding:50px 20px;color:var(--text-3)}.empty .ico{font-size:2.8rem;display:block;margin-bottom:10px;opacity:.7}
 
-.empty{text-align:center;padding:50px 20px;color:var(--text-3)}
-.empty .ico{font-size:2.8rem;display:block;margin-bottom:10px;opacity:.7}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;height:calc(var(--tab-h) + var(--sb));padding-bottom:var(--sb);display:flex;align-items:center;justify-content:space-around;background:linear-gradient(180deg,rgba(21,16,12,.6) 0%,rgba(15,11,8,.96) 40%);backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);border-top:1px solid var(--border)}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--text-3);font-size:.64rem;cursor:pointer;padding:6px 18px;transition:var(--t);font-family:var(--sans);position:relative}
+.tab .ti{font-size:1.25rem;line-height:1}.tab.on{color:var(--gold-2)}.tab.on::before{content:'';position:absolute;top:0;width:24px;height:2px;border-radius:2px;background:var(--gold-2)}
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tab-h) + var(--sb) - 26px);z-index:61;width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#15100c;font-size:1.7rem;font-weight:600;display:flex;align-items:center;justify-content:center;box-shadow:var(--shg),0 4px 12px rgba(0,0,0,.4);transition:var(--t)}
+.fab:hover{transform:translateX(-50%) translateY(-2px) scale(1.04)}.fab:active{transform:translateX(-50%) scale(.92)}.fab.hidden{transform:translateX(-50%) scale(0);opacity:0;pointer-events:none}
 
-/* ====================== FAB + TAB BAR ====================== */
-.tabbar{
-  position:fixed;left:0;right:0;bottom:0;z-index:60;
-  height:calc(var(--tab-h) + var(--safe-b));
-  padding-bottom:var(--safe-b);
-  display:flex;align-items:center;justify-content:space-around;
-  background:linear-gradient(180deg,rgba(21,16,12,.6) 0%,rgba(15,11,8,.96) 40%);
-  backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);
-  border-top:1px solid var(--border);
-}
-.tab{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--text-3);font-size:.64rem;cursor:pointer;padding:6px 14px;transition:var(--t);font-family:var(--sans);position:relative}
-.tab .ti{font-size:1.25rem;line-height:1}
-.tab.on{color:var(--gold-2)}
-.tab.on .ti{transform:translateY(-1px)}
-.tab.on::before{content:'';position:absolute;top:0;width:24px;height:2px;border-radius:2px;background:var(--gold-2)}
-.fab{
-  position:fixed;left:50%;transform:translateX(-50%);
-  bottom:calc(var(--tab-h) + var(--safe-b) - 26px);z-index:61;
-  width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;
-  background:linear-gradient(135deg,var(--gold-2),var(--gold));
-  color:#15100c;font-size:1.7rem;font-weight:600;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:var(--shadow-gold),0 4px 12px rgba(0,0,0,.4);
-  transition:var(--t);
-}
-.fab:hover{transform:translateX(-50%) translateY(-2px) scale(1.04)}
-.fab:active{transform:translateX(-50%) scale(.92)}
-.fab.hidden{transform:translateX(-50%) scale(0);opacity:0;pointer-events:none}
-
-/* ====================== ADD/EDIT FULL VIEW ====================== */
-#view-add{padding-bottom:24px}
-.addhead{display:flex;align-items:center;justify-content:space-between;padding:4px 0 14px;position:sticky;top:calc(var(--safe-t) + 56px);z-index:5}
-.addhead .ttl{font-family:var(--serif);font-size:1.3rem}
-.sheet-close{background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+/* ---- search view ---- */
+.bigsearch{display:flex;gap:8px;margin:6px 0 4px}
+.bigsearch input{flex:1;background:var(--surface);border:1px solid var(--border-s);border-radius:999px;color:var(--text);padding:14px 18px;font-size:1rem;font-family:var(--sans)}
+.bigsearch input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+.bigsearch button{padding:0 20px;border:none;border-radius:999px;background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#15100c;font-weight:600;font-size:.92rem;cursor:pointer;font-family:var(--sans);transition:var(--t);white-space:nowrap}
+.bigsearch button:hover{filter:brightness(1.06)}.bigsearch button:active{transform:scale(.97)}.bigsearch button:disabled{opacity:.6}
+.hint-line{font-size:.8rem;color:var(--text-3);margin:8px 2px}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.gimg{position:relative;aspect-ratio:1/1;border-radius:var(--rs);overflow:hidden;cursor:pointer;border:2px solid transparent;background:var(--surface-3);transition:var(--t)}
+.gimg img{width:100%;height:100%;object-fit:cover;display:block}
+.gimg .src{position:absolute;bottom:0;left:0;right:0;font-size:.58rem;color:var(--text-2);background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);padding:8px 6px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gimg:hover{border-color:var(--border-s)}
+.gimg.sel{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-soft)}
+.gimg .chk{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;background:var(--gold);color:#15100c;font-size:.8rem;display:none;align-items:center;justify-content:center;font-weight:700}
+.gimg.sel .chk{display:flex}
+.preview{margin:10px 0;position:relative;border-radius:var(--rs);overflow:hidden;border:1px solid var(--border-s);display:none}
+.preview.show{display:block}
+.preview img{width:100%;max-height:240px;object-fit:contain;display:block;background:var(--surface-3)}
+.preview .px{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;background:rgba(15,11,8,.85);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:.9rem;display:inline-flex;align-items:center;justify-content:center}
+.preview .tag{position:absolute;bottom:8px;left:8px;font-size:.66rem;color:var(--text-2);background:rgba(15,11,8,.8);padding:3px 8px;border-radius:6px}
+.spin-block{display:flex;flex-direction:column;align-items:center;gap:10px;padding:30px;color:var(--text-3);font-size:.88rem}
 
 .label{display:block;font-size:.72rem;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;margin:18px 0 7px;font-weight:600}
-input,select,textarea{
-  width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);
-  color:var(--text);padding:12px 14px;font-size:.95rem;font-family:var(--sans);transition:border-color var(--t),box-shadow var(--t);
-}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--border-strong);box-shadow:0 0 0 3px var(--gold-soft)}
+input,select,textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:12px 14px;font-size:.95rem;font-family:var(--sans);transition:border-color var(--t),box-shadow var(--t)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--border-s);box-shadow:0 0 0 3px var(--gold-soft)}
 textarea{resize:vertical;min-height:78px;line-height:1.55}
 select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23847665' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-
-/* segmented type selector */
 .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:2px}
-.seg button{padding:11px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text-3);font-size:.78rem;cursor:pointer;font-family:var(--sans);transition:var(--t);display:flex;flex-direction:column;align-items:center;gap:4px}
-.seg button .e{font-size:1.25rem}
-.seg button:hover{color:var(--text-2)}
+.seg button{padding:11px 4px;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface);color:var(--text-3);font-size:.78rem;cursor:pointer;font-family:var(--sans);transition:var(--t);display:flex;flex-direction:column;align-items:center;gap:4px}
+.seg button .e{font-size:1.25rem}.seg button:hover{color:var(--text-2)}
 .seg button.on.wine{color:var(--wine);border-color:var(--wine);background:rgba(210,122,150,.1)}
 .seg button.on.sake{color:var(--sake);border-color:var(--sake);background:rgba(134,200,174,.1)}
 .seg button.on.whisky{color:var(--whisky);border-color:var(--whisky);background:rgba(224,160,106,.1)}
 .seg button.on.coffee{color:var(--coffee);border-color:var(--coffee);background:rgba(207,138,108,.12)}
 
-/* dropzone */
-.drop{
-  border:1.5px dashed var(--border-strong);border-radius:var(--radius);padding:30px 16px;text-align:center;cursor:pointer;transition:var(--t);position:relative;overflow:hidden;background:var(--surface);
-}
-.drop:hover{background:var(--surface-2);border-color:var(--gold)}
-.drop.drag{border-color:var(--gold);background:var(--gold-soft)}
-.drop .di{font-size:2.2rem;display:block;margin-bottom:8px}
-.drop .dt{color:var(--text-2);font-size:.9rem}
-.drop .dh{color:var(--text-3);font-size:.76rem;margin-top:4px}
-.drop input{display:none}
-.drop.has-img{padding:0;border-style:solid}
-.drop.has-img img{width:100%;max-height:280px;object-fit:contain;display:block;border-radius:var(--radius)}
-.drop .clear-x{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(15,11,8,.8);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:.95rem;display:inline-flex;align-items:center;justify-content:center}
-
-/* buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);cursor:pointer;font-size:.9rem;font-family:var(--sans);transition:var(--t);white-space:nowrap}
-.btn:hover{background:var(--surface-3);border-color:var(--border-strong)}
-.btn:active{transform:scale(.97)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.btn-primary{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#15100c;border:none;font-weight:600}
-.btn-primary:hover{filter:brightness(1.06);background:linear-gradient(135deg,var(--gold-2),var(--gold))}
+.btn:hover{background:var(--surface-3);border-color:var(--border-s)}.btn:active{transform:scale(.97)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#15100c;border:none;font-weight:600}.btn-primary:hover{filter:brightness(1.06)}
 .btn-ghost{background:transparent}
-.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
-.btn-block{width:100%}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.btn-block{width:100%}
 
-/* tasting profile sliders */
-details.prof{border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);margin-top:4px;overflow:hidden}
+details.prof{border:1px solid var(--border);border-radius:var(--rs);background:var(--surface);margin-top:4px;overflow:hidden}
 details.prof>summary{list-style:none;cursor:pointer;padding:13px 15px;font-size:.82rem;color:var(--gold);display:flex;justify-content:space-between;align-items:center}
 details.prof>summary::-webkit-details-marker{display:none}
 details.prof>summary::after{content:'⌄';color:var(--text-3);transition:transform var(--t);font-size:1.1rem}
 details.prof[open]>summary::after{transform:rotate(180deg)}
 details.prof .pbody{padding:2px 15px 15px}
 .sliders{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin-top:6px}
-.sliders .it{display:flex;flex-direction:column;gap:4px}
-.sliders .it .lab{display:flex;justify-content:space-between;font-size:.74rem;color:var(--text-2)}
-.sliders .it .lab .v{color:var(--gold)}
+.sliders .it{display:flex;flex-direction:column;gap:4px}.sliders .it .lab{display:flex;justify-content:space-between;font-size:.74rem;color:var(--text-2)}.sliders .it .lab .v{color:var(--gold)}
 input[type=range]{padding:0;background:transparent;border:none;box-shadow:none;height:22px}
 input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--surface-3)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--gold-2);margin-top:-6px;box-shadow:0 1px 4px rgba(0,0,0,.4);cursor:pointer;border:none}
 
-/* sticky save bar */
-.savebar{position:sticky;bottom:0;margin:20px -16px 0;padding:14px 16px calc(14px + var(--safe-b));background:linear-gradient(0deg,var(--bg-grad-2) 70%,transparent);display:flex;gap:10px}
+.savebar{position:sticky;bottom:0;margin:20px -16px 0;padding:14px 16px calc(14px + var(--sb));background:linear-gradient(0deg,var(--bg-2) 70%,transparent);display:flex;gap:10px}
 
-/* ====================== BOTTOM SHEET (detail) ====================== */
 .scrim{position:fixed;inset:0;z-index:90;background:rgba(8,6,4,.6);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity var(--t)}
 .scrim.open{opacity:1;pointer-events:auto}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:91;background:var(--surface);border-radius:22px 22px 0 0;border-top:1px solid var(--border-strong);max-height:92dvh;overflow-y:auto;transform:translateY(100%);transition:transform .38s var(--t);padding-bottom:calc(20px + var(--safe-b));box-shadow:0 -10px 40px rgba(0,0,0,.5)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:91;background:var(--surface);border-radius:22px 22px 0 0;border-top:1px solid var(--border-s);max-height:92dvh;overflow-y:auto;transform:translateY(100%);transition:transform .38s var(--t);padding-bottom:calc(20px + var(--sb));box-shadow:0 -10px 40px rgba(0,0,0,.5)}
 .sheet.open{transform:translateY(0)}
 .sheet .grip{width:40px;height:4px;border-radius:3px;background:var(--text-4);margin:10px auto 4px}
-.sheet .close-x{position:absolute;top:12px;right:14px}
+.sheet .close-x{position:absolute;top:12px;right:14px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);width:34px;height:34px;border-radius:50%;font-size:1.05rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
 .sheet-pad{padding:0 18px}
-.detail-hero{aspect-ratio:16/9;border-radius:var(--radius);background-size:cover;background-position:center;background-color:var(--surface-2);margin-bottom:14px}
+.detail-hero{aspect-ratio:16/9;border-radius:var(--r);background-size:cover;background-position:center;background-color:var(--surface-2);margin-bottom:14px}
 .detail-name{font-family:var(--serif);font-size:1.6rem;line-height:1.15}
 .detail-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 4px;color:var(--text-2);font-size:.86rem}
-.detail-sec{margin-top:16px}
-.detail-sec .h{font-size:.68rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);margin-bottom:6px;font-weight:600}
-.detail-sec p{line-height:1.65;color:var(--text)}
-.bars{margin-top:4px}
-.bar{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-.bar .bl{width:74px;font-size:.78rem;color:var(--text-2)}
-.bar .bt{flex:1;height:8px;background:var(--surface-3);border-radius:5px;overflow:hidden}
-.bar .bf{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--gold-2))}
-.bar .bv{width:18px;font-size:.74rem;color:var(--text-3);text-align:right}
-.tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{background:var(--gold-soft);color:var(--gold-2);padding:4px 11px;border-radius:999px;font-size:.78rem}
+.detail-sec{margin-top:16px}.detail-sec .h{font-size:.68rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);margin-bottom:6px;font-weight:600}.detail-sec p{line-height:1.65;color:var(--text)}
+.bars{margin-top:4px}.bar{display:flex;align-items:center;gap:10px;margin-bottom:7px}.bar .bl{width:74px;font-size:.78rem;color:var(--text-2)}.bar .bt{flex:1;height:8px;background:var(--surface-3);border-radius:5px;overflow:hidden}.bar .bf{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--gold-2))}.bar .bv{width:18px;font-size:.74rem;color:var(--text-3);text-align:right}
+.tags{display:flex;flex-wrap:wrap;gap:6px}.tag{background:var(--gold-soft);color:var(--gold-2);padding:4px 11px;border-radius:999px;font-size:.78rem}
 .detail-actions{display:flex;gap:9px;margin-top:20px;flex-wrap:wrap}
 
-/* ====================== STUDY ====================== */
 .study-tabs{display:flex;gap:6px;background:var(--surface);padding:4px;border-radius:999px;margin-bottom:18px}
 .study-tabs button{flex:1;padding:9px;border-radius:999px;border:none;background:none;color:var(--text-3);font-size:.84rem;cursor:pointer;font-family:var(--sans);transition:var(--t)}
 .study-tabs button.on{background:var(--surface-3);color:var(--gold-2)}
-.pane{display:none}.pane.active{display:block;animation:viewIn .3s both}
+.pane{display:none}.pane.active{display:block;animation:vIn .3s both}
 .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px}
-.cat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;cursor:pointer;transition:var(--t)}
-.cat:hover{transform:translateY(-2px);border-color:var(--border-strong)}
+.cat{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:16px;cursor:pointer;transition:var(--t)}
+.cat:hover{transform:translateY(-2px);border-color:var(--border-s)}
 .cat .e{font-size:1.7rem}.cat .t{font-family:var(--serif);font-size:1rem;margin:6px 0 2px;color:var(--text)}.cat .d{font-size:.74rem;color:var(--text-3)}
-.kb{padding:13px 0;border-bottom:1px solid var(--border)}
-.kb:last-child{border:none}
-.kb .kn{font-family:var(--serif);color:var(--gold-2);font-size:1rem}
-.kb .ko{color:var(--text-3);font-size:.78rem;margin-left:4px}
+.kb{padding:13px 0;border-bottom:1px solid var(--border)}.kb:last-child{border:none}
+.kb .kn{font-family:var(--serif);color:var(--gold-2);font-size:1rem}.kb .ko{color:var(--text-3);font-size:.78rem;margin-left:4px}
 .kb .kd{color:var(--text-2);font-size:.86rem;margin-top:5px;line-height:1.55}
-.kb .kt{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
-.kb .kt span{font-size:.68rem;padding:2px 8px;border-radius:7px;background:var(--surface-3);color:var(--text-3)}
-
-/* flashcard */
-.fc{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);min-height:260px;padding:30px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;box-shadow:var(--shadow-1);transition:var(--t);position:relative}
-.fc:hover{border-color:var(--border-strong)}
-.fc .lab{font-size:.66rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-4);margin-bottom:14px}
-.fc .front{font-family:var(--serif);font-size:1.5rem;color:var(--gold-2)}
-.fc .back{font-size:.95rem;color:var(--text);line-height:1.7}
-.fc .hint{position:absolute;bottom:14px;font-size:.72rem;color:var(--text-4)}
-.fc-ctrl{display:flex;gap:10px;justify-content:center;margin-top:16px}
-.fc-meta{text-align:center;font-size:.78rem;color:var(--text-3);margin:14px 0 2px}
-.deck-row{display:flex;gap:9px;flex-wrap:wrap}
-
-/* quiz */
+.kb .kt{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}.kb .kt span{font-size:.68rem;padding:2px 8px;border-radius:7px;background:var(--surface-3);color:var(--text-3)}
+.fc{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r);min-height:260px;padding:30px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;box-shadow:var(--sh1);transition:var(--t);position:relative}
+.fc:hover{border-color:var(--border-s)}.fc .lab{font-size:.66rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-4);margin-bottom:14px}.fc .front{font-family:var(--serif);font-size:1.5rem;color:var(--gold-2)}.fc .back{font-size:.95rem;color:var(--text);line-height:1.7}.fc .hint{position:absolute;bottom:14px;font-size:.72rem;color:var(--text-4)}
+.fc-ctrl{display:flex;gap:10px;justify-content:center;margin-top:16px}.fc-meta{text-align:center;font-size:.78rem;color:var(--text-3);margin:14px 0 2px}.deck-row{display:flex;gap:9px;flex-wrap:wrap}
 .qq{font-family:var(--serif);font-size:1.12rem;margin-bottom:16px;line-height:1.45}
 .qopts{display:flex;flex-direction:column;gap:9px}
-.qopt{text-align:left;padding:13px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:.92rem;font-family:var(--sans);transition:var(--t)}
-.qopt:hover{border-color:var(--border-strong)}
-.qopt:disabled{cursor:default}
-.qopt.ok{border-color:var(--green);background:rgba(127,198,160,.16);color:var(--green)}
-.qopt.no{border-color:var(--red);background:rgba(217,122,126,.16);color:var(--red)}
-.qpips{display:flex;gap:4px;margin-bottom:16px}
-.qpips .p{flex:1;height:5px;border-radius:3px;background:var(--surface-3)}.qpips .p.done{background:var(--gold)}.qpips .p.bad{background:var(--red)}
-.qex{margin-top:14px;font-size:.84rem;color:var(--text-2);padding:12px 15px;background:var(--surface-2);border-radius:var(--radius-sm);line-height:1.55;border:1px solid var(--border)}
+.qopt{text-align:left;padding:13px 16px;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:.92rem;font-family:var(--sans);transition:var(--t)}
+.qopt:hover{border-color:var(--border-s)}.qopt:disabled{cursor:default}.qopt.ok{border-color:var(--green);background:rgba(127,198,160,.16);color:var(--green)}.qopt.no{border-color:var(--red);background:rgba(217,122,126,.16);color:var(--red)}
+.qpips{display:flex;gap:4px;margin-bottom:16px}.qpips .p{flex:1;height:5px;border-radius:3px;background:var(--surface-3)}.qpips .p.done{background:var(--gold)}.qpips .p.bad{background:var(--red)}
+.qex{margin-top:14px;font-size:.84rem;color:var(--text-2);padding:12px 15px;background:var(--surface-2);border-radius:var(--rs);line-height:1.55;border:1px solid var(--border)}
 
-/* ====================== MODAL (settings) ====================== */
 .modal{position:fixed;inset:0;z-index:95;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(8,6,4,.65);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity var(--t)}
 .modal.open{opacity:1;pointer-events:auto}
-.modal .box{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);padding:22px;max-width:480px;width:100%;max-height:90dvh;overflow-y:auto;box-shadow:var(--shadow-2);transform:scale(.96);transition:transform var(--t)}
+.modal .box{background:var(--surface);border:1px solid var(--border-s);border-radius:var(--r);padding:22px;max-width:480px;width:100%;max-height:90dvh;overflow-y:auto;box-shadow:var(--sh2);transform:scale(.96);transition:transform var(--t)}
 .modal.open .box{transform:scale(1)}
-.modal h3{font-family:var(--serif);color:var(--gold-2);margin-bottom:14px;font-size:1.2rem}
-.modal .note{font-size:.78rem;color:var(--text-3);margin-top:7px;line-height:1.5}
-.modal .note a{color:var(--gold)}
-.diag{font-family:ui-monospace,Menlo,monospace;font-size:.74rem;background:#0e0a07;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-top:12px;max-height:200px;overflow:auto;white-space:pre-wrap;color:var(--text-3);line-height:1.55;display:none}
+.modal h3{font-family:var(--serif);color:var(--gold-2);margin-bottom:6px;font-size:1.2rem}
+.modal .note{font-size:.78rem;color:var(--text-3);margin-top:7px;line-height:1.5}.modal .note a{color:var(--gold)}
+.diag{font-family:ui-monospace,Menlo,monospace;font-size:.74rem;background:#0e0a07;border:1px solid var(--border);border-radius:var(--rs);padding:12px;margin-top:12px;max-height:200px;overflow:auto;white-space:pre-wrap;color:var(--text-3);line-height:1.55;display:none}
 .diag .ok{color:var(--green)}.diag .bad{color:var(--red)}.diag .hi{color:var(--gold-2)}
 .sep{border:none;border-top:1px solid var(--border);margin:18px 0}
+.subhead{font-size:.74rem;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;margin:18px 0 4px;font-weight:600}
 
-/* ====================== TOAST ====================== */
-.toast{position:fixed;left:50%;bottom:calc(var(--tab-h) + var(--safe-b) + 16px);transform:translateX(-50%) translateY(20px);background:var(--surface-2);border:1px solid var(--border-strong);color:var(--text);padding:12px 20px;border-radius:999px;font-size:.86rem;z-index:120;opacity:0;pointer-events:none;transition:opacity var(--t),transform var(--t);box-shadow:var(--shadow-2);max-width:90vw;text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(var(--tab-h) + var(--sb) + 16px);transform:translateX(-50%) translateY(20px);background:var(--surface-2);border:1px solid var(--border-s);color:var(--text);padding:12px 20px;border-radius:999px;font-size:.86rem;z-index:120;opacity:0;pointer-events:none;transition:opacity var(--t),transform var(--t);box-shadow:var(--sh2);max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
 .spinner{width:15px;height:15px;border:2px solid rgba(0,0,0,.2);border-top-color:#15100c;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
-.btn:not(.btn-primary) .spinner{border-color:var(--surface-3);border-top-color:var(--gold-2)}
+.btn:not(.btn-primary) .spinner,.spin-block .spinner{border-color:var(--surface-3);border-top-color:var(--gold-2)}
+.spin-block .spinner{width:26px;height:26px;border-width:3px}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-@media(min-width:640px){
-  .stats{grid-template-columns:repeat(4,1fr)}
-  .grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
-  .greeting .you{font-size:2rem}
-}
-@media(max-width:380px){.seg button .e{font-size:1.05rem}.seg button{font-size:.72rem}}
+@media(min-width:640px){.grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}.greeting .you{font-size:2rem}.gallery{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:380px){.seg button .e{font-size:1.05rem}.seg button{font-size:.72rem}.gallery{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- TOP BAR -->
   <div class="topbar">
     <div class="wordmark"><span class="glass">🍷</span><span class="name">Decanter</span><span class="jp">JP</span></div>
     <div class="actions">
-      <button class="icon-btn" id="topSearch" title="Search">🔍</button>
+      <button class="icon-btn" id="topSearch" title="Find a bottle">🔍</button>
       <button class="icon-btn" id="topSettings" title="Settings">⚙️</button>
     </div>
   </div>
 
-  <!-- ============ VIEW: HOME / CELLAR ============ -->
+  <!-- HOME -->
   <section class="view active" id="view-home">
-    <div class="greeting">
-      <div class="hi" id="greetHi">Welcome back</div>
-      <div class="you" id="greetYou">Your cellar</div>
-    </div>
+    <div class="greeting"><div class="hi" id="greetHi">Welcome</div><div class="you" id="greetYou">Your cellar</div></div>
     <div id="homeContent"></div>
   </section>
 
-  <!-- ============ VIEW: LIBRARY ============ -->
+  <!-- LIBRARY -->
   <section class="view" id="view-library">
     <div class="greeting"><div class="hi">The library</div><div class="you">Everything you've tasted</div></div>
-    <div class="toolbar">
-      <div class="search"><span class="si">🔍</span><input id="libSearch" placeholder="Search name, variety, origin, notes…"></div>
-    </div>
+    <div class="toolbar"><div class="search-wrap"><span class="si">🔍</span><input id="libSearch" placeholder="Search name, variety, origin, notes…"></div></div>
     <div class="chips" id="libChips"></div>
-    <div style="display:flex;justify-content:flex-end;margin:12px 0;">
-      <select class="sortsel" id="libSort">
-        <option value="newest">Newest</option>
-        <option value="rating">Top rated</option>
-        <option value="name">Name A–Z</option>
-        <option value="oldest">Oldest</option>
-      </select>
-    </div>
+    <div style="display:flex;justify-content:flex-end;margin:12px 0"><select class="sortsel" id="libSort"><option value="newest">Newest</option><option value="rating">Top rated</option><option value="name">Name A–Z</option><option value="oldest">Oldest</option></select></div>
     <div id="libGrid"></div>
-    <div class="btn-row" style="justify-content:center;margin-top:22px">
-      <button class="btn" id="btnExport">📥 Export</button>
-      <button class="btn" id="btnImport">📤 Import</button>
-      <input type="file" id="importFile" accept=".json" style="display:none">
-    </div>
+    <div class="btn-row" style="justify-content:center;margin-top:22px"><button class="btn" id="btnExport">📥 Export</button><button class="btn" id="btnImport">📤 Import</button><input type="file" id="importFile" accept=".json" style="display:none"></div>
   </section>
 
-  <!-- ============ VIEW: ADD / EDIT ============ -->
-  <section class="view" id="view-add">
-    <div class="addhead">
-      <div class="ttl" id="addTitle">New entry</div>
-      <button class="sheet-close" id="addClose">✕</button>
+  <!-- SEARCH (new add flow) -->
+  <section class="view" id="view-search">
+    <div class="greeting"><div class="hi" id="searchHi">Find a bottle</div><div class="you">Search → confirm → cellar</div></div>
+    <div class="bigsearch">
+      <input id="kwInput" placeholder="e.g. Yamazaki 12, Château Margaux, Ethiopia Yirgacheffe…">
+      <button id="kwSearch">🔍 Search</button>
     </div>
+    <div class="hint-line" id="searchHint">Type a bottle name. The AI writes the tasting notes; we'll find label photos to confirm it's the right one.</div>
+    <div id="searchResults"></div>
 
-    <div class="drop" id="dropZone">
-      <span class="di">📷</span>
-      <div class="dt">Add a label photo</div>
-      <div class="dh">Tap to choose — AI can identify it for you</div>
-      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/heic,image/heif">
-    </div>
-    <div class="btn-row" id="photoActions" style="display:none">
-      <button class="btn btn-primary btn-block" id="btnAnalyze" disabled>🔍 Identify from photo</button>
-    </div>
+    <!-- shared form fields (hidden until a search/edit loads them) -->
+    <div id="editBlock" style="display:none">
+      <div class="preview" id="imgPreview"><img id="imgPreviewImg" alt=""><span class="tag" id="imgPreviewTag">photo</span><button class="px" id="imgClear">✕</button></div>
 
-    <div class="label">Type</div>
-    <div class="seg" id="typeSeg">
-      <button data-type="wine" class="on wine"><span class="e">🍷</span>Wine</button>
-      <button data-type="sake"><span class="e">🍶</span>Sake</button>
-      <button data-type="whisky"><span class="e">🥃</span>Whisky</button>
-      <button data-type="coffee"><span class="e">☕</span>Coffee</button>
-    </div>
-
-    <div class="label">Name</div>
-    <input id="fName" placeholder="Château Margaux 2015, Yamazaki 12…">
-    <div class="two">
-      <div><div class="label">Variety / style</div><input id="fVariety" placeholder="Cab blend, Junmai Daiginjo…"></div>
-      <div><div class="label">Origin</div><input id="fOrigin" placeholder="Bordeaux; Islay; Yirgacheffe…"></div>
-    </div>
-    <div class="two">
-      <div><div class="label">ABV %</div><input id="fAbv" placeholder="13.5" inputmode="decimal"></div>
-      <div><div class="label">Price</div><input id="fPrice" placeholder="$45" inputmode="decimal"></div>
-    </div>
-
-    <div class="label">Rating</div>
-    <div class="stars pick" id="ratePick"><span class="s" data-v="1">★</span><span class="s" data-v="2">★</span><span class="s" data-v="3">★</span><span class="s" data-v="4">★</span><span class="s" data-v="5">★</span></div>
-
-    <div class="label">Flavor notes</div>
-    <input id="fFlavor" placeholder="blackcurrant, cedar, dark chocolate…">
-    <div class="label">Food pairing</div>
-    <input id="fPairing" placeholder="grilled lamb, aged cheese…">
-
-    <div class="btn-row">
-      <button class="btn btn-primary" id="btnGenSummary">✨ Summarize</button>
-      <button class="btn" id="btnGenFill">🪄 Fill from name</button>
-    </div>
-
-    <div class="label">Summary / notes</div>
-    <textarea id="fSummary" placeholder="Tap ✨ Summarize to let AI write this, or write your own tasting notes…"></textarea>
-
-    <details class="prof" id="profDetails">
-      <summary>📋 Tasting profile (structured)</summary>
-      <div class="pbody">
-        <div class="sliders" id="profSliders"></div>
-        <div class="label" style="margin-top:14px">Appearance</div><input id="fColor" placeholder="deep garnet, pale gold…">
-        <div class="label">Nose / aroma</div><input id="fAroma" placeholder="black cherry, vanilla, honeysuckle…">
-        <div class="label">Conclusion</div><input id="fConclusion" placeholder="outstanding, drink now–2030…">
+      <div class="label">Type</div>
+      <div class="seg" id="typeSeg">
+        <button data-type="wine" class="on wine"><span class="e">🍷</span>Wine</button>
+        <button data-type="sake"><span class="e">🍶</span>Sake</button>
+        <button data-type="whisky"><span class="e">🥃</span>Whisky</button>
+        <button data-type="coffee"><span class="e">☕</span>Coffee</button>
       </div>
-    </details>
-
-    <input type="hidden" id="fRating" value="0">
-    <input type="hidden" id="fEditId" value="">
-
-    <div class="savebar">
-      <button class="btn btn-ghost" id="btnCancel" style="display:none">Cancel</button>
-      <button class="btn btn-primary" id="btnSave" style="flex:1">💾 Save entry</button>
+      <div class="label">Name</div><input id="fName" placeholder="Bottle name">
+      <div class="two"><div><div class="label">Variety / style</div><input id="fVariety" placeholder="Cab blend, Junmai Daiginjo…"></div><div><div class="label">Origin</div><input id="fOrigin" placeholder="Bordeaux; Islay…"></div></div>
+      <div class="two"><div><div class="label">ABV %</div><input id="fAbv" placeholder="13.5" inputmode="decimal"></div><div><div class="label">Price</div><input id="fPrice" placeholder="$45" inputmode="decimal"></div></div>
+      <div class="label">Rating</div>
+      <div class="stars pick" id="ratePick"><span class="s" data-v="1">★</span><span class="s" data-v="2">★</span><span class="s" data-v="3">★</span><span class="s" data-v="4">★</span><span class="s" data-v="5">★</span></div>
+      <div class="label">Flavor notes</div><input id="fFlavor" placeholder="blackcurrant, cedar…">
+      <div class="label">Food pairing</div><input id="fPairing" placeholder="grilled lamb, aged cheese…">
+      <div class="label">Summary / notes</div><textarea id="fSummary" placeholder="AI fills this — or write your own…"></textarea>
+      <details class="prof" id="profDetails"><summary>📋 Tasting profile (structured)</summary><div class="pbody"><div class="sliders" id="profSliders"></div><div class="label" style="margin-top:14px">Appearance</div><input id="fColor" placeholder="deep garnet, pale gold…"><div class="label">Nose / aroma</div><input id="fAroma" placeholder="black cherry, vanilla…"><div class="label">Conclusion</div><input id="fConclusion" placeholder="outstanding, drink now–2030…"></div></details>
+      <input type="hidden" id="fRating" value="0"><input type="hidden" id="fEditId" value="">
+      <div class="savebar"><button class="btn btn-ghost" id="btnCancel" style="display:none">Cancel</button><button class="btn btn-primary" id="btnSave" style="flex:1">💾 Save to cellar</button></div>
     </div>
   </section>
 
-  <!-- ============ VIEW: STUDY ============ -->
+  <!-- STUDY -->
   <section class="view" id="view-study">
     <div class="greeting"><div class="hi">Study</div><div class="you">Sharpen your palate</div></div>
-    <div class="study-tabs">
-      <button class="on" data-pane="ref">📚 Reference</button>
-      <button data-pane="fc">🃏 Flashcards</button>
-      <button data-pane="qz">❓ Quiz</button>
-    </div>
-    <div class="pane active" id="pane-ref">
-      <div class="cat-grid" id="catGrid"></div>
-      <div id="refWrap" style="display:none">
-        <button class="btn btn-ghost" id="refBack" style="margin:0 0 14px">← All topics</button>
-        <div class="card" style="padding:6px 16px"><div id="refList"></div></div>
-      </div>
-    </div>
-    <div class="pane" id="pane-fc">
-      <div class="card" style="padding:18px">
-        <div id="fcDecks">
-          <p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Pick a deck. Cards from your own journal mix with the reference library.</p>
-          <div class="deck-row" id="fcDeckBtns"></div>
-        </div>
-        <div id="fcSession" style="display:none"></div>
-      </div>
-    </div>
-    <div class="pane" id="pane-qz">
-      <div class="card" style="padding:18px">
-        <div id="qzIntro">
-          <p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Ten questions across wine, sake, whisky & coffee — mixed with items from your journal.</p>
-          <button class="btn btn-primary" id="qzStart">▶ Start quiz</button>
-        </div>
-        <div id="qzSession" style="display:none"></div>
-      </div>
-    </div>
+    <div class="study-tabs"><button class="on" data-pane="ref">📚 Reference</button><button data-pane="fc">🃏 Flashcards</button><button data-pane="qz">❓ Quiz</button></div>
+    <div class="pane active" id="pane-ref"><div class="cat-grid" id="catGrid"></div><div id="refWrap" style="display:none"><button class="btn btn-ghost" id="refBack" style="margin:0 0 14px">← All topics</button><div class="card" style="padding:6px 16px"><div id="refList"></div></div></div></div>
+    <div class="pane" id="pane-fc"><div class="card" style="padding:18px"><div id="fcDecks"><p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Pick a deck — your journal mixed with the reference library.</p><div class="deck-row" id="fcDeckBtns"></div></div><div id="fcSession" style="display:none"></div></div></div>
+    <div class="pane" id="pane-qz"><div class="card" style="padding:18px"><div id="qzIntro"><p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Ten questions across wine, sake, whisky & coffee — mixed with items from your journal.</p><button class="btn btn-primary" id="qzStart">▶ Start quiz</button></div><div id="qzSession" style="display:none"></div></div></div>
   </section>
-
 </div>
 
-<!-- FAB -->
-<button class="fab" id="fabAdd" title="Add a drink">+</button>
-
-<!-- TAB BAR -->
+<button class="fab" id="fabAdd" title="Find a bottle">+</button>
 <nav class="tabbar">
   <button class="tab on" data-view="home"><span class="ti">🏡</span>Cellar</button>
   <button class="tab" data-view="library"><span class="ti">📚</span>Library</button>
   <button class="tab" data-view="study"><span class="ti">🧠</span>Study</button>
 </nav>
 
-<!-- DETAIL SHEET -->
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet"><div class="grip"></div><div class="sheet-pad" id="sheetBody"></div></div>
 
-<!-- SETTINGS MODAL -->
 <div class="modal" id="settingsModal"><div class="box">
   <h3>⚙️ Settings</h3>
-  <div class="label" style="margin-top:0">Zhipu / GLM API key</div>
-  <input type="password" id="setKey" placeholder="paste your API key">
-  <div class="note">Used for label identification & summaries. Stored only in this browser; sent only to the endpoint below. <a href="https://open.bigmodel.cn/usercenter/apikeys" target="_blank" rel="noopener">Get a free key →</a></div>
+  <div class="subhead" style="margin-top:0">AI — Zhipu / GLM</div>
+  <div class="label" style="margin-top:4px">API key</div>
+  <input type="password" id="setKey" placeholder="paste your GLM API key">
+  <div class="note">Your coding-plan key. Stored only in this browser. <a href="https://docs.z.ai/guides/overview/quick-start" target="_blank" rel="noopener">Docs →</a></div>
   <div class="label">Model</div>
   <select id="setModel">
-    <option value="glm-5-turbo">glm-5-turbo · free, fast text (recommended)</option>
-    <option value="glm-5">glm-5 · free flagship text</option>
-    <option value="glm-5.2">glm-5.2 · 1M-context text</option>
-    <option value="glm-5.1">glm-5.1 · text</option>
-    <option value="glm-4.6v-flash">glm-4.6v-flash · free vision (photos)</option>
-    <option value="glm-5v-turbo">glm-5v-turbo · vision</option>
+    <option value="glm-5-turbo">glm-5-turbo · fast text (recommended)</option>
+    <option value="glm-5">glm-5 · flagship text</option>
+    <option value="glm-5.2">glm-5.2 · 1M-context</option>
     <option value="glm-4.6v">glm-4.6v · vision (photos)</option>
-    <option value="glm-4-plus">glm-4-plus · text</option>
+    <option value="glm-4.6v-flash">glm-4.6v-flash · free vision</option>
   </select>
-  <div class="note"><b>glm-5-turbo</b> is best for summaries. For <b>label photos</b> the app auto-uses a vision model (glm-4.6v). If a model is busy, it tries the next one automatically.</div>
+  <div class="note"><b>glm-5-turbo</b> for summaries; <b>glm-4.6v</b> auto-used for label photos. The app tries other models if one is busy.</div>
   <div class="label">Endpoint</div>
   <select id="setEndpoint">
-    <option value="https://open.bigmodel.cn/api/paas/v4/chat/completions">open.bigmodel.cn (domestic)</option>
-    <option value="https://api.z.ai/api/paas/v4/chat/completions">api.z.ai (international)</option>
-    <option value="https://api.z.ai/api/coding/paas/v4/chat/completions">api.z.ai (coding plan)</option>
+    <option value="https://api.z.ai/api/coding/paas/v4/chat/completions">api.z.ai · coding plan</option>
+    <option value="https://api.z.ai/api/paas/v4/chat/completions">api.z.ai · standard</option>
+    <option value="https://open.bigmodel.cn/api/paas/v4/chat/completions">open.bigmodel.cn · domestic</option>
   </select>
-  <div class="note">Seeing "Failed to fetch"? Try the other endpoint.</div>
-  <div class="label">Voice speed</div>
-  <div style="display:flex;align-items:center;gap:12px"><input type="range" id="setTts" min="0.5" max="1.5" step="0.1" value="0.9" style="flex:1"><span id="ttsLbl" style="font-size:.82rem;color:var(--text-3)">0.9×</span></div>
+
   <hr class="sep">
-  <button class="btn btn-block" id="btnTest">🔌 Test connection</button>
+  <div class="subhead">Label images — Google (any website)</div>
+  <div class="label" style="margin-top:4px">Google API key <span style="text-transform:none;color:var(--text-4)">(optional)</span></div>
+  <input id="setGKey" placeholder="AIza…">
+  <div class="label">Custom Search Engine ID (cx)</div>
+  <input id="setGCx" placeholder="e.g. a1b2c3d4e5…">
+  <div class="note">Powers the "any website" label-image search. Without these, the app falls back to Wikipedia (keyless). <a href="#" id="gGuide">How do I get these? →</a></div>
+
+  <hr class="sep">
+  <div class="subhead">Reading</div>
+  <div class="label" style="margin-top:4px">Voice speed</div>
+  <div style="display:flex;align-items:center;gap:12px"><input type="range" id="setTts" min="0.5" max="1.5" step="0.1" value="0.9" style="flex:1"><span id="ttsLbl" style="font-size:.82rem;color:var(--text-3)">0.9×</span></div>
+
+  <hr class="sep">
+  <button class="btn btn-block" id="btnTest">🔌 Test AI connection</button>
   <div class="diag" id="diag"></div>
   <hr class="sep">
-  <div style="display:flex;gap:10px;justify-content:flex-end">
-    <button class="btn btn-ghost" id="setClose">Close</button>
-    <button class="btn btn-primary" id="setSave">Save</button>
-  </div>
+  <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-ghost" id="setClose">Close</button><button class="btn btn-primary" id="setSave">Save</button></div>
 </div></div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 'use strict';
-/* ================================================================ JP DECANTER v2
-   Single-file, vanilla JS. Shared IndexedDB ('DecanterDB') keeps your data. */
-const $=(s,r=document)=>r.querySelector(s);
-const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const esc=(s)=>{const d=document.createElement('div');d.textContent=s==null?'':s;return d.innerHTML;};
-const TYPE={wine:{label:'Wine',emoji:'🍷',color:'var(--wine)'},sake:{label:'Sake',emoji:'🍶',color:'var(--sake)'},whisky:{label:'Whisky',emoji:'🥃',color:'var(--whisky)'},coffee:{label:'Coffee',emoji:'☕',color:'var(--coffee)'}};
+/* JP DECANTER v2 (keyword-first) — single file, vanilla JS, shared IndexedDB */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>{const d=document.createElement('div');d.textContent=s==null?'':s;return d.innerHTML;};
+const TYPE={wine:{label:'Wine',emoji:'🍷'},sake:{label:'Sake',emoji:'🍶'},whisky:{label:'Whisky',emoji:'🥃'},coffee:{label:'Coffee',emoji:'☕'}};
 
-/* ---------------- DB ---------------- */
-const DB_NAME='DecanterDB',DB_VER=2,STORE='drinks';
-let db=null;
-function openDB(){return new Promise((res,rej)=>{const rq=indexedDB.open(DB_NAME,DB_VER);rq.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains(STORE)){const s=d.createObjectStore(STORE,{keyPath:'id'});s.createIndex('type','type',{unique:false});s.createIndex('createdAt','createdAt',{unique:false});}};rq.onsuccess=e=>{db=e.target.result;res(db);};rq.onerror=e=>rej(e.target.error);});}
-function dbPut(entry){return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(entry);tx.oncomplete=res;tx.onerror=e=>rej(e.target.error);});}
-function dbAll(){return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly');const rq=tx.objectStore(STORE).getAll();rq.onsuccess=()=>res(rq.result||[]);rq.onerror=e=>rej(e.target.error);});}
-function dbDel(id){return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);tx.oncomplete=res;tx.onerror=e=>rej(e.target.error);});}
+/* ---- DB ---- */
+const DB_NAME='DecanterDB',DB_VER=2,STORE='drinks';let db=null;
+const openDB=()=>new Promise((res,rej)=>{const rq=indexedDB.open(DB_NAME,DB_VER);rq.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains(STORE)){const s=d.createObjectStore(STORE,{keyPath:'id'});s.createIndex('type','type',{unique:false});s.createIndex('createdAt','createdAt',{unique:false});}};rq.onsuccess=e=>{db=e.target.result;res(db);};rq.onerror=e=>rej(e.target.error);});
+const dbPut=en=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(en);tx.oncomplete=res;tx.onerror=e=>rej(e.target.error);});
+const dbAll=()=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly');const rq=tx.objectStore(STORE).getAll();rq.onsuccess=()=>res(rq.result||[]);rq.onerror=e=>rej(e.target.error);});
+const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);tx.oncomplete=res;tx.onerror=e=>rej(e.target.error);});
 
-/* ---------------- state ---------------- */
-let drinksCache=[];
-let curView='home';
-let libFilter='all',libSearch='',libSort='newest';
+/* ---- state ---- */
+let drinksCache=[],curView='home',libFilter='all',libSearch='',libSort='newest';
 let formType='wine',formRating=0,formImg='';
-const PROF_FIELDS=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
+const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
-/* ---------------- settings ---------------- */
-const DEFAULTS={apiKey:'',model:'glm-5-turbo',endpoint:'https://open.bigmodel.cn/api/paas/v4/chat/completions',ttsRate:0.9};
-function getSettings(){let s;try{s=JSON.parse(localStorage.getItem('decanter_settings')||'{}');}catch(e){s={};}const o=Object.assign({},DEFAULTS,s);if(['glm-4-flash','glm-4v-plus','glm-4.7-flash','glm-4.6v-flash-text'].includes(o.model))o.model=DEFAULTS.model;if(o.endpoint==='https://api.z.ai/api/chat/completions')o.endpoint='https://api.z.ai/api/paas/v4/chat/completions';return o;}
-function saveSettings(s){localStorage.setItem('decanter_settings',JSON.stringify(s));}
+/* ---- settings ---- */
+const DEFAULTS={apiKey:'',model:'glm-5-turbo',endpoint:'https://api.z.ai/api/coding/paas/v4/chat/completions',ttsRate:0.9,googleKey:'',googleCx:''};
+const getSettings=()=>{let s;try{s=JSON.parse(localStorage.getItem('decanter_settings')||'{}');}catch(e){s={};}const o=Object.assign({},DEFAULTS,s);if(['glm-4-flash','glm-4v-plus','glm-4.7-flash','glm-4.6v-flash-text'].includes(o.model))o.model=DEFAULTS.model;if(o.endpoint==='https://api.z.ai/api/chat/completions')o.endpoint='https://api.z.ai/api/paas/v4/chat/completions';return o;};
+const saveSettings=s=>localStorage.setItem('decanter_settings',JSON.stringify(s));
 
-/* ---------------- toast ---------------- */
-let toastT;
-function toast(m){const el=$('#toast');el.textContent=m;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),3000);}
-
-/* ---------------- TTS ---------------- */
-let speaking=false;
-function speak(text,rate){if(!text||!('speechSynthesis'in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=rate;u.lang='en-US';const vs=window.speechSynthesis.getVoices();const v=vs.find(x=>/Samantha|Google US English|Daniel|Karen/i.test(x.name))||vs.find(x=>x.lang&&x.lang.startsWith('en'));if(v)u.voice=v;u.onend=()=>{speaking=false;};u.onerror=()=>{speaking=false;};window.speechSynthesis.speak(u);}
+/* ---- toast / tts ---- */
+let toastT;const toast=m=>{const el=$('#toast');el.textContent=m;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),3000);};
+const speak=(text,rate)=>{if(!text||!('speechSynthesis'in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=rate;u.lang='en-US';const vs=window.speechSynthesis.getVoices(),v=vs.find(x=>/Samantha|Google US English|Daniel|Karen/i.test(x.name))||vs.find(x=>x.lang&&x.lang.startsWith('en'));if(v)u.voice=v;window.speechSynthesis.speak(u);};
 if('speechSynthesis'in window){window.speechSynthesis.onvoiceschanged=()=>{};window.speechSynthesis.getVoices();}
 
-/* ---------------- helpers ---------------- */
-function stars(v,cls){let h=`<span class="stars ${cls||''}">`;for(let i=1;i<=5;i++)h+=`<span class="s${i<=v?' on':''}">★</span>`;return h+'</span>';}
-function fmtDate(iso){const d=new Date(iso),now=new Date(),diff=now-d;if(diff<864e5&&d.getDate()===now.getDate())return'Today';if(diff<1728e5)return'Yesterday';return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
-function avg(a){return a.length?a.reduce((s,x)=>s+x,0)/a.length:0;}
-function topN(o,n){return Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n);}
-function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+/* ---- helpers ---- */
+const stars=(v,cls)=>{let h=`<span class="stars ${cls||''}">`;for(let i=1;i<=5;i++)h+=`<span class="s${i<=v?' on':''}">★</span>`;return h+'</span>';};
+const fmtDate=iso=>{const d=new Date(iso),now=new Date(),diff=now-d;if(diff<864e5&&d.getDate()===now.getDate())return'Today';if(diff<1728e5)return'Yesterday';return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});};
+const avg=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
+const topN=(o,n)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+const resizeFile=(file,max=1024)=>new Promise((res,rej)=>{const fr=new FileReader();fr.onload=e=>{const img=new Image();img.onload=()=>{let{width,height}=img;if(width<=max&&height<=max&&file.type==='image/jpeg'){res(e.target.result);return;}const r=Math.min(max/width,max/height,1);width=Math.round(width*r);height=Math.round(height*r);const c=document.createElement('canvas');c.width=width;c.height=height;c.getContext('2d').drawImage(img,0,0,width,height);res(c.toDataURL('image/jpeg',.85));};img.onerror=()=>rej(new Error('bad image'));img.src=e.target.result;};fr.onerror=()=>rej(new Error('bad file'));fr.readAsDataURL(file);});
 
-/* ---------------- image ---------------- */
-function resizeImage(file,max=1024){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=e=>{const img=new Image();img.onload=()=>{let{width,height}=img;if(width<=max&&height<=max&&file.type==='image/jpeg'){res(e.target.result);return;}const r=Math.min(max/width,max/height,1);width=Math.round(width*r);height=Math.round(height*r);const c=document.createElement('canvas');c.width=width;c.height=height;c.getContext('2d').drawImage(img,0,0,width,height);res(c.toDataURL('image/jpeg',.85));};img.onerror=()=>rej(new Error('bad image'));img.src=e.target.result;};fr.onerror=()=>rej(new Error('bad file'));fr.readAsDataURL(file);});}
-
-/* ================================================================ AI (proven) */
+/* ---- AI (proven engine) ---- */
 const VISION_MODELS=['glm-4.6v','glm-4.6v-flash','glm-4.6v-flashx','glm-5v-turbo'];
 const TEXT_MODELS=['glm-5-turbo','glm-5','glm-4.6v-flash','glm-5.2','glm-4-plus'];
 const KNOWN_VISION=new Set(['glm-4.6v-flash','glm-4.6v','glm-4.6v-flashx','glm-5v-turbo','glm-4v-plus']);
 const isVisionModel=m=>KNOWN_VISION.has(m);
-function extractContent(d){const m=d&&d.choices&&d.choices[0]&&d.choices[0].message;if(!m)return'';let t='';if(typeof m.content==='string')t=m.content;else if(Array.isArray(m.content))t=m.content.map(p=>(p&&typeof p==='string')?p:(p&&p.text)||'').join('\n');t=(t||'').trim();if(!t&&m.reasoning_content){let r=m.reasoning_content;if(Array.isArray(r))r=r.map(p=>(p&&p.text)||'').join('\n');t=String(r||'').trim();}return t;}
-function parseAIResult(text){if(!text)return null;let p=null,m;m=text.match(/```(?:json)?\s*([\s\S]*?)```/i);if(m){try{p=JSON.parse(m[1].trim());}catch(e){}}if(!p){m=text.match(/\{[\s\S]*\}/);if(m){try{p=JSON.parse(m[0]);}catch(e){}}}if(p){const c=v=>v==null?'':String(v).trim();return{type:c(p.type),name:c(p.name),variety:c(p.variety)||c(p.style),origin:c(p.origin)||c(p.region),flavor:c(p.flavor)||c(p.tasting_notes)||c(p.notes),pairing:c(p.pairing)||c(p.pairings),summary:c(p.summary)||c(p.description)};}return{summary:text.trim(),flavor:'',pairing:''};}
-function buildChain(sel,isVision){let chain;if(isVision)chain=isVisionModel(sel)?[sel,...VISION_MODELS]:VISION_MODELS.slice();else chain=[sel,...TEXT_MODELS];return Array.from(new Set(chain.filter(Boolean)));}
+const extractContent=d=>{const m=d&&d.choices&&d.choices[0]&&d.choices[0].message;if(!m)return'';let t='';if(typeof m.content==='string')t=m.content;else if(Array.isArray(m.content))t=m.content.map(p=>(p&&typeof p==='string')?p:(p&&p.text)||'').join('\n');t=(t||'').trim();if(!t&&m.reasoning_content){let r=m.reasoning_content;if(Array.isArray(r))r=r.map(p=>(p&&p.text)||'').join('\n');t=String(r||'').trim();}return t;};
+const parseAIResult=text=>{if(!text)return null;let p=null,m;m=text.match(/```(?:json)?\s*([\s\S]*?)```/i);if(m){try{p=JSON.parse(m[1].trim());}catch(e){}}if(!p){m=text.match(/\{[\s\S]*\}/);if(m){try{p=JSON.parse(m[0]);}catch(e){}}}if(p){const c=v=>v==null?'':String(v).trim();return{type:c(p.type),name:c(p.name),variety:c(p.variety)||c(p.style),origin:c(p.origin)||c(p.region),flavor:c(p.flavor)||c(p.tasting_notes)||c(p.notes),pairing:c(p.pairing)||c(p.pairings),summary:c(p.summary)||c(p.description)};}return{summary:text.trim(),flavor:'',pairing:''};};
+const buildChain=(sel,isVision)=>{let chain;if(isVision)chain=isVisionModel(sel)?[sel,...VISION_MODELS]:VISION_MODELS.slice();else chain=[sel,...TEXT_MODELS];return Array.from(new Set(chain.filter(Boolean)));};
 async function rawCompletion(s,model,messages,log){const res=await fetch(s.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+s.apiKey},body:JSON.stringify({model,messages,temperature:.7,max_tokens:4096,stream:false,thinking:{type:'disabled'}})});if(!res.ok){let d='';try{const j=await res.json();d=(j.error&&j.error.message)||JSON.stringify(j);}catch(e){try{d=await res.text();}catch(e2){}}const err=new Error('HTTP '+res.status+(d?': '+d.slice(0,280):''));err.status=res.status;throw err;}const data=await res.json();const t=extractContent(data);if(log)log.push('  '+model+' → '+t.length+' chars'+(t?'':' (EMPTY)'));return t;}
-async function callAI({image,fillAll}){
+async function callAI({image,fillAll,keyword}){
   const s=getSettings();
   if(!s.apiKey){toast('⚠️ Add your GLM API key in Settings (⚙️) first.');openSettings();return null;}
   const isVision=!!image;
-  const name=$('#fName').value.trim(),variety=$('#fVariety').value.trim(),origin=$('#fOrigin').value.trim();
-  if(!isVision&&!name){toast('⚠️ Enter a name first.');return null;}
+  const name=(keyword||$('#fName').value||'').trim();
+  if(!isVision&&!name){toast('⚠️ Enter a bottle name first.');return null;}
   let prompt,content;
   if(isVision){
-    prompt='You are a world-class sommelier, sake expert, whisky connoisseur and Q-grader coffee cupper. Analyze this drink label. Reply with ONLY a JSON object, no markdown:\n{"type":"wine|sake|whisky|coffee","name":"full name with producer/vintage","variety":"style","origin":"country, region","flavor":"5-8 tasting notes, comma-separated","pairing":"3-4 pairings, comma-separated","summary":"~120-word overview"}\nIf unreadable, set name null and describe what you see in summary.\n/nothink';
+    prompt='You are a world-class sommelier, sake expert, whisky connoisseur and Q-grader coffee cupper. Analyze this drink label. Reply with ONLY a JSON object, no markdown:\n{"type":"wine|sake|whisky|coffee","name":"full name with producer/vintage","variety":"style","origin":"country, region","flavor":"5-8 tasting notes, comma-separated","pairing":"3-4 pairings, comma-separated","summary":"~120-word overview"}\nIf unreadable, set name null and describe what you see.\n/nothink';
     content=[{type:'image_url',image_url:{url:image}},{type:'text',text:prompt}];
   }else{
-    const scope=fillAll?'Return ONLY JSON: {"variety":"likely variety","origin":"likely origin","flavor":"5-8 notes","pairing":"3-4 pairings","summary":"~120-word overview"}'
+    const scope=fillAll?'Return ONLY JSON: {"type":"wine|sake|whisky|coffee","variety":"likely variety","origin":"likely origin","flavor":"5-8 notes","pairing":"3-4 pairings","summary":"~120-word overview"}'
       :'Return ONLY JSON: {"flavor":"5-8 notes","pairing":"3-4 pairings","summary":"~120-word overview"}';
-    prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. '+scope+'\n\nDrink type: '+TYPE[formType].label+'\nName: '+name+(variety?'\nVariety: '+variety:'')+(origin?'\nOrigin: '+origin:'')+'\n\nUse your knowledge of this style/region if you don\'t know the exact bottling.\n/nothink';
+    prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. '+scope+'\n\nDrink: '+name+'\n\nUse your knowledge of this style/region if you don\'t know the exact bottling.\n/nothink';
     content=prompt;
   }
-  const messages=[{role:'user',content}];
-  const chain=buildChain(s.model,isVision);
-  const log=['AI log:'];let lastErr=null;
-  for(const model of chain){
-    try{log.push('Try '+model);const t=await rawCompletion(s,model,messages,log);const r=parseAIResult(t);if(r&&(r.summary||r.flavor||r.name)){log.push('✓ '+model+' ok');console.log(log.join('\n'));return r;}log.push('  '+model+': empty, next');}
-    catch(e){lastErr=e;log.push('  '+model+': '+e.message);}
-  }
+  const messages=[{role:'user',content}];const chain=buildChain(s.model,isVision);const log=['AI log:'];let lastErr=null;
+  for(const model of chain){try{log.push('Try '+model);const t=await rawCompletion(s,model,messages,log);const r=parseAIResult(t);if(r&&(r.summary||r.flavor||r.name)){log.push('✓ '+model+' ok');console.log(log.join('\n'));return r;}log.push('  '+model+': empty, next');}catch(e){lastErr=e;log.push('  '+model+': '+e.message);}}
   console.log(log.join('\n'));
   if(lastErr&&/Failed to fetch|NetworkError|load failed/i.test(lastErr.message))toast('❌ Network/CORS — try the other endpoint in Settings.');
   else if(lastErr&&(lastErr.status===401||lastErr.status===403))toast('❌ Auth failed — check your API key.');
-  else if(lastErr&&/1113|Insufficient balance/i.test(lastErr.message))toast('❌ No balance on this endpoint — in Settings switch Endpoint to "api.z.ai (coding plan)".');
+  else if(lastErr&&/1113|Insufficient balance/i.test(lastErr.message))toast('❌ No balance on this endpoint — in Settings switch Endpoint to "api.z.ai · coding plan".');
   else toast('❌ No model responded. Open Settings → Test connection.');
   return null;
 }
 async function testConnection(){
-  const s=getSettings();const key=$('#setKey').value.trim();const ep=$('#setEndpoint').value;
-  const box=$('#diag');box.style.display='block';box.innerHTML='';const log=h=>{box.innerHTML+=h+'\n';box.scrollTop=box.scrollHeight;};
+  const s=getSettings(),key=$('#setKey').value.trim(),ep=$('#setEndpoint').value;const box=$('#diag');box.style.display='block';box.innerHTML='';const log=h=>{box.innerHTML+=h+'\n';box.scrollTop=box.scrollHeight;};
   if(!key){log('<span class="bad">⚠ No API key entered.</span>');return;}
-  log('Endpoint: <span class="hi">'+ep+'</span>');
-  log('Probing models (text: "Reply: PONG")…');
-  const cand=['glm-5-turbo','glm-5','glm-4.6v-flash','glm-5v-turbo','glm-5.2','glm-4.6v'];
+  log('Endpoint: <span class="hi">'+ep+'</span>');log('Probing models (text "Reply: PONG")…');
+  const cand=['glm-5-turbo','glm-5','glm-4.6v','glm-5.2','glm-4.6v-flash','glm-5v-turbo'];
   const messages=[{role:'user',content:'Reply with the single word: PONG\n/nothink'}];let any=false;
-  for(const m of cand){
-    try{
-      const res=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:m,messages,max_tokens:256,stream:false,thinking:{type:'disabled'}})});
-      if(res.status===401||res.status===403){log('<span class="bad">✗ '+m+': auth failed ('+res.status+') — bad key.</span>');return;}
-      if(!res.ok){const t=await res.text().catch(()=>'');log('<span class="bad">✗ '+m+': HTTP '+res.status+' '+t.slice(0,110)+'</span>');continue;}
-      const data=await res.json();const t=extractContent(data);
-      if(t){log('<span class="ok">✓ '+m+': OK — "'+t.slice(0,28).replace(/\n/g,' ')+'"</span>');any=true;}
-      else{const full=JSON.stringify(data).slice(0,500).replace(/</g,'&lt;');log('<span class="bad">○ '+m+': no usable content. Full response (HTTP '+res.status+'):</span>');log('<span class="hi">'+full+'</span>');}
-    }catch(err){log('<span class="bad">✗ '+m+': '+err.message+'</span>');if(/Failed to fetch|NetworkError|load failed/i.test(err.message)){log('<span class="bad">↳ Network/CORS blocked. Try the other endpoint or network.</span>');return;}}
-  }
+  for(const m of cand){try{const res=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:m,messages,max_tokens:256,stream:false,thinking:{type:'disabled'}})});
+    if(res.status===401||res.status===403){log('<span class="bad">✗ '+m+': auth failed ('+res.status+') — bad key.</span>');return;}
+    if(!res.ok){const t=await res.text().catch(()=>'');log('<span class="bad">✗ '+m+': HTTP '+res.status+' '+t.slice(0,110)+'</span>');continue;}
+    const data=await res.json();const t=extractContent(data);
+    if(t){log('<span class="ok">✓ '+m+': OK — "'+t.slice(0,28).replace(/\n/g,' ')+'"</span>');any=true;}
+    else{const full=JSON.stringify(data).slice(0,400).replace(/</g,'&lt;');log('<span class="bad">○ '+m+': no content. Full response (HTTP '+res.status+'):</span>');log('<span class="hi">'+full+'</span>');}
+  }catch(err){log('<span class="bad">✗ '+m+': '+err.message+'</span>');if(/Failed to fetch|NetworkError|load failed/i.test(err.message)){log('<span class="bad">↳ Network/CORS blocked. Try another endpoint.</span>');return;}}}
   log(any?'\n<span class="ok">✅ Working models above — pick one as default.</span>':'\n<span class="bad">❌ None responded.</span>');
 }
 
-/* ================================================================ KNOWLEDGE BASE */
-const KB={wine:[
-{n:'Cabernet Sauvignon',t:['cabernet','cab sav','bordeaux'],o:'Bordeaux / Napa',d:'Full-bodied, high tannin, deep color. Blackcurrant, cedar, graphite, mint. Age-worthy; the backbone of Left-Bank Bordeaux.'},
-{n:'Merlot',t:['merlot'],o:'Bordeaux (Pomerol)',d:'Plush and round. Plum, black cherry, chocolate. Softer than Cabernet — the friendly Bordeaux sibling.'},
-{n:'Pinot Noir',t:['pinot','burgundy'],o:'Burgundy',d:'Light, perfumed, high acid. Red cherry, raspberry, forest floor, mushroom. Fussy but sublime.'},
-{n:'Syrah / Shiraz',t:['syrah','shiraz','rhône'],o:'Rhône / Barossa',d:'Powerful, dark. Blackberry, black pepper, smoked meat. Syrah (Rhône) is savory; Shiraz (Australia) is jammy.'},
-{n:'Chardonnay',t:['chardonnay','chablis'],o:'Burgundy / Sonoma',d:'Steely Chablis (mineral) to rich, buttery Napa (oak, malo). Apple, citrus, butter, brioche.'},
-{n:'Sauvignon Blanc',t:['sauvignon','sancerre','marlborough'],o:'Loire / Marlborough',d:'Zesty, high acid. Grapefruit, passionfruit, cut grass, gooseberry. Vivid and refreshing.'},
-{n:'Riesling',t:['riesling','mosel'],o:'Germany / Alsace',d:'Aromatic, high acid, dry to sweet. Lime, apple, jasmine, petrol with age.'},
-{n:'Nebbiolo',t:['nebbiolo','barolo','barbaresco'],o:'Piedmont',d:'Pale but fiercely tannic. Rose, tar, dried cherry, truffle. Barolo/Barbaresco — structured and long-lived.'},
-{n:'Sangiovese',t:['sangiovese','chianti','brunello'],o:'Tuscany',d:'Medium-to-high tannin and acid. Sour cherry, leather, herbs, earth. The grape of Chianti.'},
-{n:'Tempranillo',t:['tempranillo','rioja'],o:'Rioja / Ribera',d:'Medium body. Strawberry, leather, tobacco, vanilla (American oak). Food-friendly Spanish icon.'}],
-sake:[
-{n:'Junmai',t:['junmai'],o:'Japan',d:'Pure rice — only rice, water, koji, yeast. No added alcohol. Full body, rich, earthy. Great warm.'},
-{n:'Honjōzō',t:['honjozo','honjōzō'],o:'Japan',d:'A little brewer\'s alcohol added (≤120 L/t). Lighter, smoother, fragrant. Polished ≥70%.'},
-{n:'Ginjō / Junmai Ginjō',t:['ginjo','ginjō'],o:'Japan',d:'Polished ≥60%. Low-temp, long ferment → fruity, floral (apple, melon, anise). Elegant.'},
-{n:'Daiginjō / Junmai Daiginjō',t:['daiginjo','daiginjō'],o:'Japan',d:'Premium — polished ≥50%. Intensely aromatic, refined. The pinnacle of the craft.'},
-{n:'Nigori',t:['nigori','cloudy'],o:'Japan',d:'Coarsely filtered — cloudy, creamy. Sweet, milky, dessert-like. Shake; serve chilled.'},
-{n:'Namazake',t:['nama','namazake'],o:'Japan',d:'Unpasteurized — fresh, vivid. Must stay cold. Seasonal spring delight.'},
-{n:'Koshu (aged)',t:['koshu','aged'],o:'Japan',d:'Intentionally aged to amber. Caramel, nuts, dried fruit, sherry-like umami.'}],
-whisky:[
-{n:'Speyside Single Malt',t:['speyside','macallan'],o:'Scotland, Speyside',d:'Whisky heartland. Smooth, honeyed, orchard fruit, often sherry-casked (Glenfiddich, Macallan).'},
-{n:'Highland Single Malt',t:['highland'],o:'Scotland, Highlands',d:'Diverse — heather, honey, spice, a wisp of smoke. Broad styles.'},
-{n:'Islay Single Malt',t:['islay','peaty','laphroaig'],o:'Scotland, Islay',d:'Famously peaty & smoky — medicinal, seaweed, brine, iodine (Laphroaig, Ardbeg, Lagavulin).'},
-{n:'Lowland Single Malt',t:['lowland'],o:'Scotland, Lowlands',d:'Light, grassy, floral, gentle. The apéritif malts.'},
-{n:'Campbeltown',t:['campbeltown','springbank'],o:'Scotland, Campbeltown',d:'Briny, smoky, oily, complex (Springbank). A handful of distilleries.'},
-{n:'Bourbon',t:['bourbon','kentucky'],o:'USA, Kentucky',d:'≥51% corn, new charred oak. Sweet, vanilla, caramel, baking spice. Bold and oaky.'},
-{n:'Tennessee Whiskey',t:['tennessee'],o:'USA, Tennessee',d:'Like bourbon but charcoal-mellowed (Lincoln County Process). Smoother.'},
-{n:'Irish Whiskey',t:['irish','jameson'],o:'Ireland',d:'Usually triple-distilled, unpeated. Smooth, light, green apple, honey.'},
-{n:'Japanese Whisky',t:['japanese','yamazaki','hibiki'],o:'Japan',d:'Modeled on Scotch but renowned for poise and balance (Yamazaki, Hibiki, Nikka).'},
-{n:'Rye Whiskey',t:['rye'],o:'USA / Canada',d:'≥51% rye. Spicier, peppery, drier than bourbon. Great in cocktails.'}],
-coffee:[
-{n:'Ethiopia (Yirgacheffe)',t:['ethiopia','yirgacheffe'],o:'Ethiopia',d:'Birthplace of coffee. Floral, jasmine, bergamot, blueberry, bright citrus. Natural = explosive berry.'},
-{n:'Colombia',t:['colombia','colombian'],o:'Colombia',d:'Balanced, sweet, medium body. Caramel, milk chocolate, red apple, walnut. The crowd-pleaser.'},
-{n:'Brazil',t:['brazil','cerrado'],o:'Brazil',d:'World\'s largest grower. Low acid, heavy body, nutty, chocolate, caramel. Espresso backbone.'},
-{n:'Kenya (AA)',t:['kenya','kenyan'],o:'Kenya',d:'Bright, winey acidity, full body. Blackcurrant, blackberry, grapefruit. Bold.'},
-{n:'Guatemala (Antigua)',t:['guatemala','antigua'],o:'Guatemala',d:'Full body, bright acid, often smoky. Cocoa, baking spice, toffee, tobacco.'},
-{n:'Sumatra',t:['sumatra','indonesia','mandheling'],o:'Indonesia',d:'Heavy body, low acid, earthy, herbal. Cedar, dark chocolate, mushroom.'},
-{n:'Costa Rica (Tarrazú)',t:['costa rica','tarrazu'],o:'Costa Rica',d:'Clean, bright, high-grown. Citrus, honey, almond, cocoa. Often honey-processed.'},
-{n:'Jamaica Blue Mountain',t:['jamaica','blue mountain'],o:'Jamaica',d:'Rare, expensive, mild. Very smooth, low acid, gentle sweetness.'} ]};
-const PROCESSING=[{n:'Washed / Wet',d:'Cherry removed, fermented & washed. Clean, bright, acidic — terroir shines.'},{n:'Natural / Dry',d:'Dried in the cherry. Fruity, heavy body, fermented berry. Riskier but rewarding.'},{n:'Honey / Pulped Natural',d:'Skin off, some mucilage left. Sweet, balanced, syrupy.'}];
-
-/* ================================================================ ROUTER */
-function go(view){
-  curView=view;
-  $$('.view').forEach(v=>v.classList.remove('active'));
-  $('#view-'+view).classList.add('active');
-  $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.view===view));
-  $('#fabAdd').classList.toggle('hidden',view==='add');
-  window.scrollTo({top:0,behavior:'instant'});
-  if(view==='home')renderHome();
-  if(view==='library')renderLibrary();
-  if(view==='study')renderStudyTabs();
+/* ---- image search (Google CSE → Wikipedia fallback) ---- */
+async function imageSearch(kw){
+  const s=getSettings();
+  if(s.googleKey&&s.googleCx){try{return await googleImages(kw,s);}catch(e){console.warn('Google image search failed, falling back:',e);}}
+  return wikiImages(kw);
 }
+async function googleImages(kw,s){
+  const url=`https://www.googleapis.com/customsearch/v1?key=${encodeURIComponent(s.googleKey)}&cx=${encodeURIComponent(s.googleCx)}&q=${encodeURIComponent(kw+' bottle label')}&searchType=image&num=8`;
+  const d=await (await fetch(url)).json();
+  if(d.error)throw new Error(d.error.message||'Google API error');
+  return (d.items||[]).filter(it=>it.link||it.image&&it.image.thumbnailLink).map(it=>({thumb:(it.image&&it.image.thumbnailLink)||it.link,display:(it.image&&it.image.thumbnailLink)||it.link,title:it.title||'',source:(it.displayLink||'').replace(/^www\./,'')}));
+}
+async function wikiImages(kw){
+  const url=`https://en.wikipedia.org/w/api.php?action=query&format=json&generator=search&gsrsearch=${encodeURIComponent(kw)}&gsrlimit=10&prop=pageimages|extracts&exintro&explaintext&piprop=thumbnail&pithumbsize=400&origin=*`;
+  const d=await (await fetch(url)).json();
+  const pages=d.query&&d.query.pages?Object.values(d.query.pages).sort((a,b)=>a.index-b.index):[];
+  return pages.filter(p=>p.thumbnail).map(p=>({thumb:p.thumbnail.url,display:p.thumbnail.url,title:p.title,source:'wikipedia',extract:p.extract||''}));
+}
+async function fetchToDataUrl(url){const r=await fetch(url);const b=await r.blob();return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(b);});}
 
-/* ================================================================ HOME */
+/* ---- KB + study (proven) ---- */
+const KB={wine:[{n:'Cabernet Sauvignon',t:['cabernet','bordeaux'],o:'Bordeaux / Napa',d:'Full-bodied, high tannin. Blackcurrant, cedar, graphite, mint. Age-worthy; backbone of Left-Bank Bordeaux.'},{n:'Merlot',t:['merlot'],o:'Bordeaux (Pomerol)',d:'Plush, round. Plum, black cherry, chocolate. Softer than Cabernet.'},{n:'Pinot Noir',t:['pinot','burgundy'],o:'Burgundy',d:'Light, perfumed, high acid. Red cherry, raspberry, forest floor, mushroom.'},{n:'Syrah / Shiraz',t:['syrah','shiraz','rhône'],o:'Rhône / Barossa',d:'Powerful, dark. Blackberry, black pepper, smoked meat.'},{n:'Chardonnay',t:['chardonnay','chablis'],o:'Burgundy / Sonoma',d:'Steely Chablis to rich, buttery Napa. Apple, citrus, butter, brioche.'},{n:'Sauvignon Blanc',t:['sauvignon','sancerre'],o:'Loire / Marlborough',d:'Zesty, high acid. Grapefruit, passionfruit, cut grass.'},{n:'Riesling',t:['riesling','mosel'],o:'Germany / Alsace',d:'Aromatic, high acid, dry to sweet. Lime, apple, jasmine, petrol.'},{n:'Nebbiolo',t:['nebbiolo','barolo'],o:'Piedmont',d:'Pale but fiercely tannic. Rose, tar, dried cherry, truffle.'},{n:'Sangiovese',t:['sangiovese','chianti'],o:'Tuscany',d:'Sour cherry, leather, herbs, earth. The grape of Chianti.'},{n:'Tempranillo',t:['tempranillo','rioja'],o:'Rioja / Ribera',d:'Strawberry, leather, tobacco, vanilla. Spanish icon.'}],sake:[{n:'Junmai',t:['junmai'],o:'Japan',d:'Pure rice — no added alcohol. Full body, rich, earthy. Great warm.'},{n:'Honjōzō',t:['honjozo'],o:'Japan',d:'A little brewer\'s alcohol added. Lighter, smoother, fragrant.'},{n:'Ginjō',t:['ginjo'],o:'Japan',d:'Polished ≥60%. Fruity, floral (apple, melon, anise). Elegant.'},{n:'Daiginjō',t:['daiginjo'],o:'Japan',d:'Polished ≥50%. Intensely aromatic, refined. The pinnacle.'},{n:'Nigori',t:['nigori'],o:'Japan',d:'Coarsely filtered — cloudy, creamy. Sweet, milky, dessert-like.'},{n:'Namazake',t:['nama'],o:'Japan',d:'Unpasteurized — fresh, vivid. Must stay cold.'}],whisky:[{n:'Speyside Single Malt',t:['speyside','macallan'],o:'Scotland, Speyside',d:'Smooth, honeyed, orchard fruit, often sherry-casked (Glenfiddich, Macallan).'},{n:'Highland Single Malt',t:['highland'],o:'Scotland, Highlands',d:'Heather, honey, spice, a wisp of smoke.'},{n:'Islay Single Malt',t:['islay','peaty','laphroaig'],o:'Scotland, Islay',d:'Peaty & smoky — medicinal, seaweed, brine, iodine.'},{n:'Lowland Single Malt',t:['lowland'],o:'Scotland, Lowlands',d:'Light, grassy, floral, gentle. Apéritif malts.'},{n:'Campbeltown',t:['campbeltown','springbank'],o:'Scotland, Campbeltown',d:'Briny, smoky, oily, complex.'},{n:'Bourbon',t:['bourbon','kentucky'],o:'USA, Kentucky',d:'≥51% corn, new charred oak. Sweet, vanilla, caramel, baking spice.'},{n:'Tennessee Whiskey',t:['tennessee'],o:'USA, Tennessee',d:'Charcoal-mellowed bourbon. Smoother.'},{n:'Irish Whiskey',t:['irish','jameson'],o:'Ireland',d:'Triple-distilled, unpeated. Smooth, light, green apple, honey.'},{n:'Japanese Whisky',t:['japanese','yamazaki','hibiki'],o:'Japan',d:'Modeled on Scotch; renowned for poise and balance.'},{n:'Rye Whiskey',t:['rye'],o:'USA / Canada',d:'≥51% rye. Spicier, peppery, drier than bourbon.'}],coffee:[{n:'Ethiopia (Yirgacheffe)',t:['ethiopia','yirgacheffe'],o:'Ethiopia',d:'Floral, jasmine, bergamot, blueberry, bright citrus.'},{n:'Colombia',t:['colombia'],o:'Colombia',d:'Balanced, sweet. Caramel, milk chocolate, red apple, walnut.'},{n:'Brazil',t:['brazil'],o:'Brazil',d:'Low acid, heavy body, nutty, chocolate, caramel. Espresso backbone.'},{n:'Kenya (AA)',t:['kenya'],o:'Kenya',d:'Bright, winey acidity, full body. Blackcurrant, blackberry.'},{n:'Guatemala (Antigua)',t:['guatemala','antigua'],o:'Guatemala',d:'Full body, bright acid. Cocoa, baking spice, toffee, tobacco.'},{n:'Sumatra',t:['sumatra','indonesia'],o:'Indonesia',d:'Heavy body, low acid, earthy, herbal. Cedar, dark chocolate.'},{n:'Costa Rica (Tarrazú)',t:['costa rica','tarrazu'],o:'Costa Rica',d:'Clean, bright, high-grown. Citrus, honey, almond, cocoa.'},{n:'Jamaica Blue Mountain',t:['jamaica'],o:'Jamaica',d:'Rare, mild. Very smooth, low acid, gentle sweetness.'}]};
+const PROCESSING=[{n:'Washed / Wet',d:'Cherry removed, fermented & washed. Clean, bright, acidic.'},{n:'Natural / Dry',d:'Dried in cherry. Fruity, heavy body, fermented berry.'},{n:'Honey / Pulped Natural',d:'Some mucilage left. Sweet, balanced, syrupy.'}];
+const QBANK=[{q:'Which Scotch region is famous for peaty, smoky malts?',o:['Speyside','Islay','Lowland','Campbeltown'],a:1,e:'Islay — Laphroaig, Ardbeg, Lagavulin — medicinal peat & brine.'},{q:'Pinot Noir is most celebrated in?',o:['Bordeaux','Napa','Burgundy','Rioja'],a:2,e:'Red Burgundy is 100% Pinot Noir.'},{q:'"Seimaibuai" in sake is the?',o:['Ferment temp','Rice polishing ratio','Bottle size','Brewer rank'],a:1,e:'% of grain left after polishing.'},{q:'Which coffee origin = floral jasmine & blueberry?',o:['Brazil','Ethiopia','Sumatra','Jamaica'],a:1,e:'Ethiopia / Yirgacheffe.'},{q:'Bourbon needs at least what % corn?',o:['41%','51%','61%','71%'],a:1,e:'≥51% corn, new charred oak.'},{q:'Left-Bank Bordeaux is dominated by?',o:['Merlot','Cabernet Sauvignon','Pinot Noir','Syrah'],a:1,e:'Left-Bank = Cab-dominant.'},{q:'"Junmai" sake contains?',o:['Added alcohol','No added alcohol','Carbonation','Oak aging'],a:1,e:'Junmai = pure rice.'},{q:'Wet-hulling is associated with?',o:['Ethiopia','Colombia','Sumatra','Kenya'],a:2,e:'Sumatra — earthy, heavy-bodied.'},{q:'Filtered through sugar-maple charcoal?',o:['Bourbon','Tennessee Whiskey','Irish','Rye'],a:1,e:'Lincoln County Process (Jack Daniel\'s).'},{q:'Riesling is most classically from?',o:['France','Italy','Germany','Spain'],a:2,e:'Germany\'s Mosel & Rheingau.'},{q:'Usually triple-distilled & unpeated?',o:['Scotch','Irish Whiskey','Bourbon','Cognac'],a:1,e:'Irish whiskey — smoother, lighter.'},{q:'WSET SAT assesses in which order?',o:['Palate→Nose→Appearance','Appearance→Nose→Palate→Conclusion','Nose→Palate→Appearance','Conclusion→Palate'],a:1,e:'Appearance, Nose, Palate, Conclusion.'}];
+
+/* ---- router ---- */
+function go(view){curView=view;$$('.view').forEach(v=>v.classList.remove('active'));$('#view-'+view).classList.add('active');$$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.view===view));$('#fabAdd').classList.toggle('hidden',view==='search');window.scrollTo({top:0,behavior:'instant'});if(view==='home')renderHome();if(view==='library')renderLibrary();}
+
+/* ---- home ---- */
 async function refreshCache(){try{drinksCache=await dbAll();drinksCache.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));}catch(e){drinksCache=[];}}
 function renderHome(){
-  const wrap=$('#homeContent');
-  const hour=new Date().getHours();
-  const hi=hour<5?'Good night':hour<12?'Good morning':hour<18?'Good afternoon':'Good evening';
-  $('#greetHi').textContent=hi;
-  $('#greetYou').innerHTML=drinksCache.length?`You've poured <b>${drinksCache.length}</b> ${drinksCache.length===1?'drink':'drinks'}`:'Start your cellar';
-
-  if(!drinksCache.length){
-    wrap.innerHTML=`
-      <div class="card" style="margin-top:18px;padding:18px">
-        <div class="hero empty" id="heroEmpty"><div class="in"><span class="big">🍷</span><div style="font-family:var(--serif);font-size:1.2rem;color:var(--text);margin-bottom:4px">Your first pour awaits</div><div style="font-size:.84rem">Tap the gold <b style="color:var(--gold-2)">+</b> button to journal a wine, sake, whisky or coffee.</div></div></div>
-        <div class="stats" id="homeStats"></div>
-      </div>`;
-    return;
-  }
-
-  const featured=drinksCache.find(d=>d.rating>=4)||drinksCache[0];
-  const rated=drinksCache.filter(d=>d.rating);
-  const avgR=avg(rated.map(d=>d.rating));
+  const wrap=$('#homeContent');const hr=new Date().getHours();
+  $('#greetHi').textContent=hr<5?'Good night':hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
+  $('#greetYou').innerHTML=drinksCache.length?`You've poured <b>${drinksCache.length}</b> ${drinksCache.length===1?'bottle':'bottles'}`:'Start your cellar';
+  if(!drinksCache.length){wrap.innerHTML=`<div class="card" style="margin-top:18px;padding:18px"><div class="hero empty"><div class="in"><span class="big">🍷</span><div style="font-family:var(--serif);font-size:1.2rem;color:var(--text);margin-bottom:4px">Find your first bottle</div><div style="font-size:.84rem">Tap the gold <b style="color:var(--gold-2)">+</b> button, search a name, and we'll find the label for you.</div></div></div></div>`;return;}
+  const featured=drinksCache.find(d=>d.rating>=4)||drinksCache[0];const rated=drinksCache.filter(d=>d.rating);const avgR=avg(rated.map(d=>d.rating));
   const byType={wine:0,sake:0,whisky:0,coffee:0};drinksCache.forEach(d=>byType[d.type]=(byType[d.type]||0)+1);
-  const vC={},oC={};
-  drinksCache.forEach(d=>{(d.variety||'').split(/[,/]/).map(s=>s.trim()).filter(Boolean).forEach(v=>vC[v.toLowerCase()]=(vC[v.toLowerCase()]||0)+1);(d.origin||'').split(/[,;]/).map(s=>s.trim()).filter(Boolean).forEach(o=>oC[o.toLowerCase()]=(oC[o.toLowerCase()]||0)+1);});
-  const topV=topN(vC,1)[0],topO=topN(oC,1)[0];
-
-  const recs=buildRecs(drinksCache,byType,featured,topV,topO);
-  const recent=drinksCache.slice(0,6);
-
+  const vC={},oC={};drinksCache.forEach(d=>{(d.variety||'').split(/[,/]/).map(s=>s.trim()).filter(Boolean).forEach(v=>vC[v.toLowerCase()]=(vC[v.toLowerCase()]||0)+1);(d.origin||'').split(/[,;]/).map(s=>s.trim()).filter(Boolean).forEach(o=>oC[o.toLowerCase()]=(oC[o.toLowerCase()]||0)+1);});
+  const topV=topN(vC,1)[0],topO=topN(oC,1)[0];const recs=buildRecs(drinksCache,byType,featured,topV,topO);
   wrap.innerHTML=`
-    <div class="hero" id="heroFeat" style="margin-top:16px">
-      ${featured.imageBase64?`<div class="bg" style="background-image:url('${featured.imageBase64}')"></div>`:''}
-      <div class="scrim"></div>
-      <div class="body">
-        <div class="kicker">${featured.rating>=4?'★ Top rated':'Most recent'}</div>
-        <div class="name">${esc(featured.name)}</div>
-        <div class="meta">
-          <span class="tchip ${featured.type}">${TYPE[featured.type].emoji} ${TYPE[featured.type].label}</span>
-          ${featured.rating?stars(featured.rating,'sm'):''}
-          ${featured.origin?`<span>· ${esc(featured.origin)}</span>`:''}
-        </div>
-      </div>
-    </div>
-
-    <div class="stats">
-      <div class="stat"><div class="n">${drinksCache.length}</div><div class="l">Drinks</div></div>
-      <div class="stat"><div class="n">${rated.length?avgR.toFixed(1):'—'}</div><div class="l">Avg ★</div></div>
-      <div class="stat"><div class="n">${Object.keys(vC).length}</div><div class="l">Varieties</div></div>
-      <div class="stat"><div class="n">${Object.keys(oC).length}</div><div class="l">Origins</div></div>
-    </div>
-
+    <div class="hero" id="heroFeat" style="margin-top:16px">${featured.imageBase64?`<div class="bg" style="background-image:url('${featured.imageBase64}')"></div>`:''}<div class="scrim"></div><div class="body"><div class="kicker">${featured.rating>=4?'★ Top rated':'Most recent'}</div><div class="name">${esc(featured.name)}</div><div class="meta"><span class="tchip ${featured.type}">${TYPE[featured.type].emoji} ${TYPE[featured.type].label}</span>${featured.rating?stars(featured.rating,'sm'):''}${featured.origin?`<span>· ${esc(featured.origin)}</span>`:''}</div></div></div>
+    <div class="stats"><div class="stat"><div class="n">${drinksCache.length}</div><div class="l">Bottles</div></div><div class="stat"><div class="n">${rated.length?avgR.toFixed(1):'—'}</div><div class="l">Avg ★</div></div><div class="stat"><div class="n">${Object.keys(vC).length}</div><div class="l">Varieties</div></div><div class="stat"><div class="n">${Object.keys(oC).length}</div><div class="l">Origins</div></div></div>
     ${recs.length?`<div class="section"><div class="section-head"><div class="section-title">For <span class="em">you</span></div></div>${recs.map(r=>`<div class="rec" data-rec="${esc(r.id||'')}"><div class="ico">${r.ico}</div><div><div class="t">${esc(r.t)}</div><div class="r">${esc(r.r)}</div></div></div>`).join('')}</div>`:''}
-
-    <div class="section">
-      <div class="section-head"><div class="section-title">Recently poured</div><button class="link-btn" data-go="library">See all →</button></div>
-      <div class="grid">${recent.map(dcardHtml).join('')}</div>
-    </div>
-  `;
-
+    <div class="section"><div class="section-head"><div class="section-title">Recently poured</div><button class="link-btn" data-go="library">See all →</button></div><div class="grid">${drinksCache.slice(0,6).map(dcardHtml).join('')}</div></div>`;
   $('#heroFeat')&&$('#heroFeat').addEventListener('click',()=>openDetail(featured.id));
   wrap.querySelectorAll('.dcard').forEach(c=>c.addEventListener('click',()=>openDetail(c.dataset.id)));
   wrap.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
-  wrap.querySelectorAll('[data-rec]').forEach(el=>el.addEventListener('click',()=>{
-    const r=recs.find(x=>(x.id||'')===el.dataset.rec);if(r&&r.seed){seedEntry(r.seed);}
-  }));
+  wrap.querySelectorAll('[data-rec]').forEach(el=>el.addEventListener('click',()=>{const r=recs.find(x=>(x.id||'')===el.dataset.rec);if(r&&r.seed)seedSearch(r.seed);}));
 }
 function buildRecs(drinks,byType,featured,topV,topO){
   const R=[];
-  if(featured){const kb=findKb(featured);R.push({id:'r1',ico:'⭐',t:`Because you loved ${featured.name}`,r:kb?`Try ${kb.n} next — same style, a new bottle.`:`Explore more ${featured.variety||featured.origin||TYPE[featured.type].label.toLowerCase()}.`,seed:{type:featured.type,name:kb?kb.n:'',variety:featured.variety,origin:featured.origin}});}
+  if(featured){const kb=findKb(featured);R.push({id:'r1',ico:'⭐',t:`Because you liked ${featured.name}`,r:kb?`Try ${kb.n} next — same style.`:`Explore more ${featured.variety||featured.origin||TYPE[featured.type].label.toLowerCase()}.`,seed:{kw:kb?kb.n:featured.name,type:featured.type}});}
   const order=['wine','sake','whisky','coffee'].sort((a,b)=>byType[a]-byType[b]);const least=order[0];
-  if(byType[least]<=byType[order[3]]/2&&KB[least]){const pk=KB[least][drinks.length%KB[least].length];R.push({id:'r2',ico:'🌱',t:`Branch into ${TYPE[least].label}`,r:`Only ${byType[least]} logged. Start with ${pk.n} — ${pk.d.slice(0,70)}…`,seed:{type:least,name:pk.n,variety:pk.t&&pk.t[0],origin:pk.o}});}
-  if(topO)R.push({id:'r3',ico:'🗺️',t:`Your house region: ${cap(topO[0])}`,r:`${topO[1]} drink${topO[1]===1?'':'s'} from here — keep one on hand.`,seed:null});
+  if(byType[least]<=byType[order[3]]/2&&KB[least]){const pk=KB[least][drinks.length%KB[least].length];R.push({id:'r2',ico:'🌱',t:`Branch into ${TYPE[least].label}`,r:`Only ${byType[least]} logged. Start with ${pk.n}.`,seed:{kw:pk.n,type:least}});}
+  if(topO)R.push({id:'r3',ico:'🗺️',t:`Your house region: ${cap(topO[0])}`,r:`${topO[1]} from here — keep one on hand.`,seed:null});
   return R;
 }
 function findKb(d){const pool=KB[d.type]||[];const hay=(d.variety+' '+d.origin+' '+d.flavor).toLowerCase();return pool.find(k=>{const t=(k.n+' '+(k.t||[]).join(' ')+' '+k.d).toLowerCase();return k.t&&k.t.some(tg=>hay.includes(tg.toLowerCase()))||(d.origin&&t.includes((d.origin.split(/[;,]/)[0]).toLowerCase()));})||null;}
+const dcardHtml=d=>{const ph="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232f251c'/%3E%3Ctext x='50' y='60' font-size='34' text-anchor='middle'%3E"+TYPE[d.type].emoji+"%3C/text%3E%3C/svg%3E";return `<div class="dcard" data-id="${d.id}"><div class="img" style="background-image:url('${d.imageBase64||ph}')"><div class="stripe ${d.type}"></div></div><div class="info"><div class="nm">${esc(d.name)}</div><div class="sub">${esc([d.variety,d.origin].filter(Boolean).join(' · ')||TYPE[d.type].label)}</div>${d.rating?`<div class="rt">${stars(d.rating,'sm')}</div>`:''}</div></div>`;};
 
-function dcardHtml(d){
-  const ph="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232f251c'/%3E%3Ctext x='50' y='60' font-size='34' text-anchor='middle'%3E"+TYPE[d.type].emoji+"%3C/text%3E%3C/svg%3E";
-  return `<div class="dcard" data-id="${d.id}">
-    <div class="img" style="background-image:url('${d.imageBase64||ph}')"><div class="stripe ${d.type}"></div></div>
-    <div class="info">
-      <div class="nm">${esc(d.name)}</div>
-      <div class="sub">${esc([d.variety,d.origin].filter(Boolean).join(' · ')||TYPE[d.type].label)}</div>
-      ${d.rating?`<div class="rt">${stars(d.rating,'sm')}</div>`:''}
-    </div>
-  </div>`;
-}
-
-/* ================================================================ LIBRARY */
+/* ---- library ---- */
 function renderLibrary(){
-  const grid=$('#libGrid');
-  // chips
-  const chips=$('#libChips');if(!chips.dataset.built){chips.dataset.built='1';
-    chips.innerHTML=`<button class="chip on" data-f="all">All</button>`+Object.keys(TYPE).map(t=>`<button class="chip" data-f="${t}">${TYPE[t].emoji} ${TYPE[t].label}</button>`).join('');
-    chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;$$('#libChips .chip').forEach(c=>c.classList.remove('on'));b.classList.add('on');libFilter=b.dataset.f;renderLibrary();});
-  }
+  const grid=$('#libGrid');const chips=$('#libChips');
+  if(!chips.dataset.built){chips.dataset.built='1';chips.innerHTML=`<button class="chip on" data-f="all">All</button>`+Object.keys(TYPE).map(t=>`<button class="chip" data-f="${t}">${TYPE[t].emoji} ${TYPE[t].label}</button>`).join('');chips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;$$('#libChips .chip').forEach(c=>c.classList.remove('on'));b.classList.add('on');libFilter=b.dataset.f;renderLibrary();});}
   let list=drinksCache.slice();
   if(libFilter!=='all')list=list.filter(d=>d.type===libFilter);
   if(libSearch){const q=libSearch.toLowerCase();list=list.filter(d=>[d.name,d.variety,d.origin,d.flavor,d.pairing].join(' ').toLowerCase().includes(q));}
   list.sort((a,b)=>{if(libSort==='newest')return new Date(b.createdAt)-new Date(a.createdAt);if(libSort==='oldest')return new Date(a.createdAt)-new Date(b.createdAt);if(libSort==='name')return(a.name||'').localeCompare(b.name||'');if(libSort==='rating')return(b.rating||0)-(a.rating||0);return 0;});
-  if(!list.length){grid.innerHTML=`<div class="empty"><span class="ico">${libSearch?'🔍':'🍷'}</span><p>${libSearch?'Nothing matches your search.':libFilter==='all'?'No drinks yet. Tap + to add your first.':'No '+TYPE[libFilter].label+' yet.'}</p></div>`;return;}
-  grid.innerHTML=list.map(dcardHtml).join('');
+  grid.innerHTML=list.length?list.map(dcardHtml).join(''):`<div class="empty"><span class="ico">${libSearch?'🔍':'🍷'}</span><p>${libSearch?'Nothing matches.':libFilter==='all'?'No bottles yet. Tap + to find one.':'No '+TYPE[libFilter].label+' yet.'}</p></div>`;
   grid.querySelectorAll('.dcard').forEach(c=>c.addEventListener('click',()=>openDetail(c.dataset.id)));
 }
 
-/* ================================================================ DETAIL SHEET */
+/* ---- detail sheet ---- */
 function openDetail(id){
-  const d=drinksCache.find(x=>x.id===id);if(!d)return;
-  const sat=d.sat||{};
+  const d=drinksCache.find(x=>x.id===id);if(!d)return;const sat=d.sat||{};
   const hasProf=['body','acidity','sweet','tannin','alcohol','finish'].some(k=>sat[k]);
   const plab={body:'Body',acidity:'Acidity',sweet:'Sweet',tannin:'Tannin',alcohol:'Alcohol',finish:'Finish'};
   const ph="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232f251c'/%3E%3Ctext x='50' y='58' font-size='30' text-anchor='middle'%3E"+TYPE[d.type].emoji+"%3C/text%3E%3C/svg%3E";
-  $('#sheetBody').innerHTML=`
-    <button class="sheet-close close-x" id="dClose">✕</button>
-    ${d.imageBase64?`<div class="detail-hero" style="background-image:url('${d.imageBase64}')"></div>`:`<div class="detail-hero" style="background-image:url('${ph}');background-color:var(--surface-2)"></div>`}
-    <div class="detail-name">${esc(d.name)}</div>
-    <div class="detail-meta">
-      <span class="tchip ${d.type}">${TYPE[d.type].emoji} ${TYPE[d.type].label}</span>
-      ${d.rating?stars(d.rating,'md'):'<span style="color:var(--text-4);font-size:.82rem">unrated</span>'}
-    </div>
-    <div class="detail-meta" style="margin-top:4px">${[d.variety,d.origin].filter(Boolean).map(esc).join(' · ')}${d.abv?' · '+esc(d.abv)+'% ABV':''}${d.price?' · '+esc(d.price):''}</div>
-
-    ${d.flavor?`<div class="detail-sec"><div class="h">Tasting notes</div><p>${esc(d.flavor)}</p></div>`:''}
-    ${d.pairing?`<div class="detail-sec"><div class="h">Pairings</div><div class="tags">${d.pairing.split(',').map(s=>s.trim()).filter(Boolean).map(p=>`<span class="tag">${esc(p)}</span>`).join('')}</div></div>`:''}
-    ${hasProf?`<div class="detail-sec"><div class="h">Tasting profile</div><div class="bars">${['body','acidity','sweet','tannin','alcohol','finish'].filter(k=>sat[k]).map(k=>`<div class="bar"><span class="bl">${plab[k]}</span><span class="bt"><span class="bf" style="width:${sat[k]/5*100}%"></span></span><span class="bv">${sat[k]}</span></div>`).join('')}</div>${[sat.color&&('Appearance: '+sat.color),sat.aroma&&('Nose: '+sat.aroma),sat.conclusion&&('Conclusion: '+sat.conclusion)].filter(Boolean).length?`<p style="font-size:.84rem;color:var(--text-2);margin-top:10px;line-height:1.6">${[sat.color&&('Appearance: '+sat.color),sat.aroma&&('Nose: '+sat.aroma),sat.conclusion&&('Conclusion: '+sat.conclusion)].filter(Boolean).map(esc).join(' · ')}</p>`:''}</div>`:''}
-    ${d.summary?`<div class="detail-sec"><div class="h">Summary</div><p style="white-space:pre-wrap">${esc(d.summary)}</p></div>`:''}
-    <div style="color:var(--text-4);font-size:.74rem;margin-top:18px">📅 ${fmtDate(d.createdAt)}</div>
-    <div class="detail-actions">
-      <button class="btn" id="dTts">🔊 Read</button>
-      <button class="btn btn-primary" id="dEdit">✏️ Edit</button>
-      <button class="btn" id="dDel" style="margin-left:auto;color:var(--red)">🗑 Delete</button>
-    </div>`;
-  openSheet();
-  $('#dClose').onclick=closeSheet;
-  $('#dTts').onclick=()=>{speak(`${d.name}. ${(d.variety||'')}. From ${d.origin||'an unspecified origin'}. Notes: ${d.flavor||'none'}. ${d.summary||''}`,getSettings().ttsRate);};
+  $('#sheetBody').innerHTML=`<button class="sheet-close close-x" id="dClose">✕</button>${d.imageBase64?`<div class="detail-hero" style="background-image:url('${d.imageBase64}')"></div>`:`<div class="detail-hero" style="background-image:url('${ph}');background-color:var(--surface-2)"></div>`}<div class="detail-name">${esc(d.name)}</div><div class="detail-meta"><span class="tchip ${d.type}">${TYPE[d.type].emoji} ${TYPE[d.type].label}</span>${d.rating?stars(d.rating,'md'):'<span style="color:var(--text-4);font-size:.82rem">unrated</span>'}</div><div class="detail-meta" style="margin-top:4px">${[d.variety,d.origin].filter(Boolean).map(esc).join(' · ')}${d.abv?' · '+esc(d.abv)+'% ABV':''}${d.price?' · '+esc(d.price):''}</div>${d.flavor?`<div class="detail-sec"><div class="h">Tasting notes</div><p>${esc(d.flavor)}</p></div>`:''}${d.pairing?`<div class="detail-sec"><div class="h">Pairings</div><div class="tags">${d.pairing.split(',').map(s=>s.trim()).filter(Boolean).map(p=>`<span class="tag">${esc(p)}</span>`).join('')}</div></div>`:''}${hasProf?`<div class="detail-sec"><div class="h">Tasting profile</div><div class="bars">${['body','acidity','sweet','tannin','alcohol','finish'].filter(k=>sat[k]).map(k=>`<div class="bar"><span class="bl">${plab[k]}</span><span class="bt"><span class="bf" style="width:${sat[k]/5*100}%"></span></span><span class="bv">${sat[k]}</span></div>`).join('')}</div></div>`:''}${d.summary?`<div class="detail-sec"><div class="h">Summary</div><p style="white-space:pre-wrap">${esc(d.summary)}</p></div>`:''}<div style="color:var(--text-4);font-size:.74rem;margin-top:18px">📅 ${fmtDate(d.createdAt)}</div><div class="detail-actions"><button class="btn" id="dTts">🔊 Read</button><button class="btn btn-primary" id="dEdit">✏️ Edit</button><button class="btn" id="dDel" style="margin-left:auto;color:var(--red)">🗑 Delete</button></div>`;
+  openSheet();$('#dClose').onclick=closeSheet;
+  $('#dTts').onclick=()=>speak(`${d.name}. ${d.variety||''}. From ${d.origin||'an unspecified origin'}. Notes: ${d.flavor||'none'}. ${d.summary||''}`,getSettings().ttsRate);
   $('#dEdit').onclick=()=>{closeSheet();loadIntoForm(d);};
-  $('#dDel').onclick=async()=>{if(confirm('Delete this entry?')){await dbDel(d.id);await refreshCache();closeSheet();renderAll();toast('🗑 Deleted.');}};
+  $('#dDel').onclick=async()=>{if(confirm('Delete this entry?')){await dbDel(d.id);await refreshCache();closeSheet();go('home');toast('🗑 Deleted.');}};
 }
-function openSheet(){$('#scrim').classList.add('open');$('#sheet').classList.add('open');document.body.classList.add('no-scroll');}
-function closeSheet(){$('#scrim').classList.remove('open');$('#sheet').classList.remove('open');document.body.classList.remove('no-scroll');}
+const openSheet=()=>{$('#scrim').classList.add('open');$('#sheet').classList.add('open');document.body.classList.add('no-scroll');};
+const closeSheet=()=>{$('#scrim').classList.remove('open');$('#sheet').classList.remove('open');document.body.classList.remove('no-scroll');};
 
-/* ================================================================ ADD / EDIT FORM */
-function buildProfSliders(){
-  const wrap=$('#profSliders');wrap.innerHTML='';
-  PROF_FIELDS.forEach(([k,l])=>{
-    const it=document.createElement('div');it.className='it';
-    it.innerHTML=`<div class="lab"><span>${l}</span><span class="v" id="pv-${k}">—</span></div><input type="range" min="0" max="5" step="1" value="0" id="pf-${k}">`;
-    wrap.appendChild(it);
-    const inp=it.querySelector('input'),val=it.querySelector('.v');
-    inp.addEventListener('input',()=>{val.textContent=inp.value>0?inp.value+'/5':'—';});
-  });
-}
-function setFormType(t){
-  formType=t;
-  $$('#typeSeg button').forEach(b=>{
-    b.classList.remove('on','wine','sake','whisky','coffee');
-    if(b.dataset.type===t)b.classList.add('on',t);
-  });
-  showTannif(t==='wine');
-}
+/* ---- search / form ---- */
+function buildProfSliders(){const wrap=$('#profSliders');wrap.innerHTML='';PROF.forEach(([k,l])=>{const it=document.createElement('div');it.className='it';it.innerHTML=`<div class="lab"><span>${l}</span><span class="v" id="pv-${k}">—</span></div><input type="range" min="0" max="5" step="1" value="0" id="pf-${k}">`;wrap.appendChild(it);const inp=it.querySelector('input'),val=it.querySelector('.v');inp.addEventListener('input',()=>{val.textContent=inp.value>0?inp.value+'/5':'—';});});}
 function showTannif(show){const el=$('#pf-tannin');if(el)el.closest('.it').style.display=show?'':'none';}
-function renderRate(){const v=formRating;$$('#ratePick .s').forEach(s=>s.classList.toggle('on',+s.dataset.v<=v));$('#fRating').value=v;}
-
-function setPhoto(dataUrl){
-  formImg=dataUrl;const dz=$('#dropZone');
-  if(dataUrl){dz.classList.add('has-img');dz.innerHTML=`<img src="${dataUrl}" alt=""><button class="clear-x" id="clearImg">✕</button><input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/heic,image/heif">`;}
-  else{dz.classList.remove('has-img');dz.innerHTML=`<span class="di">📷</span><div class="dt">Add a label photo</div><div class="dh">Tap to choose — AI can identify it for you</div><input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/heic,image/heif">`;}
-  $('#photoActions').style.display=dataUrl?'':'none';
-  $('#btnAnalyze').disabled=!dataUrl;
-  bindDrop();
-}
-function bindDrop(){
-  const dz=$('#dropZone');
-  dz.onclick=e=>{if(e.target.closest('.clear-x'))return;$('#fileInput').click();};
-  const cx=$('#clearImg');if(cx)cx.onclick=e=>{e.stopPropagation();setPhoto('');};
-  $('#fileInput').onchange=async e=>{const f=e.target.files[0];if(f){try{setPhoto(await resizeImage(f));toast('📸 Photo added');}catch(err){toast('❌ '+err.message);}}e.target.value='';};
-  dz.ondragover=e=>{e.preventDefault();dz.classList.add('drag');};
-  dz.ondragleave=()=>dz.classList.remove('drag');
-  dz.ondrop=async e=>{e.preventDefault();dz.classList.remove('drag');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/')){try{setPhoto(await resizeImage(f));toast('📸 Photo added');}catch(err){toast('❌ '+err.message);}}};
+function setFormType(t){formType=t;const act=t;$$('#typeSeg button').forEach(b=>{b.classList.remove('on','wine','sake','whisky','coffee');if(b.dataset.type===t)b.classList.add('on',t);});showTannif(t==='wine');}
+function renderRate(){$$('#ratePick .s').forEach(s=>s.classList.toggle('on',+s.dataset.v<=formRating));$('#fRating').value=formRating;}
+function setPreview(dataUrl,sourceLabel){
+  formImg=dataUrl;const p=$('#imgPreview');
+  if(dataUrl){$('#imgPreviewImg').src=dataUrl;$('#imgPreviewTag').textContent=sourceLabel||'photo';p.classList.add('show');}
+  else p.classList.remove('show');
 }
 function clearForm(){
-  $('#fName').value='';$('#fVariety').value='';$('#fOrigin').value='';$('#fAbv').value='';$('#fPrice').value='';
-  $('#fFlavor').value='';$('#fPairing').value='';$('#fSummary').value='';
-  $('#fColor').value='';$('#fAroma').value='';$('#fConclusion').value='';
-  PROF_FIELDS.forEach(([k])=>{const inp=$('#pf-'+k);if(inp){inp.value=0;$('#pv-'+k).textContent='—';}});
-  formRating=0;renderRate();
-  $('#fEditId').value='';$('#addTitle').textContent='New entry';$('#btnCancel').style.display='none';
-  setPhoto('');setFormType('wine');
+  $('#fName').value='';$('#fVariety').value='';$('#fOrigin').value='';$('#fAbv').value='';$('#fPrice').value='';$('#fFlavor').value='';$('#fPairing').value='';$('#fSummary').value='';$('#fColor').value='';$('#fAroma').value='';$('#fConclusion').value='';
+  PROF.forEach(([k])=>{const inp=$('#pf-'+k);if(inp){inp.value=0;$('#pv-'+k).textContent='—';}});
+  formRating=0;renderRate();$('#fEditId').value='';$('#btnCancel').style.display='none';setPreview('');setFormType('wine');
 }
 function loadIntoForm(d){
-  clearForm();
-  setFormType(d.type||'wine');
-  $('#fEditId').value=d.id||'';$('#addTitle').textContent='Edit entry';$('#btnCancel').style.display='';
-  $('#fName').value=d.name||'';$('#fVariety').value=d.variety||'';$('#fOrigin').value=d.origin||'';
-  $('#fAbv').value=d.abv||'';$('#fPrice').value=d.price||'';
-  $('#fFlavor').value=d.flavor||'';$('#fPairing').value=d.pairing||'';$('#fSummary').value=d.summary||'';
+  go('search');clearForm();
+  setFormType(d.type||'wine');$('#fEditId').value=d.id||'';$('#btnCancel').style.display='';
+  $('#fName').value=d.name||'';$('#fVariety').value=d.variety||'';$('#fOrigin').value=d.origin||'';$('#fAbv').value=d.abv||'';$('#fPrice').value=d.price||'';$('#fFlavor').value=d.flavor||'';$('#fPairing').value=d.pairing||'';$('#fSummary').value=d.summary||'';
   $('#fColor').value=(d.sat&&d.sat.color)||'';$('#fAroma').value=(d.sat&&d.sat.aroma)||'';$('#fConclusion').value=(d.sat&&d.sat.conclusion)||'';
-  PROF_FIELDS.forEach(([k])=>{const v=(d.sat&&d.sat[k])||0;const inp=$('#pf-'+k);if(inp){inp.value=v;$('#pv-'+k).textContent=v>0?v+'/5':'—';}});
+  PROF.forEach(([k])=>{const v=(d.sat&&d.sat[k])||0;const inp=$('#pf-'+k);if(inp){inp.value=v;$('#pv-'+k).textContent=v>0?v+'/5':'—';}});
   formRating=d.rating||0;renderRate();
-  if(d.imageBase64)setPhoto(d.imageBase64);
-  go('add');
-  toast('✏️ Editing — tap Save to update.');
+  if(d.imageBase64)setPreview(d.imageBase64,'saved photo');
+  $('#editBlock').style.display='';$('#searchResults').innerHTML='';
+  $('#kwInput').value=d.name||'';
+  $('#searchHint').textContent='Editing — review and tap Save.';
+  toast('✏️ Editing — review and Save.');
 }
-function seedEntry(seed){
-  clearForm();
-  if(seed.type)setFormType(seed.type);
-  if(seed.name)$('#fName').value=seed.name;
-  if(seed.variety)$('#fVariety').value=seed.variety;
-  if(seed.origin)$('#fOrigin').value=seed.origin;
-  go('add');
-  toast('🌱 Seeded from a suggestion.');
+function seedSearch(seed){go('search');clearForm();$('#kwInput').value=seed.kw||'';if(seed.type)setFormType(seed.type);doSearch();}
+function fillFromResult(r){if(r.type&&TYPE[r.type])setFormType(r.type);if(r.name)$('#fName').value=r.name;if(r.variety)$('#fVariety').value=r.variety;if(r.origin)$('#fOrigin').value=r.origin;if(r.flavor)$('#fFlavor').value=r.flavor;if(r.pairing)$('#fPairing').value=r.pairing;if(r.summary)$('#fSummary').value=r.summary;}
+
+async function doSearch(){
+  const kw=$('#kwInput').value.trim();if(!kw){toast('⚠️ Type a bottle name first.');$('#kwInput').focus();return;}
+  const s=getSettings();if(!s.apiKey){toast('⚠️ Add your GLM key in Settings first.');openSettings();return;}
+  $('#editBlock').style.display='none';
+  $('#searchResults').innerHTML=`<div class="spin-block"><div class="spinner"></div><div>Searching "<b>${esc(kw)}</b>"…<br><span style="font-size:.78rem">AI is writing notes and finding label photos.</span></div></div>`;
+  $('#searchHint').textContent='';
+  const aiP=callAI({keyword:kw,fillAll:true});
+  const imgP=imageSearch(kw);
+  const [aiRes,imgRes]=await Promise.allSettled([aiP,imgP]);
+  const ai=aiRes.status==='fulfilled'?aiRes.value:null;
+  const imgs=imgRes.status==='fulfilled'?imgRes.value:(imgRes.reason?[ ]:[]);
+  // reset form, fill AI
+  clearForm();setFormType('wine');$('#fName').value=kw;
+  if(ai)fillFromResult(ai);
+  else toast('⚠️ AI summary failed — fill in manually or check Settings.');
+  // render gallery + form
+  let galleryHtml='';
+  if(imgs&&imgs.length){
+    galleryHtml=`<div class="label">Is this your bottle? Tap one to confirm</div><div class="gallery" id="gallery">${imgs.slice(0,8).map((it,i)=>`<div class="gimg" data-i="${i}"><img src="${esc(it.thumb)}" loading="lazy" onerror="this.parentNode.style.display='none'"><div class="src">${esc((it.source||it.title||'').slice(0,40))}</div><div class="chk">✓</div></div>`).join('')}</div>`;
+  }else{
+    galleryHtml=`<div class="label">No label photos found</div><div class="hint-line">You can upload your own photo below, or save without one.</div>`;
+  }
+  galleryHtml+=`<div class="btn-row"><label class="btn btn-ghost" style="cursor:pointer">📷 Upload your own photo<input type="file" id="ownPhoto" accept="image/*" style="display:none"></label></div>`;
+  $('#searchResults').innerHTML=galleryHtml;
+  // store imgs for selection
+  window._lastImgs=imgs||[];
+  $('#gallery')&&$$('#gallery .gimg').forEach(el=>el.addEventListener('click',()=>selectGallery(+el.dataset.i)));
+  const op=$('#ownPhoto');if(op)op.addEventListener('change',async e=>{const f=e.target.files[0];if(f){try{setPreview(await resizeFile(f),'your photo');toast('📷 Photo added');}catch(err){toast('❌ '+err.message);}e.target.value='';}});
+  $('#editBlock').style.display='';
+  if(ai)toast('✅ Notes generated — confirm the photo, then Save.');
 }
-function collectEntry(id,createdAt){
-  const sat={};
-  PROF_FIELDS.forEach(([k])=>{const v=parseInt($('#pf-'+k).value,10);if(v>0)sat[k]=v;});
-  sat.color=$('#fColor').value.trim();sat.aroma=$('#fAroma').value.trim();sat.conclusion=$('#fConclusion').value.trim();
-  return{id:id||(Date.now().toString(36)+Math.random().toString(36).slice(2,6)),createdAt:createdAt||new Date().toISOString(),
-    type:formType,name:$('#fName').value.trim(),variety:$('#fVariety').value.trim(),origin:$('#fOrigin').value.trim(),
-    abv:$('#fAbv').value.trim(),price:$('#fPrice').value.trim(),flavor:$('#fFlavor').value.trim(),pairing:$('#fPairing').value.trim(),
-    summary:$('#fSummary').value.trim(),rating:formRating,sat,imageBase64:formImg||''};
+
+async function selectGallery(i){
+  const imgs=window._lastImgs||[];const it=imgs[i];if(!it)return;
+  $$('#gallery .gimg').forEach((el,j)=>el.classList.toggle('sel',j===i));
+  try{const dataUrl=await fetchToDataUrl(it.thumb);setPreview(dataUrl,(it.source||'').startsWith('http')?it.source:(it.source||'web'));toast('📷 Image selected');}
+  catch(e){setPreview(it.thumb,it.source||'web');toast('📷 Image selected (linked).');}
 }
+function collectEntry(id,createdAt){const sat={};PROF.forEach(([k])=>{const v=parseInt($('#pf-'+k).value,10);if(v>0)sat[k]=v;});sat.color=$('#fColor').value.trim();sat.aroma=$('#fAroma').value.trim();sat.conclusion=$('#fConclusion').value.trim();return{id:id||(Date.now().toString(36)+Math.random().toString(36).slice(2,6)),createdAt:createdAt||new Date().toISOString(),type:formType,name:$('#fName').value.trim(),variety:$('#fVariety').value.trim(),origin:$('#fOrigin').value.trim(),abv:$('#fAbv').value.trim(),price:$('#fPrice').value.trim(),flavor:$('#fFlavor').value.trim(),pairing:$('#fPairing').value.trim(),summary:$('#fSummary').value.trim(),rating:formRating,sat,imageBase64:formImg||''};}
 async function saveEntry(){
   const name=$('#fName').value.trim();if(!name){toast('⚠️ Enter at least a name.');return;}
-  const eid=$('#fEditId').value;let createdAt;
-  if(eid){const p=drinksCache.find(d=>d.id===eid);if(p)createdAt=p.createdAt;}
-  try{await dbPut(collectEntry(eid||null,createdAt));toast(eid?'✅ Updated!':'✅ Saved to cellar!');clearForm();await refreshCache();go('home');}
+  const eid=$('#fEditId').value;let createdAt;if(eid){const p=drinksCache.find(d=>d.id===eid);if(p)createdAt=p.createdAt;}
+  try{await dbPut(collectEntry(eid||null,createdAt));toast(eid?'✅ Updated!':'✅ Saved to cellar!');clearForm();$('#editBlock').style.display='none';$('#searchResults').innerHTML='';$('#kwInput').value='';$('#searchHint').textContent='Type a bottle name. The AI writes the tasting notes; we\'ll find label photos to confirm it\'s the right one.';await refreshCache();go('home');}
   catch(e){toast('❌ Save failed: '+e.message);}
 }
 
-/* ================================================================ STUDY */
+/* ---- study ---- */
 let studyPane='ref';
-function renderStudyTabs(){
-  $$('.study-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.pane===studyPane));
-  $$('.pane').forEach(p=>p.classList.remove('active'));
-  $('#pane-'+studyPane).classList.add('active');
-  if(studyPane==='ref')renderRef();
-  if(studyPane==='fc')renderFcDecks();
-}
-function renderRef(){
-  const grid=$('#catGrid');if(grid.dataset.built)return;
-  grid.dataset.built='1';
-  const cats=[{k:'wine',e:'🍷',t:'Wine & Grapes',d:'Varieties, regions, SAT primer'},{k:'sake',e:'🍶',t:'Sake',d:'Categories & seimaibuai'},{k:'whisky',e:'🥃',t:'Whisky Regions',d:'Scotch, bourbon & world'},{k:'coffee',e:'☕',t:'Coffee Origins',d:'Origins & processing'},{k:'method',e:'🎯',t:'Tasting Method',d:'The SAT approach'}];
-  grid.innerHTML=cats.map(c=>`<div class="cat" data-k="${c.k}"><div class="e">${c.e}</div><div class="t">${c.t}</div><div class="d">${c.d}</div></div>`).join('');
-  grid.querySelectorAll('.cat').forEach(el=>el.addEventListener('click',()=>showRef(el.dataset.k)));
-}
-function showRef(k){
-  $('#catGrid').style.display='none';$('#refWrap').style.display='';
-  const list=$('#refList');
-  if(k==='method'){list.innerHTML=`<div class="kb" style="border:none"><div class="kn">Systematic Approach (SAT)</div></div><div class="kb"><div class="kd">Assess in order before tasting with the palate. Use the Tasting Profile sliders in a new entry to record it.</div></div>`+
-    ['Appearance — clarity, intensity, color.','Nose — condition, intensity, aroma characteristics.','Palate — sweetness, acidity, tannin, alcohol, body, flavor, finish.','Conclusion — quality, readiness, grape/origin/age reasoning.'].map(s=>`<div class="kb"><div class="kd">${esc(s)}</div></div>`).join('');return;}
-  if(k==='coffee'){list.innerHTML='<div class="kb" style="border:none"><div class="kn">Origins</div></div>'+KB.coffee.map(kbRow).join("")+'<div class="kb" style="border:none;margin-top:8px"><div class="kn">Processing</div></div>'+PROCESSING.map(p=>`<div class="kb"><div class="kn">${esc(p.n)}</div><div class="kd">${esc(p.d)}</div></div>`).join('');return;}
-  const titles={wine:'Grape varieties',sake:'Sake categories',whisky:'Regions & styles'};
-  list.innerHTML=`<div class="kb" style="border:none"><div class="kn">${titles[k]}</div></div>`+(KB[k]||[]).map(kbRow).join('');
-}
-function kbRow(k){return `<div class="kb"><div><span class="kn">${esc(k.n)}</span><span class="ko">— ${esc(k.o)}</span></div>${k.t?`<div class="kt">${k.t.slice(0,4).map(t=>`<span>${esc(t)}</span>`).join('')}</div>`:''}<div class="kd">${esc(k.d)}</div></div>`;}
+function renderStudyTabs(){$$('.study-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.pane===studyPane));$$('.pane').forEach(p=>p.classList.remove('active'));$('#pane-'+studyPane).classList.add('active');if(studyPane==='ref')renderRef();if(studyPane==='fc')renderFcDecks();}
+function renderRef(){const grid=$('#catGrid');if(grid.dataset.built)return;grid.dataset.built='1';const cats=[{k:'wine',e:'🍷',t:'Wine & Grapes',d:'Varieties & regions'},{k:'sake',e:'🍶',t:'Sake',d:'Categories'},{k:'whisky',e:'🥃',t:'Whisky Regions',d:'Scotch & world'},{k:'coffee',e:'☕',t:'Coffee Origins',d:'Origins & processing'},{k:'method',e:'🎯',t:'Tasting Method',d:'The SAT approach'}];grid.innerHTML=cats.map(c=>`<div class="cat" data-k="${c.k}"><div class="e">${c.e}</div><div class="t">${c.t}</div><div class="d">${c.d}</div></div>`).join('');grid.querySelectorAll('.cat').forEach(el=>el.addEventListener('click',()=>showRef(el.dataset.k)));}
+function showRef(k){$('#catGrid').style.display='none';$('#refWrap').style.display='';const list=$('#refList');if(k==='method'){list.innerHTML='<div class="kb" style="border:none"><div class="kn">Systematic Approach (SAT)</div></div>'+['Appearance — clarity, intensity, color.','Nose — condition, intensity, aromas.','Palate — sweetness, acidity, tannin, alcohol, body, flavor, finish.','Conclusion — quality, readiness, reasoning.'].map(s=>`<div class="kb"><div class="kd">${esc(s)}</div></div>`).join('');return;}if(k==='coffee'){list.innerHTML='<div class="kb" style="border:none"><div class="kn">Origins</div></div>'+KB.coffee.map(kbRow).join('')+'<div class="kb" style="border:none;margin-top:8px"><div class="kn">Processing</div></div>'+PROCESSING.map(p=>`<div class="kb"><div class="kn">${esc(p.n)}</div><div class="kd">${esc(p.d)}</div></div>`).join('');return;}const titles={wine:'Grape varieties',sake:'Sake categories',whisky:'Regions & styles'};list.innerHTML=`<div class="kb" style="border:none"><div class="kn">${titles[k]}</div></div>`+(KB[k]||[]).map(kbRow).join('');}
+const kbRow=k=>`<div class="kb"><div><span class="kn">${esc(k.n)}</span><span class="ko">— ${esc(k.o)}</span></div>${k.t?`<div class="kt">${k.t.slice(0,4).map(t=>`<span>${esc(t)}</span>`).join('')}</div>`:''}<div class="kd">${esc(k.d)}</div></div>`;
 function backRef(){$('#refWrap').style.display='none';$('#catGrid').style.display='';}
-
-/* flashcards */
-const FC_KEY='decanter_fc_v2';
-function fcProg(){try{return JSON.parse(localStorage.getItem(FC_KEY)||'{}');}catch(e){return{};}}
-function fcProgSet(p){localStorage.setItem(FC_KEY,JSON.stringify(p));}
+const FC_KEY='decanter_fc_v2';const fcProg=()=>{try{return JSON.parse(localStorage.getItem(FC_KEY)||'{}');}catch(e){return{};}};const fcProgSet=p=>localStorage.setItem(FC_KEY,JSON.stringify(p));
 function kbCards(){const c=[];Object.keys(KB).forEach(tp=>KB[tp].forEach(k=>c.push({id:'kb:'+tp+':'+k.n,front:k.n,back:`${TYPE[tp].emoji} ${esc(k.o)} — ${esc(k.d)}`})));return c;}
 function userCards(){return drinksCache.filter(d=>d.name).map(d=>({id:'u:'+d.id,front:d.name,back:`${TYPE[d.type].emoji} ${esc([d.variety,d.origin].filter(Boolean).join(' · '))}${d.flavor?'<br>🌶 '+esc(d.flavor):''}`}));}
 let fcDeck=[],fcI=0,fcFlip=false;
-function renderFcDecks(){
-  const w=$('#fcDeckBtns');w.innerHTML='';
-  [['🧠 Knowledge','Reference library',()=>kbCards()],['🍷 Your drinks','From your journal',async()=>userCards()],['🎲 Mixed','Everything',async()=>shuffle([...kbCards(),...userCards()])]].forEach(([label,desc,fn])=>{
-    const b=document.createElement('button');b.className='btn';b.style.flexDirection='column';b.style.textAlign='left';b.style.flex='1';b.style.minWidth='120px';
-    b.innerHTML=`<span>${label}</span><span style="font-size:.72rem;color:var(--text-3);font-weight:400">${desc}</span>`;
-    b.onclick=async()=>{const d=await fn();if(!d.length){toast('No cards — add drinks first.');return;}startFc(d);};
-    w.appendChild(b);
-  });
-}
+function renderFcDecks(){const w=$('#fcDeckBtns');w.innerHTML='';[['🧠 Knowledge','Reference library',()=>kbCards()],['🍷 Your bottles','From your cellar',async()=>userCards()],['🎲 Mixed','Everything',async()=>shuffle([...kbCards(),...userCards()])]].forEach(([label,desc,fn])=>{const b=document.createElement('button');b.className='btn';b.style.flexDirection='column';b.style.textAlign='left';b.style.flex='1';b.style.minWidth='120px';b.innerHTML=`<span>${label}</span><span style="font-size:.72rem;color:var(--text-3);font-weight:400">${desc}</span>`;b.onclick=async()=>{const d=await fn();if(!d.length){toast('No cards — add bottles first.');return;}startFc(d);};w.appendChild(b);});}
 function startFc(deck){fcDeck=deck;fcI=0;fcFlip=false;$('#fcDecks').style.display='none';$('#fcSession').style.display='';renderFc();}
-function renderFc(){
-  if(!fcDeck.length){endFc();return;}
-  const c=fcDeck[fcI];const p=fcProg();const box=(p[c.id]&&p[c.id].box)||0;
-  $('#fcSession').innerHTML=`<div class="fc-meta">Card ${fcI+1} / ${fcDeck.length} · ${box?'●'.repeat(box):'new'}</div>
-    <div class="fc" id="fcCard"><div class="lab">${fcFlip?'Answer':'Name'}</div><div class="${fcFlip?'back':'front'}">${fcFlip?c.back:esc(c.front)}</div><div class="hint">${fcFlip?'tap to flip back':'tap to reveal'}</div></div>
-    ${fcFlip?`<div class="fc-ctrl"><button class="btn" id="fcNo">✗ Didn't know</button><button class="btn btn-primary" id="fcYes">✓ Got it</button></div>`:''}
-    <div class="fc-ctrl" style="margin-top:10px"><button class="btn btn-ghost" id="fcEnd">End</button></div>`;
-  $('#fcCard').onclick=()=>{if(!fcFlip){fcFlip=true;renderFc();}};
-  if(fcFlip){$('#fcYes').onclick=()=>gradeFc(true);$('#fcNo').onclick=()=>gradeFc(false);}
-  $('#fcEnd').onclick=endFc;
-}
-function gradeFc(ok){const c=fcDeck[fcI];const p=fcProg();const cur=p[c.id]||{box:0};cur.box=ok?Math.min(5,cur.box+1):Math.max(0,cur.box-1);p[c.id]=cur;fcProgSet(p);fcI++;fcFlip=false;if(fcI>=fcDeck.length)endFc(true);else renderFc();}
+function renderFc(){if(!fcDeck.length){endFc();return;}const c=fcDeck[fcI],p=fcProg(),box=(p[c.id]&&p[c.id].box)||0;$('#fcSession').innerHTML=`<div class="fc-meta">Card ${fcI+1} / ${fcDeck.length} · ${box?'●'.repeat(box):'new'}</div><div class="fc" id="fcCard"><div class="lab">${fcFlip?'Answer':'Name'}</div><div class="${fcFlip?'back':'front'}">${fcFlip?c.back:esc(c.front)}</div><div class="hint">${fcFlip?'tap to flip back':'tap to reveal'}</div></div>${fcFlip?`<div class="fc-ctrl"><button class="btn" id="fcNo">✗ Didn't know</button><button class="btn btn-primary" id="fcYes">✓ Got it</button></div>`:''}<div class="fc-ctrl" style="margin-top:10px"><button class="btn btn-ghost" id="fcEnd">End</button></div>`;$('#fcCard').onclick=()=>{if(!fcFlip){fcFlip=true;renderFc();}};if(fcFlip){$('#fcYes').onclick=()=>gradeFc(true);$('#fcNo').onclick=()=>gradeFc(false);}$('#fcEnd').onclick=endFc;}
+function gradeFc(ok){const c=fcDeck[fcI],p=fcProg(),cur=p[c.id]||{box:0};cur.box=ok?Math.min(5,cur.box+1):Math.max(0,cur.box-1);p[c.id]=cur;fcProgSet(p);fcI++;fcFlip=false;if(fcI>=fcDeck.length)endFc(true);else renderFc();}
 function endFc(done){$('#fcSession').style.display='none';$('#fcDecks').style.display='';if(done)toast('🃏 Deck done!');}
-
-/* quiz */
-const QBANK=[{q:'Which Scotch region is famous for heavily peated, smoky malts?',o:['Speyside','Islay','Lowland','Campbeltown'],a:1,e:'Islay (eye-la) — Laphroaig, Ardbeg, Lagavulin — medicinal peat smoke & brine.'},
-{q:'Pinot Noir reaches its most celebrated expression in?',o:['Bordeaux','Napa','Burgundy','Rioja'],a:2,e:'Red Burgundy is 100% Pinot Noir — fussy but sublime.'},
-{q:'"Seimaibuai" in sake refers to?',o:['Ferment temp','Rice polishing ratio','Bottle size','Brewer rank'],a:1,e:'% of grain remaining after polishing. Ginjō ≥60%, Daiginjō ≥50%.'},
-{q:'Which coffee origin is known for floral jasmine & blueberry?',o:['Brazil','Ethiopia','Sumatra','Jamaica'],a:1,e:'Ethiopia / Yirgacheffe — bright, floral, berry-like.'},
-{q:'Bourbon must be at least what % corn?',o:['41%','51%','61%','71%'],a:1,e:'≥51% corn, aged in new charred oak.'},
-{q:'Left-Bank Bordeaux blends are dominated by?',o:['Merlot','Cabernet Sauvignon','Pinot Noir','Syrah'],a:1,e:'Left-Bank (Médoc) is Cab-dominant; Right-Bank leads with Merlot.'},
-{q:'A sake labeled "Junmai" contains?',o:['Added alcohol','No added alcohol','Carbonation','Oak aging'],a:1,e:'Junmai = pure rice. Only rice, water, koji, yeast.'},
-{q:'Wet-hulling (giling basah) is associated with?',o:['Ethiopia','Colombia','Sumatra','Kenya'],a:2,e:'Sumatra\'s wet-hulling gives earthy, heavy-bodied, low-acid coffee.'},
-{q:'Which is filtered through sugar-maple charcoal before aging?',o:['Bourbon','Tennessee Whiskey','Irish','Rye'],a:1,e:'The Lincoln County Process defines Tennessee Whiskey (Jack Daniel\'s).'},
-{q:'Riesling is most classically from?',o:['France','Italy','Germany','Spain'],a:2,e:'Germany\'s Mosel & Rheingau set the benchmark.'},
-{q:'Which spirit is usually triple-distilled & unpeated?',o:['Scotch','Irish Whiskey','Bourbon','Cognac'],a:1,e:'Irish whiskey — smoother, lighter, unpeated.'},
-{q:'WSET\'s SAT assesses in which order?',o:['Palate→Nose→Appearance','Appearance→Nose→Palate→Conclusion','Nose→Palate→Appearance','Conclusion→Palate'],a:1,e:'Appearance, Nose, Palate, then Conclusion.'}];
 let qQ=[],qI=0,qScore=0,qAns=false,qRes=[];
-function startQuiz(){
-  const dyn=[];const wr=drinksCache.filter(d=>d.origin);
-  if(wr.length>=3){const t=wr[0];const dis=shuffle(wr.slice(1)).slice(0,3).map(d=>d.origin);const opts=shuffle([t.origin,...dis]);dyn.push({q:`In your journal, where is "${t.name}" from?`,o:opts,a:opts.indexOf(t.origin),e:`You logged ${t.name} as ${t.origin}.`});}
-  const wf=drinksCache.filter(d=>d.flavor);
-  if(wf.length>=3){const t=wf[0];const dis=shuffle(wf.slice(1)).slice(0,3).map(d=>d.flavor);const opts=shuffle([t.flavor,...dis]);dyn.push({q:`Which notes did you record for "${t.name}"?`,o:opts,a:opts.indexOf(t.flavor),e:`You described ${t.name}: ${t.flavor}.`});}
-  qQ=shuffle([...QBANK,...dyn]).slice(0,10);qI=0;qScore=0;qRes=[];$('#qzIntro').style.display='none';$('#qzSession').style.display='';renderQuiz();
-}
-function renderQuiz(){
-  if(qI>=qQ.length){quizResults();return;}
-  const q=qQ[qI];qAns=false;
-  const pips=qQ.map((_,i)=>i<qI?(qRes[i]?'done':'bad'):'' ).map(c=>`<div class="p ${c}"></div>`).join('');
-  $('#qzSession').innerHTML=`<div class="qpips">${pips}</div><div class="qq">${qI+1}. ${esc(q.q)}</div><div class="qopts" id="qOpts">${q.o.map((o,i)=>`<button class="qopt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div id="qEx"></div>`;
-  $$('#qOpts .qopt').forEach(b=>b.onclick=()=>answerQuiz(+b.dataset.i));
-}
-function answerQuiz(i){if(qAns)return;qAns=true;const q=qQ[qI];const ok=i===q.a;if(ok)qScore++;qRes[qI]=ok;
-  $$('#qOpts .qopt').forEach(b=>{const ix=+b.dataset.i;b.disabled=true;if(ix===q.a)b.classList.add('ok');else if(ix===i)b.classList.add('no');});
-  $('#qEx').innerHTML=`<div class="qex"><b style="color:${ok?'var(--green)':'var(--red)'}">${ok?'✓ Correct':'✗ Not quite'}</b> — ${esc(q.e)}<br><br><button class="btn btn-primary" id="qNext">${qI+1>=qQ.length?'See results':'Next →'}</button></div>`;
-  $('#qNext').onclick=()=>{qI++;renderQuiz();};
-}
-function quizResults(){
-  const pct=Math.round(qScore/qQ.length*100);let g='Keep tasting!',e='🥲';
-  if(pct>=90){g='Master Sommelier-tier!';e='🏆';}else if(pct>=70){g='Excellent palate!';e='🎖️';}else if(pct>=50){g='Solid — keep going.';e='👍';}
-  $('#qzSession').innerHTML=`<div style="text-align:center;padding:24px 0"><div style="font-size:3rem">${e}</div><div style="font-family:var(--serif);font-size:1.7rem;color:var(--gold-2);margin-top:6px">${qScore} / ${qQ.length}</div><div style="color:var(--text-3)">${g}</div><button class="btn btn-primary" id="qAgain" style="margin-top:18px">↻ Play again</button></div>`;
-  $('#qAgain').onclick=startQuiz;
-}
+function startQuiz(){const dyn=[];const wr=drinksCache.filter(d=>d.origin);if(wr.length>=3){const t=wr[0],dis=shuffle(wr.slice(1)).slice(0,3).map(d=>d.origin),opts=shuffle([t.origin,...dis]);dyn.push({q:`In your cellar, where is "${t.name}" from?`,o:opts,a:opts.indexOf(t.origin),e:`You logged ${t.name} as ${t.origin}.`});}const wf=drinksCache.filter(d=>d.flavor);if(wf.length>=3){const t=wf[0],dis=shuffle(wf.slice(1)).slice(0,3).map(d=>d.flavor),opts=shuffle([t.flavor,...dis]);dyn.push({q:`Which notes did you record for "${t.name}"?`,o:opts,a:opts.indexOf(t.flavor),e:`You described ${t.name}: ${t.flavor}.`});}qQ=shuffle([...QBANK,...dyn]).slice(0,10);qI=0;qScore=0;qRes=[];$('#qzIntro').style.display='none';$('#qzSession').style.display='';renderQuiz();}
+function renderQuiz(){if(qI>=qQ.length){quizResults();return;}const q=qQ[qI];qAns=false;const pips=qQ.map((_,i)=>i<qI?(qRes[i]?'done':'bad'):'').map(c=>`<div class="p ${c}"></div>`).join('');$('#qzSession').innerHTML=`<div class="qpips">${pips}</div><div class="qq">${qI+1}. ${esc(q.q)}</div><div class="qopts" id="qOpts">${q.o.map((o,i)=>`<button class="qopt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div id="qEx"></div>`;$$('#qOpts .qopt').forEach(b=>b.onclick=()=>answerQuiz(+b.dataset.i));}
+function answerQuiz(i){if(qAns)return;qAns=true;const q=qQ[qI],ok=i===q.a;if(ok)qScore++;qRes[qI]=ok;$$('#qOpts .qopt').forEach(b=>{const ix=+b.dataset.i;b.disabled=true;if(ix===q.a)b.classList.add('ok');else if(ix===i)b.classList.add('no');});$('#qEx').innerHTML=`<div class="qex"><b style="color:${ok?'var(--green)':'var(--red)'}">${ok?'✓ Correct':'✗ Not quite'}</b> — ${esc(q.e)}<br><br><button class="btn btn-primary" id="qNext">${qI+1>=qQ.length?'See results':'Next →'}</button></div>`;$('#qNext').onclick=()=>{qI++;renderQuiz();};}
+function quizResults(){const pct=Math.round(qScore/qQ.length*100);let g='Keep tasting!',e='🥲';if(pct>=90){g='Master Sommelier-tier!';e='🏆';}else if(pct>=70){g='Excellent palate!';e='🎖️';}else if(pct>=50){g='Solid — keep going.';e='👍';}$('#qzSession').innerHTML=`<div style="text-align:center;padding:24px 0"><div style="font-size:3rem">${e}</div><div style="font-family:var(--serif);font-size:1.7rem;color:var(--gold-2);margin-top:6px">${qScore} / ${qQ.length}</div><div style="color:var(--text-3)">${g}</div><button class="btn btn-primary" id="qAgain" style="margin-top:18px">↻ Play again</button></div>`;$('#qAgain').onclick=startQuiz;}
 
-/* ================================================================ SETTINGS */
-function openSettings(){
-  const s=getSettings();
-  $('#setKey').value=s.apiKey||'';
-  $('#setModel').value=[...$('#setModel').options].some(o=>o.value===s.model)?s.model:'glm-5-turbo';
-  $('#setEndpoint').value=s.endpoint;$('#setTts').value=s.ttsRate;$('#ttsLbl').textContent=s.ttsRate.toFixed(1)+'×';
-  $('#diag').style.display='none';
-  $('#settingsModal').classList.add('open');
-}
+/* ---- settings ---- */
+function openSettings(){const s=getSettings();$('#setKey').value=s.apiKey||'';$('#setModel').value=[...$('#setModel').options].some(o=>o.value===s.model)?s.model:'glm-5-turbo';$('#setEndpoint').value=[...$('#setEndpoint').options].some(o=>o.value===s.endpoint)?s.endpoint:'https://api.z.ai/api/coding/paas/v4/chat/completions';$('#setGKey').value=s.googleKey||'';$('#setGCx').value=s.googleCx||'';$('#setTts').value=s.ttsRate;$('#ttsLbl').textContent=s.ttsRate.toFixed(1)+'×';$('#diag').style.display='none';$('#settingsModal').classList.add('open');}
 
-/* ================================================================ EXPORT/IMPORT */
+/* ---- export/import ---- */
 async function exportData(){const d=await dbAll();const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=`jp-decanter-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(u);toast('📥 Exported!');}
-async function importData(file){try{const arr=JSON.parse(await file.text());if(!Array.isArray(arr))throw new Error('expected array');let n=0;for(const e of arr){if(!e.name||!e.type)continue;if(!e.id)e.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);if(!e.createdAt)e.createdAt=new Date().toISOString();await dbPut(e);n++;}await refreshCache();renderAll();toast(`📤 Imported ${n} entries!`);}catch(e){toast('❌ '+e.message);}}
+async function importData(file){try{const arr=JSON.parse(await file.text());if(!Array.isArray(arr))throw new Error('expected array');let n=0;for(const e of arr){if(!e.name||!e.type)continue;if(!e.id)e.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);if(!e.createdAt)e.createdAt=new Date().toISOString();await dbPut(e);n++;}await refreshCache();go('home');toast(`📤 Imported ${n}!`);}catch(e){toast('❌ '+e.message);}}
 
-/* ================================================================ WIRING */
-function renderAll(){if(curView==='home')renderHome();else if(curView==='library')renderLibrary();}
+/* ---- wiring ---- */
 function bind(){
-  // tabs + fab
   $$('.tab').forEach(t=>t.addEventListener('click',()=>go(t.dataset.view)));
-  $('#fabAdd').addEventListener('click',()=>{clearForm();go('add');});
-  $('#topSearch').addEventListener('click',()=>{go('library');setTimeout(()=>$('#libSearch').focus(),250);});
+  $('#fabAdd').addEventListener('click',()=>{go('search');$('#editBlock').style.display='none';$('#searchResults').innerHTML='';$('#kwInput').value='';$('#searchHint').textContent='Type a bottle name. The AI writes the tasting notes; we\'ll find label photos to confirm it\'s the right one.';setTimeout(()=>$('#kwInput').focus(),200);});
+  $('#topSearch').addEventListener('click',()=>{go('search');setTimeout(()=>$('#kwInput').focus(),200);});
   $('#topSettings').addEventListener('click',openSettings);
-
+  // search view
+  $('#kwSearch').addEventListener('click',doSearch);
+  $('#kwInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doSearch();}});
+  $('#imgClear').addEventListener('click',()=>setPreview(''));
+  $$('#typeSeg button').forEach(b=>b.addEventListener('click',()=>setFormType(b.dataset.type)));
+  $$('#ratePick .s').forEach(s=>s.addEventListener('click',()=>{formRating=+s.dataset.v;renderRate();}));
+  $('#btnSave').addEventListener('click',saveEntry);
+  $('#btnCancel').addEventListener('click',()=>{clearForm();$('#editBlock').style.display='none';$('#searchResults').innerHTML='';go('home');});
   // library
   $('#libSearch').addEventListener('input',e=>{libSearch=e.target.value;renderLibrary();});
   $('#libSort').addEventListener('change',e=>{libSort=e.target.value;renderLibrary();});
   $('#btnExport').addEventListener('click',exportData);
   $('#btnImport').addEventListener('click',()=>$('#importFile').click());
   $('#importFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)importData(f);e.target.value='';});
-
-  // add form
-  $('#addClose').addEventListener('click',()=>{if($('#fName').value.trim()){if(!confirm('Discard this entry?'))return;}clearForm();go('home');});
-  $('#btnCancel').addEventListener('click',()=>{clearForm();go('home');});
-  $$('#typeSeg button').forEach(b=>b.addEventListener('click',()=>setFormType(b.dataset.type)));
-  $$('#ratePick .s').forEach(s=>s.addEventListener('click',()=>{formRating=+s.dataset.v;renderRate();}));
-  buildProfSliders();
-  bindDrop();
-  $('#btnAnalyze').addEventListener('click',async()=>{const b=$('#btnAnalyze');const o=b.innerHTML;b.innerHTML='<span class="spinner"></span> Identifying…';b.disabled=true;const r=await callAI({image:formImg});b.innerHTML=o;b.disabled=false;if(r)fillFromResult(r,true);});
-  $('#btnGenSummary').addEventListener('click',async()=>{const b=$('#btnGenSummary');const o=b.innerHTML;b.innerHTML='<span class="spinner"></span> Summarizing…';b.disabled=true;const r=await callAI({fillAll:false});b.innerHTML=o;b.disabled=false;if(r)fillFromResult(r,false);});
-  $('#btnGenFill').addEventListener('click',async()=>{const b=$('#btnGenFill');const o=b.innerHTML;b.innerHTML='<span class="spinner"></span> Filling…';b.disabled=true;const r=await callAI({fillAll:true});b.innerHTML=o;b.disabled=false;if(r)fillFromResult(r,true);});
-  $('#btnSave').addEventListener('click',saveEntry);
-
-  // detail sheet
+  // detail
   $('#scrim').addEventListener('click',closeSheet);
-
-  // study tabs
+  // study
   $$('.study-tabs button').forEach(b=>b.addEventListener('click',()=>{studyPane=b.dataset.pane;renderStudyTabs();}));
   $('#refBack').addEventListener('click',backRef);
   $('#qzStart').addEventListener('click',startQuiz);
-
   // settings
   $('#setClose').addEventListener('click',()=>$('#settingsModal').classList.remove('open'));
   $('#settingsModal').addEventListener('click',e=>{if(e.target===$('#settingsModal'))$('#settingsModal').classList.remove('open');});
   $('#setTts').addEventListener('input',e=>$('#ttsLbl').textContent=parseFloat(e.target.value).toFixed(1)+'×');
-  $('#setSave').addEventListener('click',()=>{saveSettings({apiKey:$('#setKey').value.trim(),model:$('#setModel').value,endpoint:$('#setEndpoint').value,ttsRate:parseFloat($('#setTts').value)});$('#settingsModal').classList.remove('open');toast('⚙️ Settings saved!');});
-  $('#btnTest').addEventListener('click',()=>{const b=$('#btnTest');b.disabled=true;b.textContent='Testing…';saveSettings(Object.assign({},getSettings(),{apiKey:$('#setKey').value.trim(),endpoint:$('#setEndpoint').value}));testConnection().finally(()=>{b.disabled=false;b.textContent='🔌 Test connection';});});
-
+  $('#gGuide').addEventListener('click',e=>{e.preventDefault();alert('Google image setup (one-time, ~5 min):\n\n1) Go to programmablesearchengine.google.com → Create a search engine.\n2) Set it to "Search the entire web" and turn ON "Image search".\n3) Copy your Search engine ID (cx) → paste in "Custom Search Engine ID".\n4) Go to console.cloud.google.com → enable "Custom Search API" → create an API key.\n5) Paste the API key here.\n\nFree: 100 searches/day. Until then the app uses Wikipedia (keyless).');});
+  $('#setSave').addEventListener('click',()=>{saveSettings({apiKey:$('#setKey').value.trim(),model:$('#setModel').value,endpoint:$('#setEndpoint').value,ttsRate:parseFloat($('#setTts').value),googleKey:$('#setGKey').value.trim(),googleCx:$('#setGCx').value.trim()});$('#settingsModal').classList.remove('open');toast('⚙️ Settings saved!');});
+  $('#btnTest').addEventListener('click',()=>{const b=$('#btnTest');b.disabled=true;b.textContent='Testing…';saveSettings(Object.assign({},getSettings(),{apiKey:$('#setKey').value.trim(),endpoint:$('#setEndpoint').value}));testConnection().finally(()=>{b.disabled=false;b.textContent='🔌 Test AI connection';});});
   // keyboard
-  document.addEventListener('keydown',e=>{
-    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();if(curView==='add')saveEntry();}
-    if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();if(curView==='add')$('#btnGenSummary').click();}
-    if(e.key==='Escape'){closeSheet();$('#settingsModal').classList.remove('open');if('speechSynthesis'in window)window.speechSynthesis.cancel();}
-  });
+  document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();if(curView==='search')saveEntry();}if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();if(curView==='search'&&document.activeElement===$('#kwInput'))doSearch();}if(e.key==='Escape'){closeSheet();$('#settingsModal').classList.remove('open');if('speechSynthesis'in window)window.speechSynthesis.cancel();}});
 }
-function fillFromResult(r,fillAll){
-  if(r.type&&TYPE[r.type])setFormType(r.type);
-  if(fillAll){if(r.name&&!$('#fName').value.trim())$('#fName').value=r.name;if(r.variety&&!$('#fVariety').value.trim())$('#fVariety').value=r.variety;if(r.origin&&!$('#fOrigin').value.trim())$('#fOrigin').value=r.origin;}
-  else{if(r.name)$('#fName').value=r.name;}
-  if(r.flavor)$('#fFlavor').value=r.flavor;
-  if(r.pairing)$('#fPairing').value=r.pairing;
-  if(r.summary)$('#fSummary').value=r.summary;
-  toast('✅ Fields filled! Review, rate, and Save.');
-}
-
-/* ================================================================ INIT */
 async function init(){
-  try{await openDB();console.log('🍷 JP Decanter v2 DB ready');}catch(e){toast('⚠️ DB failed — private mode?');}
-  bind();
-  setFormType('wine');renderRate();
-  await refreshCache();
-  renderHome();
+  try{await openDB();console.log('🍷 JP Decanter v2 (keyword) DB ready');}catch(e){toast('⚠️ DB failed — private mode?');}
+  buildProfSliders();bind();setFormType('wine');renderRate();
+  await refreshCache();renderHome();
   if(!getSettings().apiKey)setTimeout(()=>toast('💡 Add your GLM key in ⚙️ Settings to enable AI.'),900);
 }
 init();
