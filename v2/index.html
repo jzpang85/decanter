@@ -512,7 +512,7 @@ function setFormType(t){formType=t;$$('#typeSeg button').forEach(b=>{b.classList
 function renderRate(){$$('#ratePick .s').forEach(s=>s.classList.toggle('on',+s.dataset.v<=formRating));$('#fRating').value=formRating;}
 function autoGrow(el){if(el){el.style.height='auto';el.style.height=Math.max(el.scrollHeight,90)+'px';}}
 function clearForm(){
-  $('#fName').value='';$('#fVariety').value='';$('#fOrigin').value='';$('#fAbv').value='';$('#fPrice').value='';$('#fFlavor').value='';$('#fPairing').value='';$('#fSummary').value='';$('#fColor').value='';$('#fAroma').value='';$('#fConclusion').value='';
+  $('#fName').value='';$('#fVariety').value='';$('#fOrigin').value='';$('#fAbv').value='';$('#fVintage').value='';$('#fFlavor').value='';$('#fPairing').value='';$('#fSummary').value='';$('#fColor').value='';$('#fAroma').value='';$('#fConclusion').value='';$('#fDecant').value='';
   PROF.forEach(([k])=>{const inp=$('#pf-'+k);if(inp){inp.value=0;$('#pv-'+k).textContent='—';}});
   formRating=0;renderRate();$('#fEditId').value='';$('#btnCancel').style.display='none';setFormType('wine');autoGrow($('#fSummary'));
 }
