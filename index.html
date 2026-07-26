@@ -381,7 +381,7 @@ const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','T
 
 /* ---- settings (domestic default = no VPN in China) ---- */
 const DEFAULTS={apiKey:'',model:'deepseek-v4-pro',endpoint:'https://api.deepseek.com/v1/chat/completions',ttsRate:0.9,syncToken:'',syncRepo:'jzpang85/decanter-cellar'};
-const getSettings=()=>{let s;try{s=JSON.parse(localStorage.getItem('decanter_settings_v3')||localStorage.getItem('decanter_settings')||'{}');}catch(e){s={};}const o=Object.assign({},DEFAULTS,s);return o;};
+const getSettings=()=>{let s;try{s=JSON.parse(localStorage.getItem('decanter_settings_v3')||localStorage.getItem('decanter_settings')||'{}');}catch(e){s={};}const o=Object.assign({},DEFAULTS,s);if(/glm|zhipu|bigmodel|z\.ai/i.test(o.model+o.endpoint)){o.model=DEFAULTS.model;o.endpoint=DEFAULTS.endpoint;}return o;};
 const saveSettings=s=>localStorage.setItem('decanter_settings_v3',JSON.stringify(s));
 
 /* ---- toast / tts ---- */
@@ -399,25 +399,25 @@ const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
 
 /* ---- AI (DeepSeek — clean, single call) ---- */
 const parseAIResult=text=>{
-  if(\!text)return null;
+  if(!text)return null;
   let raw='',m;
   m=text.match(/```(?:json)?\s*([\s\S]*?)```/i); if(m)raw=m[1].trim();
-  if(\!raw){m=text.match(/\{[\s\S]*\}/); if(m)raw=m[0];}
+  if(!raw){m=text.match(/\{[\s\S]*\}/); if(m)raw=m[0];}
   let p=null;
   if(raw){try{p=JSON.parse(raw);}catch(e){try{p=JSON.parse(raw.replace(/,\s*([}\]])/g,'$1'));}catch(e2){p=null;}}}
   const escQ=k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-  const gs=k=>{if(p&&p[k]\!=null)return String(p[k]).replace(/\s+/g,' ').trim();if(raw){const mm=raw.match(new RegExp('"'+escQ(k)+'"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"','i'));if(mm)return mm[1].replace(/\\"/g,'"').replace(/\\n/gi,' ').replace(/\s+/g,' ').trim();}return '';};
-  const gn=k=>{if(p&&p[k]\!=null){const v=parseInt(p[k],10);if(\!isNaN(v))return Math.max(0,Math.min(5,v));}if(raw){const mm=raw.match(new RegExp('"'+escQ(k)+'"\\s*:\\s*([0-9]+)','i'));if(mm)return Math.max(0,Math.min(5,parseInt(mm[1],10)));}return 0;};
+  const gs=k=>{if(p&&p[k]!=null)return String(p[k]).replace(/\s+/g,' ').trim();if(raw){const mm=raw.match(new RegExp('"'+escQ(k)+'"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"','i'));if(mm)return mm[1].replace(/\\"/g,'"').replace(/\\n/gi,' ').replace(/\s+/g,' ').trim();}return '';};
+  const gn=k=>{if(p&&p[k]!=null){const v=parseInt(p[k],10);if(!isNaN(v))return Math.max(0,Math.min(5,v));}if(raw){const mm=raw.match(new RegExp('"'+escQ(k)+'"\\s*:\\s*([0-9]+)','i'));if(mm)return Math.max(0,Math.min(5,parseInt(mm[1],10)));}return 0;};
   const profile={body:gn('body'),acidity:gn('acidity'),sweet:gn('sweet'),tannin:gn('tannin'),alcohol:gn('alcohol'),finish:gn('finish')};
   const c=v=>v||'';
   const r={type:c(gs('type')),name:c(gs('name')),variety:c(gs('variety')||gs('style')),origin:c(gs('origin')||gs('region')),vintage:c(gs('vintage')),abv:c(gs('abv')),color:c(gs('color')),aroma:c(gs('aroma')),flavor:c(gs('flavor')||gs('tasting_notes')||gs('notes')),pairing:c(gs('pairing')||gs('pairings')),decant:c(gs('decant')||gs('decanting')),conclusion:c(gs('conclusion')),summary:c(gs('summary')||gs('description')),profile};
-  if(\!r.summary){r.summary= raw?'' : text.trim();}
+  if(!r.summary){r.summary= raw?'' : text.trim();}
   return r;
 };
 
 async function callAI({keyword,fillAll,imageBase64}){
   const s=getSettings();
-  if(\!s.apiKey){toast('⚠️ Add your DeepSeek key in Settings (⚙️) first.');openSettings();return null;}
+  if(!s.apiKey){toast('⚠️ Add your DeepSeek key in Settings (⚙️) first.');openSettings();return null;}
   const name=(keyword||'').trim();
 
   let messages;
@@ -434,13 +434,13 @@ async function callAI({keyword,fillAll,imageBase64}){
 
   try{
     const res=await fetch(s.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+s.apiKey},body:JSON.stringify({model:s.model,messages,temperature:.7,max_tokens:4096,stream:false})});
-    if(\!res.ok){let d='';try{const j=await res.json();d=(j.error&&j.error.message)||JSON.stringify(j);}catch(e){try{d=await res.text();}catch(e2){}}
+    if(!res.ok){let d='';try{const j=await res.json();d=(j.error&&j.error.message)||JSON.stringify(j);}catch(e){try{d=await res.text();}catch(e2){}}
       if(res.status===401||res.status===403){toast('❌ Auth failed — check your DeepSeek API key.');openSettings();return null;}
       if(res.status===429){toast('⚠️ Rate limited — wait a moment and try again.');return null;}
       toast('❌ API error '+res.status+(d?': '+d.slice(0,150):''));return null;}
     const data=await res.json();
     const content=data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content;
-    if(\!content){toast('⚠️ Empty response — try again.');return null;}
+    if(!content){toast('⚠️ Empty response — try again.');return null;}
     const r=parseAIResult(content);
     if(r&&(r.summary||r.flavor))return r;
     toast('⚠️ Could not parse AI response. Try again.');return null;
@@ -453,28 +453,28 @@ async function callAI({keyword,fillAll,imageBase64}){
 
 async function testConnection(){
   const s=getSettings(),key=$('#setKey').value.trim(),ep=$('#setEndpoint').value.trim()||s.endpoint;const box=$('#diag');box.style.display='block';box.innerHTML='';const log=h=>{box.innerHTML+=h+'\n';box.scrollTop=box.scrollHeight;};
-  if(\!key){log('<span class="bad">⚠ No API key entered.</span>');return;}
+  if(!key){log('<span class="bad">⚠ No API key entered.</span>');return;}
   log('Endpoint: <span class="hi">'+ep+'</span>');
   log('Testing <b>'+s.model+'</b>…');
   try{const res=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:s.model,messages:[{role:'user',content:'Reply with the single word: PONG'}],max_tokens:16,stream:false})});
     if(res.status===401||res.status===403){log('<span class="bad">✗ Auth failed ('+res.status+') — check your API key.</span>');return;}
-    if(\!res.ok){const t=await res.text().catch(()=>'');log('<span class="bad">✗ HTTP '+res.status+' '+t.slice(0,150)+'</span>');return;}
+    if(!res.ok){const t=await res.text().catch(()=>'');log('<span class="bad">✗ HTTP '+res.status+' '+t.slice(0,150)+'</span>');return;}
     const data=await res.json();const content=data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content;
-    if(content&&/pong/i.test(content)){log('<span class="ok">✓ Connected\! Response: "'+content.slice(0,30)+'"</span>');}
+    if(content&&/pong/i.test(content)){log('<span class="ok">✓ Connected! Response: "'+content.slice(0,30)+'"</span>');}
     else{log('<span class="ok">✓ Connected (response: '+JSON.stringify(content).slice(0,80)+')</span>');}
   }catch(e){log('<span class="bad">✗ '+e.message+'</span>');if(/Failed to fetch|NetworkError|load failed/i.test(e.message)){log('<span class="bad">↳ Cannot reach the endpoint. Check your connection or endpoint URL.</span>');}}
 }
 
 /* ---- photo ---- */
 async function handlePhoto(file){
-  if(\!file)return;
+  if(!file)return;
   const s=getSettings();
-  if(\!s.apiKey){toast('⚠️ Add your DeepSeek key in Settings first.');openSettings();return;}
+  if(!s.apiKey){toast('⚠️ Add your DeepSeek key in Settings first.');openSettings();return;}
   const b64=await new Promise((res,rej)=>{const img=new Image(),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');img.onload=()=>{const max=1024,scale=Math.min(1,max/img.width,max/img.height);canvas.width=img.width*scale;canvas.height=img.height*scale;ctx.drawImage(img,0,0,canvas.width,canvas.height);res(canvas.toDataURL('image/jpeg',0.85));};img.onerror=rej;img.src=URL.createObjectURL(file);});
   $('#editBlock').style.display='none';$('#addSpin').innerHTML='<div class="spin-block"><div class="spinner"></div><div>DeepSeek is identifying your bottle from the photo…</div></div>';$('#addHint').textContent='';
   const ai=await callAI({keyword:'',fillAll:true,imageBase64:b64});
   $('#addSpin').innerHTML='';clearForm();setFormType('wine');
-  if(ai){fillFromResult(ai);if(\!$('#fName').value.trim()&&ai.name)$('#fName').value=ai.name;toast('✅ Bottle identified — review, rate, and Save.');}
+  if(ai){fillFromResult(ai);if(!$('#fName').value.trim()&&ai.name)$('#fName').value=ai.name;toast('✅ Bottle identified — review, rate, and Save.');}
   else{toast('⚠️ Could not identify — try typing the name instead.');}
   $('#editBlock').style.display='';
 }
