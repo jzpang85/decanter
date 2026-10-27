@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#15100c">
 <meta name="description" content="JP Decanter — journal wine, sake, whisky & coffee with DeepSeek AI.">
-<title>JP Decanter</title>
+<title>JP Decanter v4</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍷%3C/text%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -78,6 +78,7 @@ body.no-scroll{overflow:hidden}
 .tchip.wine{background:rgba(210,122,150,.16);color:var(--wine)}.tchip.sake{background:rgba(134,200,174,.16);color:var(--sake)}.tchip.whisky{background:rgba(224,160,106,.18);color:var(--whisky)}.tchip.coffee{background:rgba(207,138,108,.2);color:var(--coffee)}
 
 .stars{display:inline-flex;gap:1px}.stars .s{color:var(--text-4);line-height:1;transition:var(--t)}.stars .s.on{color:var(--gold-2);text-shadow:0 0 6px rgba(230,192,116,.4)}
+.stars .s.half{position:relative}.stars .s.half::before{content:'★';position:absolute;left:0;top:0;width:50%;overflow:hidden;color:var(--gold-2);text-shadow:0 0 6px rgba(230,192,116,.4)}
 .stars.pick .s{cursor:pointer;font-size:1.5rem}.stars.pick .s:hover{transform:scale(1.18)}
 .stars.sm .s{font-size:.84rem}.stars.md .s{font-size:1rem}
 
@@ -161,6 +162,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .detail-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 4px;color:var(--text-2);font-size:.86rem}
 .detail-sec{margin-top:16px}.detail-sec .h{font-size:.68rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);margin-bottom:6px;font-weight:600}.detail-sec p{line-height:1.65;color:var(--text);white-space:pre-wrap}
 .bars{margin-top:4px}.bar{display:flex;align-items:center;gap:10px;margin-bottom:7px}.bar .bl{width:74px;font-size:.78rem;color:var(--text-2)}.bar .bt{flex:1;height:8px;background:var(--surface-3);border-radius:5px;overflow:hidden}.bar .bf{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--gold-2))}.bar .bv{width:18px;font-size:.74rem;color:var(--text-3);text-align:right}
+.chart-bars .bl{width:112px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tags{display:flex;flex-wrap:wrap;gap:6px}.tag{background:var(--gold-soft);color:var(--gold-2);padding:4px 11px;border-radius:999px;font-size:.78rem}
 .detail-actions{display:flex;gap:9px;margin-top:20px;flex-wrap:wrap}
 
@@ -247,15 +249,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     </div>
   </div>
 
-  <!-- HOME -->
-  <section class="view active" id="view-home">
+  <!-- CELLAR -->
+  <section class="view" id="view-home">
     <div class="greeting"><div class="hi" id="greetHi">Welcome</div><div class="you" id="greetYou">Your cellar</div></div>
     <div id="homeContent"></div>
   </section>
 
-  <!-- LIBRARY -->
-  <section class="view" id="view-library">
-    <div class="greeting"><div class="hi">The library</div><div class="you">Everything you've tasted</div></div>
+  <!-- JOURNAL -->
+  <section class="view active" id="view-journal">
+    <div class="greeting"><div class="hi">The journal</div><div class="you">Everything you've poured</div></div>
+    <div class="card" style="padding:14px 16px;margin-top:16px"><div class="chips" id="chartChips" style="margin-bottom:12px"><button class="chip on" data-c="country">🌍 Country</button><button class="chip" data-c="region">🗺️ Region</button><button class="chip" data-c="grape">🍇 Grape / style</button><button class="chip" data-c="vintage">📅 Vintage</button></div><div id="chartBox"></div></div>
     <div class="toolbar"><div class="search-wrap"><span class="si">🔍</span><input id="libSearch" placeholder="Search name, variety, origin, notes…"></div></div>
     <div class="chips" id="libChips"></div>
     <div style="display:flex;justify-content:flex-end;margin:12px 0"><select class="sortsel" id="libSort"><option value="newest">Newest</option><option value="rating">Top rated</option><option value="name">Name A–Z</option><option value="oldest">Oldest</option></select></div>
@@ -289,8 +292,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
       <div class="two"><div><div class="label">Variety / style</div><input id="fVariety" placeholder="Cab blend, Junmai Daiginjo…"></div><div><div class="label">Origin</div><input id="fOrigin" placeholder="Bordeaux; Islay…"></div></div>
       <div id="miniMap" class="minimap hidden"></div>
       <div class="two"><div><div class="label">ABV %</div><input id="fAbv" placeholder="13.5" inputmode="decimal"></div><div><div class="label">Vintage</div><input id="fVintage" placeholder="2018 / NV"></div></div>
-      <div class="label">Rating</div>
-      <div class="stars pick" id="ratePick"><span class="s" data-v="1">★</span><span class="s" data-v="2">★</span><span class="s" data-v="3">★</span><span class="s" data-v="4">★</span><span class="s" data-v="5">★</span></div>
+      <div class="label">Label photo</div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button type="button" class="btn" id="btnLabelPhoto">📷 Add label photo</button><span style="position:relative;display:none" id="photoPrev"><img id="photoPrevImg" alt="label photo" style="height:74px;max-width:220px;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:block"><button type="button" id="btnPhotoClear" style="position:absolute;top:-9px;right:-9px;width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--red);cursor:pointer;line-height:1">✕</button></span></div>
+      <input type="file" id="labelPhotoInput" accept="image/*" capture="environment" style="display:none">
+      <div class="label">Rating <span id="rateVal" style="color:var(--gold-2);font-weight:700"></span></div>
+      <div class="stars pick" id="ratePick" title="Tap a star for full; tap the same star again for half"><span class="s" data-v="1">★</span><span class="s" data-v="2">★</span><span class="s" data-v="3">★</span><span class="s" data-v="4">★</span><span class="s" data-v="5">★</span></div>
       <div class="label">Flavor notes</div><input id="fFlavor" placeholder="blackcurrant, cedar…">
       <div class="label">Food pairing</div><input id="fPairing" placeholder="grilled lamb, aged cheese…">
       <div class="label">Summary / intro</div><textarea id="fSummary" placeholder="DeepSeek writes this — or edit freely…"></textarea><div class="btn-row" style="margin-top:6px"><button type="button" class="btn btn-ghost btn-sm" id="btnReadSummary">🔊 Read summary aloud</button></div>
@@ -318,8 +324,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 
 <button class="fab" id="fabAdd" title="Add a bottle">+</button>
 <nav class="tabbar">
-  <button class="tab on" data-view="home"><span class="ti">🏡</span>Cellar</button>
-  <button class="tab" data-view="library"><span class="ti">📚</span>Library</button>
+  <button class="tab on" data-view="journal"><span class="ti">📖</span>Journal</button>
+  <button class="tab" data-view="home"><span class="ti">🏡</span>Cellar</button>
   <button class="tab" data-view="study"><span class="ti">🧠</span>Study</button>
   <button class="tab" data-view="blind"><span class="ti">🎲</span>Blind</button>
 </nav>
@@ -375,8 +381,8 @@ const dbAll=()=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly'
 const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);tx.oncomplete=res;tx.onerror=e=>rej(e.target.error);});
 
 /* ---- state ---- */
-let drinksCache=[],curView='home',libFilter='all',libSearch='',libSort='newest';
-let formType='wine',formRating=0;
+let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country';
+let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
 /* ---- settings (domestic default = no VPN in China) ---- */
@@ -390,7 +396,7 @@ const speak=(text,rate)=>{if(!text||!('speechSynthesis'in window))return;window.
 if('speechSynthesis'in window){window.speechSynthesis.onvoiceschanged=()=>{};window.speechSynthesis.getVoices();}
 
 /* ---- helpers ---- */
-const stars=(v,cls)=>{let h=`<span class="stars ${cls||''}">`;for(let i=1;i<=5;i++)h+=`<span class="s${i<=v?' on':''}">★</span>`;return h+'</span>';};
+const stars=(v,cls)=>{let h=`<span class="stars ${cls||''}">`;for(let i=1;i<=5;i++){const fill=Math.max(0,Math.min(1,(+v||0)-i+1));h+=`<span class="s${fill>=1?' on':fill>0?' half':''}">★</span>`;}return h+'</span>';};
 const fmtDate=iso=>{const d=new Date(iso),now=new Date(),diff=now-d;if(diff<864e5&&d.getDate()===now.getDate())return'Today';if(diff<1728e5)return'Yesterday';return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});};
 const avg=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
 const topN=(o,n)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n);
@@ -473,11 +479,17 @@ async function handlePhoto(file){
   const b64=await new Promise((res,rej)=>{const img=new Image(),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');img.onload=()=>{const max=1024,scale=Math.min(1,max/img.width,max/img.height);canvas.width=img.width*scale;canvas.height=img.height*scale;ctx.drawImage(img,0,0,canvas.width,canvas.height);res(canvas.toDataURL('image/jpeg',0.85));};img.onerror=rej;img.src=URL.createObjectURL(file);});
   $('#editBlock').style.display='none';$('#addSpin').innerHTML='<div class="spin-block"><div class="spinner"></div><div>DeepSeek is identifying your bottle from the photo…</div></div>';$('#addHint').textContent='';
   const ai=await callAI({keyword:'',fillAll:true,imageBase64:b64});
-  $('#addSpin').innerHTML='';clearForm();setFormType('wine');
+  $('#addSpin').innerHTML='';clearForm();setFormType('wine');formPhoto=b64;renderPhoto();
   if(ai){fillFromResult(ai);if(!$('#fName').value.trim()&&ai.name)$('#fName').value=ai.name;toast('✅ Bottle identified — review, rate, and Save.');}
   else{toast('⚠️ Could not identify — try typing the name instead.');}
   $('#editBlock').style.display='';
 }
+async function handleLabelPhoto(file){
+  if(!file)return;
+  const b64=await new Promise((res,rej)=>{const img=new Image(),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');img.onload=()=>{const max=1024,scale=Math.min(1,max/img.width,max/img.height);canvas.width=img.width*scale;canvas.height=img.height*scale;ctx.drawImage(img,0,0,canvas.width,canvas.height);res(canvas.toDataURL('image/jpeg',0.85));};img.onerror=rej;img.src=URL.createObjectURL(file);});
+  formPhoto=b64;renderPhoto();
+}
+function renderPhoto(){const p=$('#photoPrev'),img=$('#photoPrevImg');if(!p)return;if(formPhoto){p.style.display='';img.src=formPhoto;}else{p.style.display='none';img.removeAttribute('src');}}
 
 /* ---- KB ---- */
 const KB={wine:[{n:'Cabernet Sauvignon',t:['cabernet','bordeaux'],o:'Bordeaux / Napa',d:'Full-bodied, high tannin. Blackcurrant, cedar, graphite, mint.'},{n:'Merlot',t:['merlot'],o:'Bordeaux (Pomerol)',d:'Plush, round. Plum, black cherry, chocolate.'},{n:'Pinot Noir',t:['pinot','burgundy'],o:'Burgundy',d:'Light, perfumed, high acid. Red cherry, raspberry, forest floor.'},{n:'Syrah / Shiraz',t:['syrah','shiraz'],o:'Rhône / Barossa',d:'Powerful, dark. Blackberry, black pepper, smoked meat.'},{n:'Chardonnay',t:['chardonnay','chablis'],o:'Burgundy / Sonoma',d:'Steely Chablis to rich, buttery Napa. Apple, citrus, butter.'},{n:'Sauvignon Blanc',t:['sauvignon','sancerre'],o:'Loire / Marlborough',d:'Zesty, high acid. Grapefruit, passionfruit, cut grass.'},{n:'Riesling',t:['riesling','mosel'],o:'Germany / Alsace',d:'Aromatic, high acid. Lime, apple, jasmine, petrol.'},{n:'Nebbiolo',t:['nebbiolo','barolo'],o:'Piedmont',d:'Pale but fiercely tannic. Rose, tar, dried cherry, truffle.'},{n:'Sangiovese',t:['sangiovese','chianti'],o:'Tuscany',d:'Sour cherry, leather, herbs, earth. The grape of Chianti.'},{n:'Tempranillo',t:['tempranillo','rioja'],o:'Rioja / Ribera',d:'Strawberry, leather, tobacco, vanilla.'}],sake:[{n:'Junmai',t:['junmai'],o:'Japan',d:'Pure rice — no added alcohol. Full body, rich, earthy.'},{n:'Honjōzō',t:['honjozo'],o:'Japan',d:'A little brewer\'s alcohol added. Lighter, smoother.'},{n:'Ginjō',t:['ginjo'],o:'Japan',d:'Polished ≥60%. Fruity, floral (apple, melon, anise).'},{n:'Daiginjō',t:['daiginjo'],o:'Japan',d:'Polished ≥50%. Intensely aromatic, refined.'},{n:'Nigori',t:['nigori'],o:'Japan',d:'Coarsely filtered — cloudy, creamy. Sweet, dessert-like.'},{n:'Namazake',t:['nama'],o:'Japan',d:'Unpasteurized — fresh, vivid.'}],whisky:[{n:'Speyside Single Malt',t:['speyside','macallan'],o:'Scotland, Speyside',d:'Smooth, honeyed, orchard fruit, often sherry-casked.'},{n:'Highland Single Malt',t:['highland'],o:'Scotland, Highlands',d:'Heather, honey, spice, a wisp of smoke.'},{n:'Islay Single Malt',t:['islay','peaty','laphroaig'],o:'Scotland, Islay',d:'Peaty & smoky — medicinal, seaweed, brine, iodine.'},{n:'Lowland Single Malt',t:['lowland'],o:'Scotland, Lowlands',d:'Light, grassy, floral, gentle.'},{n:'Campbeltown',t:['campbeltown','springbank'],o:'Scotland, Campbeltown',d:'Briny, smoky, oily, complex.'},{n:'Bourbon',t:['bourbon','kentucky'],o:'USA, Kentucky',d:'≥51% corn, new charred oak. Sweet, vanilla, caramel.'},{n:'Tennessee Whiskey',t:['tennessee'],o:'USA, Tennessee',d:'Charcoal-mellowed bourbon. Smoother.'},{n:'Irish Whiskey',t:['irish','jameson'],o:'Ireland',d:'Triple-distilled, unpeated. Smooth, light, honey.'},{n:'Japanese Whisky',t:['japanese','yamazaki','hibiki'],o:'Japan',d:'Modeled on Scotch; renowned for poise and balance.'},{n:'Rye Whiskey',t:['rye'],o:'USA / Canada',d:'≥51% rye. Spicier, peppery, drier than bourbon.'}],coffee:[{n:'Ethiopia (Yirgacheffe)',t:['ethiopia','yirgacheffe'],o:'Ethiopia',d:'Floral, jasmine, bergamot, blueberry, bright citrus.'},{n:'Colombia',t:['colombia'],o:'Colombia',d:'Balanced, sweet. Caramel, milk chocolate, red apple.'},{n:'Brazil',t:['brazil'],o:'Brazil',d:'Low acid, heavy body, nutty, chocolate, caramel.'},{n:'Kenya (AA)',t:['kenya'],o:'Kenya',d:'Bright, winey acidity. Blackcurrant, blackberry.'},{n:'Guatemala (Antigua)',t:['guatemala','antigua'],o:'Guatemala',d:'Full body, bright acid. Cocoa, baking spice, toffee.'},{n:'Sumatra',t:['sumatra','indonesia'],o:'Indonesia',d:'Heavy body, low acid, earthy, herbal. Cedar, dark chocolate.'},{n:'Costa Rica (Tarrazú)',t:['costa rica','tarrazu'],o:'Costa Rica',d:'Clean, bright, high-grown. Citrus, honey, almond.'},{n:'Jamaica Blue Mountain',t:['jamaica'],o:'Jamaica',d:'Rare, mild. Very smooth, low acid.'}]};
@@ -485,26 +497,24 @@ const PROCESSING=[{n:'Washed / Wet',d:'Cherry removed, fermented & washed. Clean
 const QBANK=[{q:'Which Scotch region is famous for peaty, smoky malts?',o:['Speyside','Islay','Lowland','Campbeltown'],a:1,e:'Islay — Laphroaig, Ardbeg, Lagavulin.'},{q:'Pinot Noir is most celebrated in?',o:['Bordeaux','Napa','Burgundy','Rioja'],a:2,e:'Red Burgundy is 100% Pinot Noir.'},{q:'"Seimaibuai" in sake is the?',o:['Ferment temp','Rice polishing ratio','Bottle size','Brewer rank'],a:1,e:'% of grain left after polishing.'},{q:'Which coffee origin = floral jasmine & blueberry?',o:['Brazil','Ethiopia','Sumatra','Jamaica'],a:1,e:'Ethiopia / Yirgacheffe.'},{q:'Bourbon needs at least what % corn?',o:['41%','51%','61%','71%'],a:1,e:'≥51% corn, new charred oak.'},{q:'Left-Bank Bordeaux is dominated by?',o:['Merlot','Cabernet Sauvignon','Pinot Noir','Syrah'],a:1,e:'Left-Bank = Cab-dominant.'},{q:'"Junmai" sake contains?',o:['Added alcohol','No added alcohol','Carbonation','Oak aging'],a:1,e:'Junmai = pure rice.'},{q:'Wet-hulling is associated with?',o:['Ethiopia','Colombia','Sumatra','Kenya'],a:2,e:'Sumatra — earthy, heavy-bodied.'},{q:'Filtered through sugar-maple charcoal?',o:['Bourbon','Tennessee Whiskey','Irish','Rye'],a:1,e:'Lincoln County Process (Jack Daniel\'s).'},{q:'Riesling is most classically from?',o:['France','Italy','Germany','Spain'],a:2,e:'Germany\'s Mosel & Rheingau.'},{q:'Usually triple-distilled & unpeated?',o:['Scotch','Irish Whiskey','Bourbon','Cognac'],a:1,e:'Irish whiskey — smoother, lighter.'},{q:'WSET SAT assesses in which order?',o:['Palate→Nose→Appearance','Appearance→Nose→Palate→Conclusion','Nose→Palate→Appearance','Conclusion→Palate'],a:1,e:'Appearance, Nose, Palate, Conclusion.'}];
 
 /* ---- router ---- */
-function go(view){curView=view;$$('.view').forEach(v=>v.classList.remove('active'));$('#view-'+view).classList.add('active');$$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.view===view));$('#fabAdd').classList.toggle('hidden',view==='add'||view==='blind');window.scrollTo({top:0,behavior:'instant'});if(view==='home')renderHome();if(view==='library')renderLibrary();if(view==='blind')renderBlind();}
+function go(view){curView=view;$$('.view').forEach(v=>v.classList.remove('active'));$('#view-'+view).classList.add('active');$$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.view===view));$('#fabAdd').classList.toggle('hidden',view==='add'||view==='blind');window.scrollTo({top:0,behavior:'instant'});if(view==='home')renderHome();if(view==='journal')renderLibrary();if(view==='blind')renderBlind();}
 
 /* ---- home ---- */
 async function refreshCache(){try{drinksCache=await dbAll();drinksCache.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));}catch(e){drinksCache=[];}}
 function renderHome(){
   const wrap=$('#homeContent');const hr=new Date().getHours();
+  const wines=drinksCache.filter(d=>d.type==='wine');
   $('#greetHi').textContent=hr<5?'Good night':hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
-  $('#greetYou').innerHTML=drinksCache.length?`You've poured <b>${drinksCache.length}</b> ${drinksCache.length===1?'bottle':'bottles'}`:'Start your cellar';
-  if(!drinksCache.length){wrap.innerHTML=`<div class="card" style="margin-top:18px;padding:18px"><div class="hero empty"><div class="in"><span class="big">🍷</span><div style="font-family:var(--serif);font-size:1.2rem;color:var(--text);margin-bottom:4px">Add your first bottle</div><div style="font-size:.84rem">Tap the gold <b style="color:var(--gold-2)">+</b>, type a name, and DeepSeek fills in the details.</div></div></div></div>`;return;}
-  const featured=drinksCache.find(d=>d.rating>=4)||drinksCache[0];const rated=drinksCache.filter(d=>d.rating);const avgR=avg(rated.map(d=>d.rating));
-  const byType={wine:0,sake:0,whisky:0,coffee:0};drinksCache.forEach(d=>byType[d.type]=(byType[d.type]||0)+1);
-  const vC={},oC={};drinksCache.forEach(d=>{(d.variety||'').split(/[,/]/).map(s=>s.trim()).filter(Boolean).forEach(v=>vC[v.toLowerCase()]=(vC[v.toLowerCase()]||0)+1);(d.origin||'').split(/[,;]/).map(s=>s.trim()).filter(Boolean).forEach(o=>oC[o.toLowerCase()]=(oC[o.toLowerCase()]||0)+1);});
-  const topV=topN(vC,1)[0],topO=topN(oC,1)[0];
+  $('#greetYou').innerHTML=wines.length?`Your cellar: <b>${wines.length}</b> ${wines.length===1?'wine':'wines'}`:'Start your cellar';
+  if(!wines.length){wrap.innerHTML=`<div class="card" style="margin-top:18px;padding:18px"><div class="hero empty"><div class="in"><span class="big">🍷</span><div style="font-family:var(--serif);font-size:1.2rem;color:var(--text);margin-bottom:4px">No wines yet</div><div style="font-size:.84rem">Tap the gold <b style="color:var(--gold-2)">+</b> to add your first bottle. Sake, whisky & coffee live in the Journal.</div></div></div></div>`;return;}
+  const featured=wines.find(d=>d.rating>=4)||wines[0];const rated=wines.filter(d=>d.rating);const avgR=avg(rated.map(d=>d.rating));
+  const vC={},oC={};wines.forEach(d=>{(d.variety||'').split(/[,/]/).map(s=>s.trim()).filter(Boolean).forEach(v=>vC[v.toLowerCase()]=(vC[v.toLowerCase()]||0)+1);(d.origin||'').split(/[,;]/).map(s=>s.trim()).filter(Boolean).forEach(o=>oC[o.toLowerCase()]=(oC[o.toLowerCase()]||0)+1);});
   wrap.innerHTML=`
     <div class="hero" id="heroFeat" style="margin-top:16px">${featured.imageBase64?`<div class="bg" style="background-image:url('${featured.imageBase64}')"></div>`:''}<div class="scrim"></div><div class="body"><div class="kicker">${featured.rating>=4?'★ Top rated':'Most recent'}</div><div class="name">${esc(featured.name)}</div><div class="meta"><span class="tchip ${featured.type}">${TYPE[featured.type].emoji} ${TYPE[featured.type].label}</span>${featured.rating?stars(featured.rating,'sm'):''}${featured.origin?`<span>· ${esc(featured.origin)}</span>`:''}</div></div></div>
-    <div class="stats"><div class="stat"><div class="n">${drinksCache.length}</div><div class="l">Bottles</div></div><div class="stat"><div class="n">${rated.length?avgR.toFixed(1):'—'}</div><div class="l">Avg ★</div></div><div class="stat"><div class="n">${Object.keys(vC).length}</div><div class="l">Varieties</div></div><div class="stat"><div class="n">${Object.keys(oC).length}</div><div class="l">Origins</div></div></div>
-    <div class="section"><div class="section-head"><div class="section-title">Recently poured</div><button class="link-btn" data-go="library">See all →</button></div><div class="grid">${drinksCache.slice(0,6).map(dcardHtml).join('')}</div></div>`;
+    <div class="stats"><div class="stat"><div class="n">${wines.length}</div><div class="l">Wines</div></div><div class="stat"><div class="n">${rated.length?avgR.toFixed(1):'—'}</div><div class="l">Avg ★</div></div><div class="stat"><div class="n">${Object.keys(vC).length}</div><div class="l">Varieties</div></div><div class="stat"><div class="n">${Object.keys(oC).length}</div><div class="l">Origins</div></div></div>
+    <div class="section"><div class="section-head"><div class="section-title">All wines</div></div><div class="grid">${wines.map(dcardHtml).join('')}</div></div>`;
   $('#heroFeat')&&$('#heroFeat').addEventListener('click',()=>openDetail(featured.id));
   wrap.querySelectorAll('.dcard').forEach(c=>c.addEventListener('click',()=>openDetail(c.dataset.id)));
-  wrap.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
 }
 const dcardHtml=d=>`<div class="dcard" data-id="${d.id}"><div class="stripe ${d.type}"></div><div class="info"><div class="nm">${esc(d.name)}</div><div class="sub">${esc([d.variety,d.origin].filter(Boolean).join(' · ')||TYPE[d.type].label)}</div>${d.rating?`<div class="rt">${stars(d.rating,'sm')}</div>`:''}</div></div>`;
 
@@ -518,6 +528,26 @@ function renderLibrary(){
   list.sort((a,b)=>{if(libSort==='newest')return new Date(b.createdAt)-new Date(a.createdAt);if(libSort==='oldest')return new Date(a.createdAt)-new Date(b.createdAt);if(libSort==='name')return(a.name||'').localeCompare(b.name||'');if(libSort==='rating')return(b.rating||0)-(a.rating||0);return 0;});
   grid.innerHTML=list.length?list.map(dcardHtml).join(''):`<div class="empty"><span class="ico">${libSearch?'🔍':'🍷'}</span><p>${libSearch?'Nothing matches.':libFilter==='all'?'No bottles yet. Tap + to add one.':'No '+TYPE[libFilter].label+' yet.'}</p></div>`;
   grid.querySelectorAll('.dcard').forEach(c=>c.addEventListener('click',()=>openDetail(c.dataset.id)));
+  const cc=$('#chartChips');if(cc&&!cc.dataset.built){cc.dataset.built='1';cc.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;chartDim=b.dataset.c;$$('#chartChips .chip').forEach(c=>c.classList.toggle('on',c===b));renderJournalChart();});}
+  renderJournalChart();
+}
+function renderJournalChart(){
+  const box=$('#chartBox');if(!box)return;
+  const counts={};
+  drinksCache.forEach(d=>{
+    let key='';
+    if(chartDim==='country')key=(d.origin||'').split(',')[0].trim();
+    else if(chartDim==='region'){const p=(d.origin||'').split(',').map(s=>s.trim()).filter(Boolean);key=p[1]||p[0]||'';}
+    else if(chartDim==='grape')key=(d.variety||'').split(/[,/]/)[0].trim();
+    else{const m=(d.vintage||'').match(/(19|20)\d{2}/);key=m?m[0]:(d.vintage||'').trim();}
+    if(!key)return;if(key.length>28)key=key.slice(0,27)+'…';
+    counts[key]=(counts[key]||0)+1;
+  });
+  const entries=Object.entries(counts);
+  entries.sort(chartDim==='vintage'?(a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}):(a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+  if(!entries.length){box.innerHTML='<div style="color:var(--text-4);font-size:.84rem;text-align:center;padding:10px 0">Nothing poured yet — charts appear after you add bottles.</div>';return;}
+  const max=Math.max(...entries.map(e=>e[1]));
+  box.innerHTML=`<div class="bars chart-bars" style="max-height:220px;overflow-y:auto">${entries.map(([k,n])=>`<div class="bar"><span class="bl">${esc(k)}</span><span class="bt"><span class="bf" style="width:${Math.round(n/max*100)}%"></span></span><span class="bv">${n}</span></div>`).join('')}</div>`;
 }
 
 /* ---- detail ---- */
@@ -525,11 +555,11 @@ function openDetail(id){
   const d=drinksCache.find(x=>x.id===id);if(!d)return;const sat=d.sat||{};
   const hasProf=['body','acidity','sweet','tannin','alcohol','finish'].some(k=>sat[k]);
   const plab={body:'Body',acidity:'Acidity',sweet:'Sweet',tannin:'Tannin',alcohol:'Alcohol',finish:'Finish'};
-  $('#sheetBody').innerHTML=`<button class="sheet-close close-x" id="dClose">✕</button><div class="detail-name">${esc(d.name)}</div><div class="detail-meta"><span class="tchip ${d.type}">${TYPE[d.type].emoji} ${TYPE[d.type].label}</span>${d.rating?stars(d.rating,'md'):'<span style="color:var(--text-4);font-size:.82rem">unrated</span>'}</div><div class="detail-meta" style="margin-top:4px">${[d.variety,d.origin].filter(Boolean).map(esc).join(' · ')}${d.vintage?' · '+esc(d.vintage):''}${d.abv?' · '+esc(d.abv)+'% ABV':''}</div>${(d.origin||d.name)?'<div id="detailMap" class="minimap hidden"></div>':''}${d.flavor?`<div class="detail-sec"><div class="h">Tasting notes</div><p>${esc(d.flavor)}</p></div>`:''}${d.pairing?`<div class="detail-sec"><div class="h">Pairings</div><div class="tags">${d.pairing.split(',').map(s=>s.trim()).filter(Boolean).map(p=>`<span class="tag">${esc(p)}</span>`).join('')}</div></div>`:''}${hasProf?`<div class="detail-sec"><div class="h">Tasting profile</div><div class="bars">${['body','acidity','sweet','tannin','alcohol','finish'].filter(k=>sat[k]).map(k=>`<div class="bar"><span class="bl">${plab[k]}</span><span class="bt"><span class="bf" style="width:${sat[k]/5*100}%"></span></span><span class="bv">${sat[k]}</span></div>`).join('')}</div></div>`:''}${(d.sat&&d.sat.decant)?`<div class="detail-sec"><div class="h">Decant / serve</div><p>${esc(d.sat.decant)}</p></div>`:''}${d.summary?`<div class="detail-sec"><div class="h">Summary <button type="button" class="link-btn" id="dReadSum">🔊 Read</button></div><p>${esc(d.summary)}</p></div>`:''}<div style="color:var(--text-4);font-size:.74rem;margin-top:18px">📅 ${fmtDate(d.createdAt)}</div><div class="detail-actions"><button class="btn" id="dTts">🔊 Read</button><button class="btn btn-primary" id="dEdit">✏️ Edit</button><button class="btn" id="dDel" style="margin-left:auto;color:var(--red)">🗑 Delete</button></div>`;
+  $('#sheetBody').innerHTML=`<button class="sheet-close close-x" id="dClose">✕</button><div class="detail-name">${esc(d.name)}</div><div class="detail-meta"><span class="tchip ${d.type}">${TYPE[d.type].emoji} ${TYPE[d.type].label}</span>${d.rating?stars(d.rating,'md'):'<span style="color:var(--text-4);font-size:.82rem">unrated</span>'}</div><div class="detail-meta" style="margin-top:4px">${[d.variety,d.origin].filter(Boolean).map(esc).join(' · ')}${d.vintage?' · '+esc(d.vintage):''}${d.abv?' · '+esc(d.abv)+'% ABV':''}</div>${d.imageBase64?`<img src="${d.imageBase64}" alt="label photo" style="width:100%;max-height:280px;object-fit:contain;border-radius:12px;margin:12px 0 2px;background:var(--line)">`:''}${(d.origin||d.name)?'<div id="detailMap" class="minimap hidden"></div>':''}${d.flavor?`<div class="detail-sec"><div class="h">Tasting notes</div><p>${esc(d.flavor)}</p></div>`:''}${d.pairing?`<div class="detail-sec"><div class="h">Pairings</div><div class="tags">${d.pairing.split(',').map(s=>s.trim()).filter(Boolean).map(p=>`<span class="tag">${esc(p)}</span>`).join('')}</div></div>`:''}${hasProf?`<div class="detail-sec"><div class="h">Tasting profile</div><div class="bars">${['body','acidity','sweet','tannin','alcohol','finish'].filter(k=>sat[k]).map(k=>`<div class="bar"><span class="bl">${plab[k]}</span><span class="bt"><span class="bf" style="width:${sat[k]/5*100}%"></span></span><span class="bv">${sat[k]}</span></div>`).join('')}</div></div>`:''}${(d.sat&&d.sat.decant)?`<div class="detail-sec"><div class="h">Decant / serve</div><p>${esc(d.sat.decant)}</p></div>`:''}${d.summary?`<div class="detail-sec"><div class="h">Summary <button type="button" class="link-btn" id="dReadSum">🔊 Read</button></div><p>${esc(d.summary)}</p></div>`:''}<div style="color:var(--text-4);font-size:.74rem;margin-top:18px">📅 ${fmtDate(d.createdAt)}</div><div class="detail-actions"><button class="btn" id="dTts">🔊 Read</button><button class="btn btn-primary" id="dEdit">✏️ Edit</button><button class="btn" id="dDel" style="margin-left:auto;color:var(--red)">🗑 Delete</button></div>`;
   openSheet();$('#dClose').onclick=closeSheet;setTimeout(()=>showMiniMap('detailMap',(d.name||'')+' '+(d.origin||'')),180);const drs=$('#dReadSum');if(drs)drs.onclick=()=>speak(d.summary||'',getSettings().ttsRate);
   $('#dTts').onclick=()=>speak(`${d.name}. ${d.variety||''}. From ${d.origin||'an unspecified origin'}. Notes: ${d.flavor||'none'}. ${d.summary||''}`,getSettings().ttsRate);
   $('#dEdit').onclick=()=>{closeSheet();loadIntoForm(d);};
-  $('#dDel').onclick=async()=>{if(confirm('Delete this entry?')){await dbDel(d.id);recordDelete(d.id);await refreshCache();closeSheet();go('home');toast('🗑 Deleted.');syncNow({silent:true});}};
+  $('#dDel').onclick=async()=>{if(confirm('Delete this entry?')){await dbDel(d.id);recordDelete(d.id);await refreshCache();closeSheet();refreshActive();toast('🗑 Deleted.');syncNow({silent:true});}};
 }
 const openSheet=()=>{$('#scrim').classList.add('open');$('#sheet').classList.add('open');document.body.classList.add('no-scroll');};
 const closeSheet=()=>{$('#scrim').classList.remove('open');$('#sheet').classList.remove('open');document.body.classList.remove('no-scroll');};
@@ -538,19 +568,19 @@ const closeSheet=()=>{$('#scrim').classList.remove('open');$('#sheet').classList
 function buildProfSliders(){const wrap=$('#profSliders');wrap.innerHTML='';PROF.forEach(([k,l])=>{const it=document.createElement('div');it.className='it';it.innerHTML=`<div class="lab"><span>${l}</span><span class="v" id="pv-${k}">—</span></div><input type="range" min="0" max="5" step="1" value="0" id="pf-${k}">`;wrap.appendChild(it);const inp=it.querySelector('input'),val=it.querySelector('.v');inp.addEventListener('input',()=>{val.textContent=inp.value>0?inp.value+'/5':'—';});});}
 function showTannif(show){const el=$('#pf-tannin');if(el)el.closest('.it').style.display=show?'':'none';}
 function setFormType(t){formType=t;$$('#typeSeg button').forEach(b=>{b.classList.remove('on','wine','sake','whisky','coffee');if(b.dataset.type===t)b.classList.add('on',t);});showTannif(t==='wine');}
-function renderRate(){$$('#ratePick .s').forEach(s=>s.classList.toggle('on',+s.dataset.v<=formRating));$('#fRating').value=formRating;}
+function renderRate(){$$('#ratePick .s').forEach(s=>{const fill=Math.max(0,Math.min(1,formRating-(+s.dataset.v)+1));s.classList.toggle('on',fill>=1);s.classList.toggle('half',fill>0&&fill<1);});$('#fRating').value=formRating;const el=$('#rateVal');if(el)el.textContent=formRating?(formRating%1?formRating.toFixed(1):formRating):'';}
 function autoGrow(el){if(el){el.style.height='auto';el.style.height=Math.max(el.scrollHeight,90)+'px';}}
 function clearForm(){
   $('#fName').value='';$('#fVariety').value='';$('#fOrigin').value='';$('#fAbv').value='';$('#fVintage').value='';$('#fFlavor').value='';$('#fPairing').value='';$('#fSummary').value='';$('#fColor').value='';$('#fAroma').value='';$('#fConclusion').value='';$('#fDecant').value='';
   PROF.forEach(([k])=>{const inp=$('#pf-'+k);if(inp){inp.value=0;$('#pv-'+k).textContent='—';}});
-  formRating=0;renderRate();$('#fEditId').value='';$('#btnCancel').style.display='none';setFormType('wine');autoGrow($('#fSummary'));
+  formRating=0;formPhoto='';renderRate();renderPhoto();$('#fEditId').value='';$('#btnCancel').style.display='none';setFormType('wine');autoGrow($('#fSummary'));
 }
 function loadIntoForm(d){
   go('add');clearForm();setFormType(d.type||'wine');$('#fEditId').value=d.id||'';$('#btnCancel').style.display='';
   $('#fName').value=d.name||'';$('#fVariety').value=d.variety||'';$('#fOrigin').value=d.origin||'';$('#fAbv').value=d.abv||'';$('#fVintage').value=d.vintage||'';$('#fFlavor').value=d.flavor||'';$('#fPairing').value=d.pairing||'';$('#fSummary').value=d.summary||'';
   $('#fColor').value=(d.sat&&d.sat.color)||'';$('#fAroma').value=(d.sat&&d.sat.aroma)||'';$('#fConclusion').value=(d.sat&&d.sat.conclusion)||'';$('#fDecant').value=(d.sat&&d.sat.decant)||'';
   PROF.forEach(([k])=>{const v=(d.sat&&d.sat[k])||0;const inp=$('#pf-'+k);if(inp){inp.value=v;$('#pv-'+k).textContent=v>0?v+'/5':'—';}});
-  formRating=d.rating||0;renderRate();$('#kwInput').value=d.name||'';$('#addHint').textContent='Editing — review and tap Save.';autoGrow($('#fSummary'));
+  formRating=d.rating||0;formPhoto=d.imageBase64||'';renderRate();renderPhoto();$('#kwInput').value=d.name||'';$('#addHint').textContent='Editing — review and tap Save.';autoGrow($('#fSummary'));
   toast('✏️ Editing — review and Save.');
 }
 function fillFromResult(r){if(r.type&&TYPE[r.type])setFormType(r.type);if(r.name)$('#fName').value=r.name;if(r.variety)$('#fVariety').value=r.variety;if(r.origin)$('#fOrigin').value=r.origin;if(r.abv)$('#fAbv').value=r.abv;if(r.vintage)$('#fVintage').value=r.vintage;if(r.flavor)$('#fFlavor').value=r.flavor;if(r.pairing)$('#fPairing').value=r.pairing;if(r.color)$('#fColor').value=r.color;if(r.aroma)$('#fAroma').value=r.aroma;if(r.conclusion)$('#fConclusion').value=r.conclusion;if(r.decant)$('#fDecant').value=r.decant;if(r.summary)$('#fSummary').value=r.summary;if(r.profile&&typeof r.profile==='object')Object.keys(r.profile).forEach(k=>{const v=parseInt(r.profile[k],10);if(v>=1&&v<=5){const inp=$('#pf-'+k),lab=$('#pv-'+k);if(inp){inp.value=v;if(lab)lab.textContent=v+'/5';}}});setTimeout(()=>{autoGrow($('#fSummary'));showMiniMap('miniMap',($('#fName').value+' '+$('#fOrigin').value));},0);}
@@ -567,11 +597,11 @@ async function doSearch(){
   else toast('⚠️ AI failed — check Settings and try again.');
   $('#editBlock').style.display='';
 }
-function collectEntry(id,createdAt){const sat={};PROF.forEach(([k])=>{const v=parseInt($('#pf-'+k).value,10);if(v>0)sat[k]=v;});sat.color=$('#fColor').value.trim();sat.aroma=$('#fAroma').value.trim();sat.conclusion=$('#fConclusion').value.trim();sat.decant=$('#fDecant').value.trim();return{id:id||(Date.now().toString(36)+Math.random().toString(36).slice(2,6)),createdAt:createdAt||new Date().toISOString(),type:formType,name:$('#fName').value.trim(),variety:$('#fVariety').value.trim(),origin:$('#fOrigin').value.trim(),abv:$('#fAbv').value.trim(),vintage:$('#fVintage').value.trim(),flavor:$('#fFlavor').value.trim(),pairing:$('#fPairing').value.trim(),summary:$('#fSummary').value.trim(),rating:formRating,sat,imageBase64:'',modifiedAt:new Date().toISOString()};}
+function collectEntry(id,createdAt){const sat={};PROF.forEach(([k])=>{const v=parseInt($('#pf-'+k).value,10);if(v>0)sat[k]=v;});sat.color=$('#fColor').value.trim();sat.aroma=$('#fAroma').value.trim();sat.conclusion=$('#fConclusion').value.trim();sat.decant=$('#fDecant').value.trim();return{id:id||(Date.now().toString(36)+Math.random().toString(36).slice(2,6)),createdAt:createdAt||new Date().toISOString(),type:formType,name:$('#fName').value.trim(),variety:$('#fVariety').value.trim(),origin:$('#fOrigin').value.trim(),abv:$('#fAbv').value.trim(),vintage:$('#fVintage').value.trim(),flavor:$('#fFlavor').value.trim(),pairing:$('#fPairing').value.trim(),summary:$('#fSummary').value.trim(),rating:formRating,sat,imageBase64:formPhoto||'',modifiedAt:new Date().toISOString()};}
 async function saveEntry(){
   const name=$('#fName').value.trim();if(!name){toast('⚠️ Enter at least a name.');return;}
   const eid=$('#fEditId').value;let createdAt;if(eid){const p=drinksCache.find(d=>d.id===eid);if(p)createdAt=p.createdAt;}
-  try{await dbPut(collectEntry(eid||null,createdAt));toast(eid?'✅ Updated!':'✅ Saved to cellar!');clearForm();$('#editBlock').style.display='none';$('#kwInput').value='';$('#addHint').textContent='Type a bottle name and tap Go — DeepSeek fills in the details and writes a tasting summary. Or snap a photo of the label.';await refreshCache();go('home');syncNow({silent:true});}
+  try{await dbPut(collectEntry(eid||null,createdAt));toast(eid?'✅ Updated!':'✅ Saved to cellar!');clearForm();$('#editBlock').style.display='none';$('#kwInput').value='';$('#addHint').textContent='Type a bottle name and tap Go — DeepSeek fills in the details and writes a tasting summary. Or snap a photo of the label.';await refreshCache();go('journal');syncNow({silent:true});}
   catch(e){toast('❌ Save failed: '+e.message);}
 }
 
@@ -602,7 +632,7 @@ function openSettings(){const s=getSettings();$('#setKey').value=s.apiKey||'';$(
 
 /* ---- export/import ---- */
 async function exportData(){const d=await dbAll();const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=`jp-decanter-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(u);toast('📥 Exported!');}
-async function importData(file){try{const arr=JSON.parse(await file.text());if(!Array.isArray(arr))throw new Error('expected array');let n=0;for(const e of arr){if(!e.name||!e.type)continue;if(!e.id)e.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);if(!e.createdAt)e.createdAt=new Date().toISOString();await dbPut(e);n++;}await refreshCache();go('home');toast(`📤 Imported ${n}!`);}catch(e){toast('❌ '+e.message);}}
+async function importData(file){try{const arr=JSON.parse(await file.text());if(!Array.isArray(arr))throw new Error('expected array');let n=0;for(const e of arr){if(!e.name||!e.type)continue;if(!e.id)e.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);if(!e.createdAt)e.createdAt=new Date().toISOString();await dbPut(e);n++;}await refreshCache();refreshActive();toast(`📤 Imported ${n}!`);}catch(e){toast('❌ '+e.message);}}
 
 /* ---- wiring ---- */
 /* ---- blind tasting ---- */
@@ -704,7 +734,7 @@ async function getLocalCellar(){return {drinks:await dbAll(),deletedIds:getDelet
 function mergeCellars(local,remote){const del=new Set([...(local.deletedIds||[]),...(remote.deletedIds||[])]);const dt=x=>{const t=new Date(x.modifiedAt||x.createdAt||0).getTime();return isNaN(t)?0:t;};const byId={};for(const d of local.drinks){if(del.has(d.id))continue;byId[d.id]=d;}for(const d of (remote.drinks||[])){if(del.has(d.id))continue;const c=byId[d.id];if(!c||dt(d)>=dt(c))byId[d.id]=d;}return{v:1,updatedAt:new Date().toISOString(),drinks:Object.values(byId),deletedIds:[...del]};}
 async function applyCellar(merged){for(const d of merged.drinks)await dbPut(d);for(const id of merged.deletedIds){try{await dbDel(id);}catch(e){}}localStorage.setItem(DELKEY,JSON.stringify(merged.deletedIds));}
 function setSyncStatus(msg){const el=$('#syncStatus');if(el)el.textContent=msg;}
-function refreshActive(){if(curView==='home')renderHome();else if(curView==='library')renderLibrary();}
+function refreshActive(){if(curView==='home')renderHome();else if(curView==='journal')renderLibrary();}
 async function syncNow(opts){
   opts=opts||{};const s=getSettings();
   if(!s.syncToken||!(s.syncRepo||'').trim()){if(!opts.silent)toast('☁️ Add your GitHub token + repo in Settings to sync.');return null;}
@@ -749,15 +779,18 @@ function bind(){
   $('#kwInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doSearch();}});
   $('#btnPhoto').addEventListener('click',()=>$('#photoInput').click());
   $('#photoInput').addEventListener('change',e=>{const f=e.target.files[0];if(f)handlePhoto(f);e.target.value='';});
+  $('#btnLabelPhoto').addEventListener('click',()=>$('#labelPhotoInput').click());
+  $('#labelPhotoInput').addEventListener('change',e=>{const f=e.target.files[0];if(f)handleLabelPhoto(f);e.target.value='';});
+  $('#btnPhotoClear').addEventListener('click',()=>{formPhoto='';renderPhoto();});
   $$('#typeSeg button').forEach(b=>b.addEventListener('click',()=>setFormType(b.dataset.type)));
-  $$('#ratePick .s').forEach(s=>s.addEventListener('click',()=>{formRating=+s.dataset.v;renderRate();}));
+  $$('#ratePick .s').forEach(s=>s.addEventListener('click',()=>{const v=+s.dataset.v;formRating=formRating===v?v-0.5:v;renderRate();}));
   $('#btnSave').addEventListener('click',saveEntry);
   $('#fSummary').addEventListener('input',()=>autoGrow($('#fSummary')));
   let _mt;const updMap=()=>{clearTimeout(_mt);_mt=setTimeout(()=>showMiniMap('miniMap',($('#fName').value+' '+$('#fOrigin').value)),400);};
   $('#fOrigin').addEventListener('input',updMap);
   $('#fName').addEventListener('input',updMap);
   $('#btnReadSummary').addEventListener('click',()=>{const s=$('#fSummary').value.trim();if(!s){toast('Nothing to read yet.');return;}const n=$('#fName').value.trim();speak(n?n+'. '+s:s,getSettings().ttsRate);});
-  $('#btnCancel').addEventListener('click',()=>{clearForm();$('#editBlock').style.display='none';go('home');});
+  $('#btnCancel').addEventListener('click',()=>{clearForm();$('#editBlock').style.display='none';go('journal');});
   $('#libSearch').addEventListener('input',e=>{libSearch=e.target.value;renderLibrary();});
   $('#libSort').addEventListener('change',e=>{libSort=e.target.value;renderLibrary();});
   $('#btnExport').addEventListener('click',exportData);
@@ -775,9 +808,9 @@ function bind(){
   document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();if(curView==='add')saveEntry();}if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();if(curView==='add'&&document.activeElement===$('#kwInput'))doSearch();}if(e.key==='Escape'){closeSheet();$('#settingsModal').classList.remove('open');if('speechSynthesis'in window)window.speechSynthesis.cancel();}});
 }
 async function init(){
-  try{await openDB();console.log('🍷 JP Decanter v2 (lean) DB ready');}catch(e){toast('⚠️ DB failed — private mode?');}
+  try{await openDB();console.log('🍷 JP Decanter v4 DB ready');}catch(e){toast('⚠️ DB failed — private mode?');}
   buildProfSliders();bind();setFormType('wine');renderRate();
-  await refreshCache();renderHome();
+  await refreshCache();renderHome();renderLibrary();
   if(getSettings().syncToken){const m=await syncNow({silent:true});if(m)renderHome();}
   const s=getSettings();if(!s.apiKey)setTimeout(()=>toast('💡 Add your DeepSeek key in ⚙️ Settings to get started!'),900);
   else setTimeout(()=>toast('🍷 Ready — type a name or snap a photo.'),700);
