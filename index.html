@@ -269,13 +269,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   <!-- ADD (text-only) -->
   <section class="view" id="view-add">
     <div class="greeting"><div class="hi">Add a bottle</div><div class="you">Type a name or snap a photo</div></div>
-    <div class="bigsearch">
-      <input id="kwInput" placeholder="e.g. Yamazaki 12, Château Margaux, Ethiopia Yirgacheffe…">
-      <button id="kwSearch">✨ Go</button>
-    </div>
-    <div class="btn-row" style="margin-top:8px">
-      <button class="btn" id="btnPhoto" style="flex:1">📷 Identify from photo</button>
-      <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none">
+    <div id="aiBlock">
+      <div class="bigsearch">
+        <input id="kwInput" placeholder="e.g. Yamazaki 12, Château Margaux, Ethiopia Yirgacheffe…">
+        <button id="kwSearch">✨ Go</button>
+      </div>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn" id="btnPhoto" style="flex:1">📷 Identify from photo</button>
+        <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none">
+      </div>
     </div>
     <div class="hint-line" id="addHint">Type a bottle name and tap Go — DeepSeek fills in the details and writes a tasting summary. Or snap a photo of the label.</div>
     <div id="addSpin"></div>
@@ -474,6 +476,7 @@ async function testConnection(){
 /* ---- photo ---- */
 async function handlePhoto(file){
   if(!file)return;
+  if(isEditing()){await handleLabelPhoto(file);toast('📷 Label photo attached — notes stay unchanged.');return;}
   const s=getSettings();
   if(!s.apiKey){toast('⚠️ Add your DeepSeek key in Settings first.');openSettings();return;}
   const b64=await new Promise((res,rej)=>{const img=new Image(),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');img.onload=()=>{const max=1024,scale=Math.min(1,max/img.width,max/img.height);canvas.width=img.width*scale;canvas.height=img.height*scale;ctx.drawImage(img,0,0,canvas.width,canvas.height);res(canvas.toDataURL('image/jpeg',0.85));};img.onerror=rej;img.src=URL.createObjectURL(file);});
@@ -574,17 +577,21 @@ function clearForm(){
   $('#fName').value='';$('#fVariety').value='';$('#fOrigin').value='';$('#fAbv').value='';$('#fVintage').value='';$('#fFlavor').value='';$('#fPairing').value='';$('#fSummary').value='';$('#fColor').value='';$('#fAroma').value='';$('#fConclusion').value='';$('#fDecant').value='';
   PROF.forEach(([k])=>{const inp=$('#pf-'+k);if(inp){inp.value=0;$('#pv-'+k).textContent='—';}});
   formRating=0;formPhoto='';renderRate();renderPhoto();$('#fEditId').value='';$('#btnCancel').style.display='none';setFormType('wine');autoGrow($('#fSummary'));
+  const ab=$('#aiBlock');if(ab)ab.style.display='';$('#btnSave').textContent='💾 Save to cellar';
 }
+const isEditing=()=>!!$('#fEditId').value;
 function loadIntoForm(d){
   go('add');clearForm();setFormType(d.type||'wine');$('#fEditId').value=d.id||'';$('#btnCancel').style.display='';
+  $('#aiBlock').style.display='none';$('#btnSave').textContent='💾 Save changes';$('#editBlock').style.display='';
   $('#fName').value=d.name||'';$('#fVariety').value=d.variety||'';$('#fOrigin').value=d.origin||'';$('#fAbv').value=d.abv||'';$('#fVintage').value=d.vintage||'';$('#fFlavor').value=d.flavor||'';$('#fPairing').value=d.pairing||'';$('#fSummary').value=d.summary||'';
   $('#fColor').value=(d.sat&&d.sat.color)||'';$('#fAroma').value=(d.sat&&d.sat.aroma)||'';$('#fConclusion').value=(d.sat&&d.sat.conclusion)||'';$('#fDecant').value=(d.sat&&d.sat.decant)||'';
   PROF.forEach(([k])=>{const v=(d.sat&&d.sat[k])||0;const inp=$('#pf-'+k);if(inp){inp.value=v;$('#pv-'+k).textContent=v>0?v+'/5':'—';}});
-  formRating=d.rating||0;formPhoto=d.imageBase64||'';renderRate();renderPhoto();$('#kwInput').value=d.name||'';$('#addHint').textContent='Editing — review and tap Save.';autoGrow($('#fSummary'));
-  toast('✏️ Editing — review and Save.');
+  formRating=d.rating||0;formPhoto=d.imageBase64||'';renderRate();renderPhoto();$('#kwInput').value=d.name||'';$('#addHint').textContent='Editing — notes stay unchanged. Add a label photo, adjust the rating, then Save.';autoGrow($('#fSummary'));
+  toast('✏️ Editing — notes stay unchanged.');
 }
 function fillFromResult(r){if(r.type&&TYPE[r.type])setFormType(r.type);if(r.name)$('#fName').value=r.name;if(r.variety)$('#fVariety').value=r.variety;if(r.origin)$('#fOrigin').value=r.origin;if(r.abv)$('#fAbv').value=r.abv;if(r.vintage)$('#fVintage').value=r.vintage;if(r.flavor)$('#fFlavor').value=r.flavor;if(r.pairing)$('#fPairing').value=r.pairing;if(r.color)$('#fColor').value=r.color;if(r.aroma)$('#fAroma').value=r.aroma;if(r.conclusion)$('#fConclusion').value=r.conclusion;if(r.decant)$('#fDecant').value=r.decant;if(r.summary)$('#fSummary').value=r.summary;if(r.profile&&typeof r.profile==='object')Object.keys(r.profile).forEach(k=>{const v=parseInt(r.profile[k],10);if(v>=1&&v<=5){const inp=$('#pf-'+k),lab=$('#pv-'+k);if(inp){inp.value=v;if(lab)lab.textContent=v+'/5';}}});setTimeout(()=>{autoGrow($('#fSummary'));showMiniMap('miniMap',($('#fName').value+' '+$('#fOrigin').value));},0);}
 async function doSearch(){
+  if(isEditing()){toast('✏️ Editing — notes stay unchanged. Add a label photo, adjust the rating, then Save.');return;}
   const kw=$('#kwInput').value.trim();if(!kw){toast('⚠️ Type a bottle name first.');$('#kwInput').focus();return;}
   const s=getSettings();if(!s.apiKey){toast('⚠️ Add your DeepSeek key in Settings first.');openSettings();return;}
   $('#editBlock').style.display='none';
@@ -771,7 +778,7 @@ function showMiniMap(elId,text){const el=document.getElementById(elId);if(!el)re
 
 function bind(){
   $$('.tab').forEach(t=>t.addEventListener('click',()=>go(t.dataset.view)));
-  $('#fabAdd').addEventListener('click',()=>{go('add');$('#editBlock').style.display='none';$('#addSpin').innerHTML='';$('#kwInput').value='';$('#addHint').textContent='Type a bottle name and tap Go — DeepSeek fills in the details and writes a tasting summary. Or snap a photo of the label.';setTimeout(()=>$('#kwInput').focus(),200);});
+  $('#fabAdd').addEventListener('click',()=>{go('add');clearForm();$('#editBlock').style.display='none';$('#addSpin').innerHTML='';$('#kwInput').value='';$('#addHint').textContent='Type a bottle name and tap Go — DeepSeek fills in the details and writes a tasting summary. Or snap a photo of the label.';setTimeout(()=>$('#kwInput').focus(),200);});
   $('#topSettings').addEventListener('click',openSettings);
   $('#topSync').addEventListener('click',()=>syncNow({}));
   $('#btnSyncNow').addEventListener('click',()=>syncNow({}));
