@@ -385,7 +385,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.4';
+const APP_VER='5.5';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -551,7 +551,7 @@ function renderJournalStats(){
   const rated=items.filter(d=>d.rating);const avgR=avg(rated.map(d=>d.rating));
   const vSet=new Set(),oSet=new Set();
   items.forEach(d=>{
-    const v=(d.variety||'').trim();if(v){if(statType==='wine'){const gs=wineGrapes(v);if(gs.length)gs.forEach(g=>vSet.add(g));else vSet.add(v.toLowerCase());}else vSet.add(v.toLowerCase());}
+    const v=(d.variety||'').trim();if(v){if(statType==='wine'){wineGrapes(v).forEach(g=>vSet.add(g));}else vSet.add(v.toLowerCase());}
     const o=(d.origin||'').trim();if(o)oSet.add(o.toLowerCase());
   });
   const pl={wine:'Wines',sake:'Sakes',whisky:'Whiskies',coffee:'Coffees'}[statType]||'Bottles';
@@ -561,14 +561,12 @@ function renderJournalStats(){
 function renderJournalChart(){
   const box=$('#chartBox');if(!box)return;
   const counts={};
+  const inc=k=>{if(!k)return;if(k.length>28)k=k.slice(0,27)+'…';counts[k]=(counts[k]||0)+1;};
   drinksCache.filter(d=>d.type===statType).forEach(d=>{
-    let key='';
-    if(chartDim==='country')key=originCountry(d.origin);
-    else if(chartDim==='region')key=originRegion(d.origin);
-    else if(chartDim==='grape')key=(d.variety||'').split(/[,/]/)[0].trim();
-    else{const m=(d.vintage||'').match(/(19|20)\d{2}/);key=m?m[0]:(d.vintage||'').trim();}
-    if(!key)return;if(key.length>28)key=key.slice(0,27)+'…';
-    counts[key]=(counts[key]||0)+1;
+    if(chartDim==='country')inc(originCountry(d.origin));
+    else if(chartDim==='region')inc(originRegion(d.origin));
+    else if(chartDim==='grape'){if(statType==='wine'){const gs=wineGrapes(d.variety||'');if(gs.length)gs.forEach(inc);}else inc((d.variety||'').split(/[,/]/)[0].trim());}
+    else{const m=(d.vintage||'').match(/(19|20)\d{2}/);inc(m?m[0]:(d.vintage||'').trim());}
   });
   const entries=Object.entries(counts);
   entries.sort(chartDim==='vintage'?(a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}):(a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
