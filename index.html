@@ -262,7 +262,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   <!-- JOURNAL -->
   <section class="view active" id="view-journal">
     <div class="greeting"><div class="hi">The journal</div><div class="you">Everything you've poured</div></div>
-    <div class="card" style="padding:14px 16px;margin-top:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span class="note" style="margin:0">Category</span><select class="sortsel" id="statType"><option value="wine">🍷 Wine</option><option value="sake">🍶 Sake</option><option value="whisky">🥃 Whisky</option><option value="coffee">☕ Coffee</option></select></div><div class="chips" id="chartChips" style="margin-bottom:12px"><button class="chip on" data-c="country">🌍 Country</button><button class="chip" data-c="region">🗺️ Region</button><button class="chip" data-c="grape">🍇 Grape / style</button><button class="chip" data-c="vintage">📅 Vintage</button></div><div id="chartBox"></div><div id="journalStats"></div></div>
+    <div class="card" style="padding:14px 16px;margin-top:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span class="note" style="margin:0">Category</span><select class="sortsel" id="statType"><option value="wine">🍷 Wine</option><option value="sake">🍶 Sake</option><option value="whisky">🥃 Whisky</option><option value="coffee">☕ Coffee</option></select><span class="note" style="margin:0;color:var(--text-4)" id="verTag"></span></div><div class="chips" id="chartChips" style="margin-bottom:12px"><button class="chip on" data-c="country">🌍 Country</button><button class="chip" data-c="region">🗺️ Region</button><button class="chip" data-c="grape">🍇 Grape / style</button><button class="chip" data-c="vintage">📅 Vintage</button></div><div id="chartBox"></div><div id="journalStats"></div></div>
     <div class="toolbar"><div class="search-wrap"><span class="si">🔍</span><input id="libSearch" placeholder="Search name, variety, origin, notes…"></div></div>
     <div class="chips" id="libChips"></div>
     <div style="display:flex;justify-content:flex-end;margin:12px 0"><select class="sortsel" id="libSort"><option value="newest">Newest</option><option value="rating">Top rated</option><option value="name">Name A–Z</option><option value="oldest">Oldest</option></select></div>
@@ -389,7 +389,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.11';
+const APP_VER='5.12';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -845,6 +845,7 @@ function bind(){
   $('#btnTest').addEventListener('click',()=>{const b=$('#btnTest');b.disabled=true;b.textContent='Testing…';saveSettings(Object.assign({},getSettings(),{apiKey:$('#setKey').value.trim(),endpoint:$('#setEndpoint').value}));testConnection().finally(()=>{b.disabled=false;b.textContent='🔌 Test connection';});});
   document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();if(curView==='add')saveEntry();}if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();if(curView==='add'&&document.activeElement===$('#kwInput'))doSearch();}if(e.key==='Escape'){closeSheet();$('#settingsModal').classList.remove('open');if('speechSynthesis'in window)window.speechSynthesis.cancel();}});
   $('#verLine').textContent='JP Decanter v'+APP_VER;
+  $('#verTag').textContent='v'+APP_VER;
 }
 async function init(){
   try{await openDB();console.log('🍷 JP Decanter v'+APP_VER+' DB ready');}catch(e){toast('⚠️ DB failed — private mode?');}
