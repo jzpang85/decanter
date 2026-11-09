@@ -437,7 +437,7 @@ const dbDelB=id=>new Promise((res,rej)=>{const tx=db.transaction(BSTORE,'readwri
 
 /* ---- state ---- */
 let drinksCache=[],bottlesCache=[],cellarGroup='country',curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.27';
+const APP_VER='5.28';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -570,9 +570,11 @@ function renderHome(){
   $('#greetYou').innerHTML=bottlesCache.length?`Your cellar: <b>${bottlesCache.length}</b> ${bottlesCache.length===1?'bottle':'bottles'} waiting to be poured`:'Bought, not yet poured';
   wrap.innerHTML=`
     <div class="btn-row" style="margin-top:16px"><button class="btn btn-primary" id="btnAddBottle" style="flex:1">➕ Add a bottle to cellar</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span class="note" style="margin:0">📖 ${drinksCache.length} poured — safe in your Journal</span><button class="btn btn-ghost btn-sm" id="btnGoJournal">Open Journal →</button></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 10px"><span class="note" style="margin:0">Group by</span><select class="sortsel" id="cellarGroup"><option value="country">🌍 Country</option><option value="region">🗺️ Region</option><option value="grape">🍇 Grape</option><option value="vineyard">🏰 Vineyard</option><option value="vintage">📅 Vintage</option></select></div>
     <div id="cellarList"></div>`;
   $('#btnAddBottle').addEventListener('click',()=>{caddReset();go('cadd');});
+  $('#btnGoJournal').addEventListener('click',()=>go('journal'));
   $('#cellarGroup').value=cellarGroup;
   $('#cellarGroup').addEventListener('change',e=>{cellarGroup=e.target.value;renderCellarList();});
   renderCellarList();
