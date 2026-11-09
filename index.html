@@ -315,7 +315,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     <div class="greeting"><div class="hi">Study</div><div class="you">Sharpen your palate</div></div>
     <div class="study-tabs"><button class="on" data-pane="ref">📚 Reference</button><button data-pane="fc">🃏 Flashcards</button><button data-pane="qz">❓ Quiz</button></div>
     <div class="pane active" id="pane-ref"><div class="cat-grid" id="catGrid"></div><div id="refWrap" style="display:none"><button class="btn btn-ghost" id="refBack" style="margin:0 0 14px">← All topics</button><div class="card" style="padding:6px 16px"><div id="refList"></div></div></div></div>
-    <div class="pane" id="pane-fc"><div class="card" style="padding:18px"><div id="fcDecks"><p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Pick a deck — your cellar mixed with the reference library.</p><div class="deck-row" id="fcDeckBtns"></div></div><div id="fcSession" style="display:none"></div></div></div>
+    <div class="pane" id="pane-fc"><div class="card" style="padding:18px"><div id="fcDecks"></div><div id="fcSession" style="display:none"></div></div></div>
     <div class="pane" id="pane-qz"><div class="card" style="padding:18px"><div id="qzIntro"><p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Ten questions across wine, sake, whisky & coffee — mixed with your cellar.</p><button class="btn btn-primary" id="qzStart">▶ Start quiz</button></div><div id="qzSession" style="display:none"></div></div></div>
   </section>
 
@@ -387,7 +387,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.18';
+const APP_VER='5.19';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -639,15 +639,116 @@ async function saveEntry(){
 /* ---- study ---- */
 let studyPane='ref';
 function renderStudyTabs(){$$('.study-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.pane===studyPane));$$('.pane').forEach(p=>p.classList.remove('active'));$('#pane-'+studyPane).classList.add('active');if(studyPane==='ref')renderRef();if(studyPane==='fc')renderFcDecks();}
+const WINE_KB=[
+['Tasting method — Systematic Approach (SAT)',[
+{d:'Appearance — clarity, intensity, colour.'},
+{d:'Nose — condition, intensity, aroma characteristics.'},
+{d:'Palate — sweetness, acidity, tannin, alcohol, body, mousse, flavour intensity, finish.'},
+{d:'Conclusion — quality (BLIC: balance, length, intensity, complexity) and readiness.'}]],
+['Appearance vocabulary',[
+{n:'Clarity',d:'Clear or hazy — haze may signal a fault or just unfiltered winemaking.'},
+{n:'Colour intensity',d:'Pale, medium, or deep.'},
+{n:'White colours',d:'Lemon-green → lemon → gold → amber. Amber hints oxidation or age.'},
+{n:'Rosé colours',d:'Pink, salmon, orange.'},
+{n:'Red colours',d:'Purple (youth) → ruby → garnet → tawny (age).'}]],
+['Nose vocabulary',[
+{n:'Condition',d:'Clean or unclean. Faults: TCA (cork taint), volatile acidity, oxidation, Brett.'},
+{n:'Aroma intensity',d:'Light / medium(-) / medium / medium(+) / pronounced.'},
+{n:'Primary aromas',d:'From the grape and fermentation: fruit, floral, herbaceous.'},
+{n:'Secondary aromas',d:'From winemaking: oak (vanilla, toast), MLF (butter), lees (bread, biscuit).'},
+{n:'Tertiary aromas',d:'From bottle age: dried fruit, leather, earth, mushroom, petrol.'}]],
+['Palate vocabulary',[
+{n:'Sweetness',d:'Dry → off-dry → medium-dry → medium-sweet → sweet → luscious.'},
+{n:'Acidity',d:'Low / medium / high. Mouth-watering freshness; balances richness.'},
+{n:'Tannin',d:'Level (low–high) + texture: chalky, silky, grippy. From skins, seeds and oak.'},
+{n:'Alcohol',d:'Low (<11%) / medium (11–13.9%) / high (≥14%). Felt as warmth.'},
+{n:'Body',d:'Light / medium / full — mouthfeel from alcohol, extract and sugar.'},
+{n:'Flavour intensity',d:'Light / medium / pronounced.'},
+{n:'Mousse',d:'Sparkling only: delicate, creamy, aggressive.'},
+{n:'Finish',d:'Short / medium / long — how long flavours persist.'}]],
+['Conclusion',[
+{n:'Quality levels',d:'Faulty, poor, acceptable, good, very good, outstanding.'},
+{n:'BLIC',d:'Balance, length, intensity, complexity — the quality yardstick.'},
+{n:'Readiness',d:'Too young / drink now (not for ageing) / suitable for ageing / too old.'}]],
+['Grape growing',[
+{n:'Climate types',d:'Maritime (cool–moderate, mild), continental (hot summers, cold winters), Mediterranean (hot, dry summers).'},
+{n:'Cool climate',d:'Slow ripening: lower sugar, higher acid, lighter body, fresher fruit.'},
+{n:'Warm climate',d:'Riper grapes: more sugar, fuller body, rounder tannins.'},
+{n:'Weather vs climate',d:'Climate shapes regional style; weather creates vintage variation.'},
+{n:'Latitude',d:'Most vineyards lie between 30° and 50°, north or south.'},
+{n:'Altitude & aspect',d:'Higher = cooler. Slopes give sun exposure, drainage and frost protection.'},
+{n:'Diurnal range',d:'Cool nights preserve acidity and aromatics.'},
+{n:'Soils',d:'Drainage plus water and nutrients: gravel, slate, limestone, clay.'},
+{n:'Phylloxera',d:'Root louse that killed Europe\'s vines; today most vines are grafted onto resistant rootstocks.'},
+{n:'Mildew & rot',d:'Powdery/downy mildew attack vines; botrytis is noble rot (sweet wines) or grey rot (harm).'},
+{n:'Yield control',d:'Leaf removal and green harvesting concentrate flavour; high yields dilute it.'},
+{n:'Farming',d:'Sustainable (low inputs) → organic (no synthetic sprays) → biodynamic (organic + lunar calendar & preparations).'}]],
+['Winemaking',[
+{n:'Alcoholic fermentation',d:'Yeast + sugar → ethanol + CO₂ + heat.'},
+{n:'Pressing & maceration',d:'Whites pressed before fermenting; reds ferment on skins for colour and tannin.'},
+{n:'Malolactic fermentation',d:'Harsh malic acid → softer lactic acid; adds creamy, buttery notes.'},
+{n:'Stainless steel',d:'Inert vessel that preserves fruit purity and freshness.'},
+{n:'Oak ageing',d:'Adds vanilla, toast and spice, plus slow oxygen (softens tannin). New French = subtle; American = sweeter spice.'},
+{n:'Lees & bâtonnage',d:'Aging on dead yeast adds texture and bready notes; stirring (bâtonnage) intensifies it.'},
+{n:'Carbonic maceration',d:'Whole-berry fermentation — fruity, low-tannin reds (Beaujolais Nouveau).'},
+{n:'Rosé methods',d:'Direct pressing (palest), short maceration, or saignée (bleeding).'},
+{n:'Blending',d:'Assemblage for consistency, complexity and style (Bordeaux blends, GSM).'},
+{n:'Fining & filtration',d:'Clarify and stabilise; over-zealous treatment strips flavour.'},
+{n:'SO₂',d:'Antioxidant and antimicrobial preservative.'},
+{n:'Residual sugar',d:'Sweetness left by stopping fermentation early.'},
+{n:'Fortification',d:'Adding grape spirit — mid-ferment (Port) or after (Sherry).'}]],
+['Sparkling wines',[
+{n:'Traditional method',d:'Second fermentation in bottle + lees ageing → biscuit, brioche (Champagne, Cava).'},
+{n:'Tank method',d:'Second fermentation in pressurised tank — fresh and fruity (Prosecco).'},
+{n:'Ancestral method',d:'One fermentation, bottled before it finishes (pét-nat).'},
+{n:'Sweetness scale',d:'Brut Nature 0–3 g/L · Extra Brut 0–6 · Brut 0–12 · Extra Dry 12–17 · Dry 17–32 · Demi-Sec 32–50 · Doux 50+.'},
+{n:'Champagne',d:'Chardonnay, Pinot Noir, Meunier; chalk soils; autolysis character.'},
+{n:'Prosecco',d:'Glera grape, Veneto/Friuli, tank method.'},
+{n:'Cava',d:'Spain; Macabeo, Xarel·lo, Parellada; traditional method.'}]],
+['Sweet & fortified',[
+{n:'Noble rot (botrytis)',d:'Fungus shrivels grapes, concentrating sugar and acidity — Sauternes, Tokaji.'},
+{n:'Icewine',d:'Grapes pressed frozen on the vine (Canada, Germany) — intense, high acid.'},
+{n:'Dried grapes',d:'Appassimento — Amarone, Recioto, Vin Santo.'},
+{n:'Port',d:'Douro. Spirit added mid-ferment (~20%): Ruby (young, fruity), Tawny (oxidised, nutty), Vintage.'},
+{n:'Sherry',d:'Jerez. Fino/Manzanilla (flor, dry, delicate); Oloroso (oxidative, rich); Amontillado in between. Solera blending.'},
+{n:'Madeira',d:'Heat-aged, oxidised, near-indestructible.'},
+{n:'Vin doux naturel',d:'Fortified Muscat-based wines (Roussillon, southern France).'}]],
+['Key regions',[
+{n:'Bordeaux',d:'Left Bank: gravel, Cabernet-led (Médoc, Graves). Right Bank: clay/limestone, Merlot-led (St-Émilion, Pomerol). 1855 classification.'},
+{n:'Burgundy',d:'Chablis (Chardonnay); Côte de Nuits (Pinot Noir); Côte de Beaune (both); Premier & Grand Cru climats.'},
+{n:'Loire',d:'Muscadet; Sancerre & Pouilly-Fumé (Sauvignon Blanc); Vouvray (Chenin Blanc); Chinon (Cabernet Franc).'},
+{n:'Rhône',d:'North: Syrah (Côte-Rôtie, Hermitage). South: GSM blends (Châteauneuf-du-Pape).'},
+{n:'Alsace',d:'Aromatic varietal wines: Riesling, Gewürztraminer, Pinot Gris.'},
+{n:'Germany',d:'Mosel & Rheingau Riesling. Prädikat: Kabinett → Spätlese → Auslese → BA → TBA.'},
+{n:'Italy',d:'Piedmont: Nebbiolo (Barolo, Barbaresco). Tuscany: Sangiovese (Chianti, Brunello) + Super Tuscans. Veneto: Valpolicella, Amarone, Prosecco.'},
+{n:'Spain',d:'Rioja (Tempranillo; Crianza/Riserva/Gran Reserva), Ribera del Duero, Priorat.'},
+{n:'Portugal',d:'Douro (Port), Vinho Verde.'},
+{n:'USA',d:'Napa (Cabernet), Sonoma (Pinot Noir, Chardonnay), Oregon, Washington.'},
+{n:'Chile',d:'Central Valley Cabernet & Carménère; cooler coastal sites.'},
+{n:'Argentina',d:'Mendoza high-altitude Malbec.'},
+{n:'Australia',d:'Barossa Shiraz; Margaret River, Yarra Valley, McLaren Vale.'},
+{n:'New Zealand',d:'Marlborough Sauvignon Blanc; Central Otago Pinot Noir.'},
+{n:'South Africa',d:'Stellenbosch, Swartland; Chenin Blanc (Steen).'}]],
+['Grape varieties',KB.wine.concat([
+{n:'Grenache',t:['grenache','garnacha'],o:'Rhône / Spain',d:'Warm, fruity. Strawberry, raspberry, white pepper.'},
+{n:'Gamay',t:['gamay'],o:'Beaujolais',d:'Light, juicy. Red cherry, banana, violets.'},
+{n:'Gewürztraminer',t:['gewurztraminer','gewurz'],o:'Alsace',d:'Aromatic. Lychee, rose, ginger.'},
+{n:'Chenin Blanc',t:['chenin','vouvray'],o:'Loire / South Africa',d:'High acid, versatile. Apple, honey, quince.'},
+{n:'Viognier',t:['viognier'],o:'Rhône',d:'Full, perfumed. Apricot, peach, blossom.'},
+{n:'Malbec',t:['malbec'],o:'Argentina / Cahors',d:'Dark, plush. Blackberry, plum, violet.'},
+{n:'Carmenère',t:['carmenere'],o:'Chile',d:'Herbal, peppery. Blackberry, bell pepper.'},
+{n:'Zinfandel / Primitivo',t:['zinfandel','primitivo'],o:'California / Puglia',d:'Bold, jammy. Black fruit, spice.'},
+{n:'Muscat',t:['muscat','moscato'],o:'Worldwide',d:'Grapey, floral. Orange blossom, peach.'},
+{n:'Pinot Grigio / Gris',t:['pinot grigio','pinot gris'],o:'Italy / Alsace',d:'Light and crisp (Italy) or rich and spicy (Alsace).'}]).map(g=>({n:g.n,d:(g.o?g.o+' — ':'')+g.d}))],
+];
 function renderRef(){const grid=$('#catGrid');if(grid.dataset.built)return;grid.dataset.built='1';const cats=[{k:'wine',e:'🍷',t:'Wine'},{k:'sake',e:'🍶',t:'Sake'},{k:'whisky',e:'🥃',t:'Whisky'},{k:'coffee',e:'☕',t:'Coffee'}];grid.innerHTML=cats.map(c=>`<div class="cat" data-k="${c.k}"><div class="e">${c.e}</div><div class="t">${c.t}</div></div>`).join('');grid.querySelectorAll('.cat').forEach(el=>el.addEventListener('click',()=>showRef(el.dataset.k)));}
-function showRef(k){$('#catGrid').style.display='none';$('#refWrap').style.display='';const list=$('#refList');if(k==='wine'){list.innerHTML='<div class="kb" style="border:none"><div class="kn">Tasting method — Systematic Approach (SAT)</div></div>'+['Appearance — clarity, intensity, color.','Nose — condition, intensity, aromas.','Palate — sweetness, acidity, tannin, alcohol, body, flavor, finish.','Conclusion — quality, readiness, reasoning.'].map(s=>`<div class="kb"><div class="kd">${esc(s)}</div></div>`).join('')+'<div class="kb" style="border:none;margin-top:8px"><div class="kn">Grape varieties</div></div>'+KB.wine.map(kbRow).join('');return;}if(k==='coffee'){list.innerHTML='<div class="kb" style="border:none"><div class="kn">Origins</div></div>'+KB.coffee.map(kbRow).join('')+'<div class="kb" style="border:none;margin-top:8px"><div class="kn">Processing</div></div>'+PROCESSING.map(p=>`<div class="kb"><div class="kn">${esc(p.n)}</div><div class="kd">${esc(p.d)}</div></div>`).join('');return;}const titles={sake:'Sake categories',whisky:'Regions & styles'};list.innerHTML=`<div class="kb" style="border:none"><div class="kn">${titles[k]}</div></div>`+(KB[k]||[]).map(kbRow).join('');}
+function showRef(k){$('#catGrid').style.display='none';$('#refWrap').style.display='';const list=$('#refList');if(k==='wine'){list.innerHTML=WINE_KB.map(([title,rows],i)=>`<div class="kb" style="border:none;${i?'margin-top:8px':''}"><div class="kn">${esc(title)}</div></div>`+rows.map(r=>`<div class="kb">${r.n?`<div class="kn">${esc(r.n)}</div>`:''}<div class="kd">${esc(r.d)}</div></div>`).join('')).join('');return;}if(k==='coffee'){list.innerHTML='<div class="kb" style="border:none"><div class="kn">Origins</div></div>'+KB.coffee.map(kbRow).join('')+'<div class="kb" style="border:none;margin-top:8px"><div class="kn">Processing</div></div>'+PROCESSING.map(p=>`<div class="kb"><div class="kn">${esc(p.n)}</div><div class="kd">${esc(p.d)}</div></div>`).join('');return;}const titles={sake:'Sake categories',whisky:'Regions & styles'};list.innerHTML=`<div class="kb" style="border:none"><div class="kn">${titles[k]}</div></div>`+(KB[k]||[]).map(kbRow).join('');}
 const kbRow=k=>`<div class="kb"><div><span class="kn">${esc(k.n)}</span><span class="ko">— ${esc(k.o)}</span></div>${k.t?`<div class="kd" style="margin-top:4px">${esc(k.d)}</div>`:`<div class="kd">${esc(k.d)}</div>`}</div>`;
 function backRef(){$('#refWrap').style.display='none';$('#catGrid').style.display='';}
 const FC_KEY='decanter_fc_v2';const fcProg=()=>{try{return JSON.parse(localStorage.getItem(FC_KEY)||'{}');}catch(e){return{};}};const fcProgSet=p=>localStorage.setItem(FC_KEY,JSON.stringify(p));
-function kbCards(){const c=[];Object.keys(KB).forEach(tp=>KB[tp].forEach(k=>c.push({id:'kb:'+tp+':'+k.n,front:k.n,back:`${TYPE[tp].emoji} ${esc(k.o)} — ${esc(k.d)}`})));return c;}
-function userCards(){return drinksCache.filter(d=>d.name).map(d=>({id:'u:'+d.id,front:d.name,back:`${TYPE[d.type].emoji} ${esc([d.variety,d.origin].filter(Boolean).join(' · '))}${d.flavor?'<br>🌶 '+esc(d.flavor):''}`}));}
+function kbCards(tp){const c=[];(tp?[tp]:Object.keys(KB)).forEach(t=>KB[t].forEach(k=>c.push({id:'kb:'+t+':'+k.n,front:k.n,back:`${TYPE[t].emoji} ${esc(k.o)} — ${esc(k.d)}`})));return c;}
 let fcDeck=[],fcI=0,fcFlip=false;
-function renderFcDecks(){const w=$('#fcDeckBtns');w.innerHTML='';[['🧠 Knowledge','Reference library',()=>kbCards()],['🍷 Your bottles','From your cellar',async()=>userCards()],['🎲 Mixed','Everything',async()=>shuffle([...kbCards(),...userCards()])]].forEach(([label,desc,fn])=>{const b=document.createElement('button');b.className='btn';b.style.flexDirection='column';b.style.textAlign='left';b.style.flex='1';b.style.minWidth='120px';b.innerHTML=`<span>${label}</span><span style="font-size:.72rem;color:var(--text-3);font-weight:400">${desc}</span>`;b.onclick=async()=>{const d=await fn();if(!d.length){toast('No cards — add bottles first.');return;}startFc(d);};w.appendChild(b);});}
+function renderFcDecks(){const w=$('#fcDecks');w.innerHTML=`<p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Pick a category — every card comes from the reference library.</p><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><select class="sortsel" id="fcCat"><option value="wine">🍷 Wine</option><option value="sake">🍶 Sake</option><option value="whisky">🥃 Whisky</option><option value="coffee">☕ Coffee</option></select><button class="btn btn-primary" id="fcStart">▶ Start deck</button></div>`;$('#fcStart').addEventListener('click',()=>{const d=kbCards($('#fcCat').value);if(!d.length){toast('No cards in this category.');return;}startFc(d);});}
 function startFc(deck){fcDeck=deck;fcI=0;fcFlip=false;$('#fcDecks').style.display='none';$('#fcSession').style.display='';renderFc();}
 function renderFc(){if(!fcDeck.length){endFc();return;}const c=fcDeck[fcI],p=fcProg(),box=(p[c.id]&&p[c.id].box)||0;$('#fcSession').innerHTML=`<div class="fc-meta">Card ${fcI+1} / ${fcDeck.length} · ${box?'●'.repeat(box):'new'}</div><div class="fc" id="fcCard"><div class="lab">${fcFlip?'Answer':'Name'}</div><div class="${fcFlip?'back':'front'}">${fcFlip?c.back:esc(c.front)}</div><div class="hint">${fcFlip?'tap to flip back':'tap to reveal'}</div></div>${fcFlip?`<div class="fc-ctrl"><button class="btn" id="fcNo">✗ Didn't know</button><button class="btn btn-primary" id="fcYes">✓ Got it</button></div>`:''}<div class="fc-ctrl" style="margin-top:10px"><button class="btn btn-ghost" id="fcEnd">End</button></div>`;$('#fcCard').onclick=()=>{if(!fcFlip){fcFlip=true;renderFc();}};if(fcFlip){$('#fcYes').onclick=()=>gradeFc(true);$('#fcNo').onclick=()=>gradeFc(false);}$('#fcEnd').onclick=endFc;}
 function gradeFc(ok){const c=fcDeck[fcI],p=fcProg(),cur=p[c.id]||{box:0};cur.box=ok?Math.min(5,cur.box+1):Math.max(0,cur.box-1);p[c.id]=cur;fcProgSet(p);fcI++;fcFlip=false;if(fcI>=fcDeck.length)endFc(true);else renderFc();}
