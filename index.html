@@ -437,7 +437,7 @@ const dbDelB=id=>new Promise((res,rej)=>{const tx=db.transaction(BSTORE,'readwri
 
 /* ---- state ---- */
 let drinksCache=[],bottlesCache=[],cellarGroup='country',curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.28';
+const APP_VER='5.29';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -656,6 +656,8 @@ async function saveBottle(){
     imageBase64:bPhoto};
   await dbPutB(b);await refreshCache();caddReset();go('home');toast('🍾 Saved to cellar!');syncNow({silent:true});
 }
+
+const dcardHtml=d=>`<div class="dcard" data-id="${d.id}"><div class="stripe ${d.type}"></div><div class="info"><div class="nm">${esc(d.name)}</div><div class="sub">${esc([d.variety,d.origin].filter(Boolean).join(' · ')||TYPE[d.type].label)}</div>${d.rating?`<div class="rt">${stars(d.rating,'sm')}</div>`:''}</div></div>`;
 
 /* ---- library ---- */
 function renderLibrary(){
