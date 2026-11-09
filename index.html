@@ -234,6 +234,24 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .dl-wrap input{padding-right:36px}
 .dl-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border);color:var(--text-3);font-size:.68rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;line-height:1}
 .dl-clear:hover{color:var(--gold-2);border-color:var(--border-s)}
+.cabinet{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;padding:12px 0 14px;border-bottom:2px solid rgba(212,168,90,.08);margin-bottom:2px}
+.bcard{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 12px 10px;cursor:pointer;overflow:hidden;transition:var(--t)}
+.bcard:active{transform:scale(.98)}
+.bcard .cork{position:absolute;top:0;left:0;right:0;height:6px}
+.bcard.wine .cork{background:linear-gradient(90deg,#d27a96,#a8607d)}
+.bcard.sake .cork{background:linear-gradient(90deg,#86c8ae,#5f9e86)}
+.bcard.whisky .cork{background:linear-gradient(90deg,#e0a06a,#b87c4c)}
+.bcard.coffee .cork{background:linear-gradient(90deg,#cf8a6c,#a56a52)}
+.bcard .bic{font-size:2rem;text-align:center;padding:8px 0 2px}
+.bcard .bn{font-family:var(--serif);font-size:.98rem;color:var(--text);margin-top:8px;line-height:1.25}
+.bcard .bs{font-size:.72rem;color:var(--text-3);margin-top:3px;line-height:1.3}
+.bcard .brow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px}
+.winb{font-size:.64rem;padding:2px 8px;border-radius:999px;font-weight:600;letter-spacing:.3px}
+.winb.now{background:rgba(127,198,160,.16);color:var(--green)}
+.winb.later{background:rgba(93,160,240,.16);color:#7fb2f5}
+.winb.past{background:rgba(217,122,126,.2);color:var(--red)}
+.bdec{font-size:.68rem;color:var(--text-3)}
+.bcard .bact{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
 .minimap{height:170px;border-radius:var(--rs);overflow:hidden;margin:10px 0 4px;border:1px solid var(--border);background:#1a1410}
 .minimap.hidden{display:none}
 .leaflet-container{background:#1a1410;font:11px var(--sans)}
@@ -324,6 +342,30 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     <div class="pane" id="pane-qz"><div class="card" style="padding:18px"><div id="qzIntro"><p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Pick an exam — questions keep coming as long as you like; exit anytime to see your score and review. WSET mock papers in the vault are included in the banks.</p><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><select class="sortsel" id="qzCat"><option value="wine-l2">🍷 Wine — WSET Level 2</option><option value="wine-l3">🍷 Wine — WSET Level 3</option></select><button class="btn btn-primary" id="qzStart">▶ Start quiz</button></div></div><div id="qzSession" style="display:none"></div></div></div>
   </section>
 
+  <!-- CELLAR ADD -->
+  <section class="view" id="view-cadd">
+    <div class="greeting"><div class="hi">Add to cellar</div><div class="you">Bought, not yet poured</div></div>
+    <div class="bigsearch">
+      <input id="ckwInput" placeholder="e.g. Château Margaux 2019, Romanée-Conti…">
+      <button id="ckwSearch">✨ Go</button>
+    </div>
+    <div class="hint-line" id="caddHint">Type the bottle name and tap Go — DeepSeek fills the summary, drinking window and decant advice. Or fill in by hand below.</div>
+    <div id="caddSpin"></div>
+    <div class="label" style="margin-top:14px">Type</div>
+    <select class="sortsel" id="cfTypeC" style="width:100%"><option value="wine">🍷 Wine</option><option value="sake">🍶 Sake</option><option value="whisky">🥃 Whisky</option><option value="coffee">☕ Coffee</option></select>
+    <div class="label">Name</div><input id="cfName" placeholder="Bottle name">
+    <div class="two"><div><div class="label">Variety / grape</div><input id="cfVariety" placeholder="Cab blend, Pinot Noir…"></div><div><div class="label">Origin</div><input id="cfOrigin" placeholder="France, Bordeaux, Pauillac"></div></div>
+    <div class="two"><div><div class="label">Vineyard / winery</div><input id="cfVineyard" placeholder="Château Margaux"></div><div><div class="label">Vintage</div><input id="cfVintage" placeholder="2019 / NV"></div></div>
+    <div class="two"><div><div class="label">ABV %</div><input id="cfAbv" placeholder="13.5" inputmode="decimal"></div><div><div class="label">Drinking window 适饮期</div><input id="cfWindow" placeholder="now · 2028+ · 2024–2035"></div></div>
+    <div class="label">Decant</div><input id="cfDecant" placeholder="e.g. decant 1 hour, or open 30 min before">
+    <div class="label">Summary</div><textarea id="cfSummary" placeholder="A few sentences about the wine — style, producer, what to expect."></textarea>
+    <div class="label">Label photo</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button type="button" class="btn" id="btnCLPhoto">📷 Add label photo</button><span style="position:relative;display:none" id="clPhotoPrev"><img id="clPhotoPrevImg" alt="label photo" style="height:74px;max-width:220px;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:block"><button type="button" id="btnCLPhotoClear" style="position:absolute;top:-9px;right:-9px;width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--red);cursor:pointer;line-height:1">✕</button></span></div>
+    <input type="file" id="clPhotoInput" accept="image/*" style="display:none">
+    <input type="hidden" id="cfEditId" value="">
+    <div class="savebar"><button class="btn btn-ghost" id="cbtnCancel">Cancel</button><button class="btn btn-primary" id="cbtnSave" style="flex:1">💾 Save to cellar</button></div>
+  </section>
+
   <!-- BLIND TASTING -->
   <section class="view" id="view-blind">
     <div class="greeting"><div class="hi">Blind tasting</div><div class="you">Pass the phone, then reveal</div></div>
@@ -384,15 +426,18 @@ const esc=s=>{const d=document.createElement('div');d.textContent=s==null?'':s;r
 const TYPE={wine:{label:'Wine',emoji:'🍷'},sake:{label:'Sake',emoji:'🍶'},whisky:{label:'Whisky',emoji:'🥃'},coffee:{label:'Coffee',emoji:'☕'}};
 
 /* ---- DB ---- */
-const DB_NAME='DecanterDB',DB_VER=2,STORE='drinks';let db=null;
-const openDB=()=>new Promise((res,rej)=>{const rq=indexedDB.open(DB_NAME,DB_VER);rq.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains(STORE)){const s=d.createObjectStore(STORE,{keyPath:'id'});s.createIndex('type','type',{unique:false});s.createIndex('createdAt','createdAt',{unique:false});}};rq.onsuccess=e=>{db=e.target.result;res(db);};rq.onerror=e=>rej(e.target.error);});
+const DB_NAME='DecanterDB',DB_VER=3,STORE='drinks',BSTORE='bottles';let db=null;
+const openDB=()=>new Promise((res,rej)=>{const rq=indexedDB.open(DB_NAME,DB_VER);rq.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains(STORE)){const s=d.createObjectStore(STORE,{keyPath:'id'});s.createIndex('type','type',{unique:false});s.createIndex('createdAt','createdAt',{unique:false});}if(!d.objectStoreNames.contains(BSTORE))d.createObjectStore(BSTORE,{keyPath:'id'});};rq.onsuccess=e=>{db=e.target.result;res(db);};rq.onerror=e=>rej(e.target.error);});
 const dbPut=en=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(en);tx.oncomplete=res;tx.onerror=e=>rej(e.target.error);});
 const dbAll=()=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly');const rq=tx.objectStore(STORE).getAll();rq.onsuccess=()=>res(rq.result||[]);rq.onerror=e=>rej(e.target.error);});
 const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);tx.oncomplete=res;tx.onerror=e=>rej(e.target.error);});
+const dbPutB=en=>new Promise((res,rej)=>{const tx=db.transaction(BSTORE,'readwrite');tx.objectStore(BSTORE).put(en);tx.oncomplete=res;tx.onerror=e=>rej(e.target.error);});
+const dbAllB=()=>new Promise((res,rej)=>{const tx=db.transaction(BSTORE,'readonly');const rq=tx.objectStore(BSTORE).getAll();rq.onsuccess=()=>res(rq.result||[]);rq.onerror=e=>rej(e.target.error);});
+const dbDelB=id=>new Promise((res,rej)=>{const tx=db.transaction(BSTORE,'readwrite');tx.objectStore(BSTORE).delete(id);tx.oncomplete=res;tx.onerror=e=>rej(e.target.error);});
 
 /* ---- state ---- */
-let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.26';
+let drinksCache=[],bottlesCache=[],cellarGroup='country',curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
+const APP_VER='5.27';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -515,24 +560,100 @@ const KB={wine:[{n:'Cabernet Sauvignon',t:['cabernet','bordeaux'],o:'Bordeaux / 
 const PROCESSING=[{n:'Washed / Wet',d:'Cherry removed, fermented & washed. Clean, bright, acidic.'},{n:'Natural / Dry',d:'Dried in cherry. Fruity, heavy body.'},{n:'Honey / Pulped Natural',d:'Some mucilage left. Sweet, balanced.'}];
 
 /* ---- router ---- */
-function go(view){curView=view;$$('.view').forEach(v=>v.classList.remove('active'));$('#view-'+view).classList.add('active');$$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.view===view));$('#fabAdd').classList.toggle('hidden',view==='add'||view==='blind');window.scrollTo({top:0,behavior:'instant'});if(view==='home')renderHome();if(view==='journal')renderLibrary();if(view==='blind')renderBlind();}
+function go(view){curView=view;$$('.view').forEach(v=>v.classList.remove('active'));$('#view-'+view).classList.add('active');$$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.view===view));$('#fabAdd').classList.toggle('hidden',view==='add'||view==='blind'||view==='cadd');window.scrollTo({top:0,behavior:'instant'});if(view==='home')renderHome();if(view==='journal')renderLibrary();if(view==='blind')renderBlind();}
 
 /* ---- home ---- */
-async function refreshCache(){try{drinksCache=await dbAll();drinksCache.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));}catch(e){drinksCache=[];}}
+async function refreshCache(){try{drinksCache=await dbAll();drinksCache.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));bottlesCache=await dbAllB();bottlesCache.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));}catch(e){drinksCache=[];bottlesCache=[];}}
 function renderHome(){
   const wrap=$('#homeContent');const hr=new Date().getHours();
-  const wines=drinksCache.filter(d=>d.type==='wine');
   $('#greetHi').textContent=hr<5?'Good night':hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
-  $('#greetYou').innerHTML=wines.length?`Your cellar: <b>${wines.length}</b> ${wines.length===1?'wine':'wines'}`:'Start your cellar';
-  if(!wines.length){wrap.innerHTML=`<div class="card" style="margin-top:18px;padding:18px"><div class="hero empty"><div class="in"><span class="big">🍷</span><div style="font-family:var(--serif);font-size:1.2rem;color:var(--text);margin-bottom:4px">No wines yet</div><div style="font-size:.84rem">Tap the gold <b style="color:var(--gold-2)">+</b> to add your first bottle. Sake, whisky & coffee live in the Journal.</div></div></div></div>`;return;}
-  const featured=wines.find(d=>d.rating>=4)||wines[0];
+  $('#greetYou').innerHTML=bottlesCache.length?`Your cellar: <b>${bottlesCache.length}</b> ${bottlesCache.length===1?'bottle':'bottles'} waiting to be poured`:'Bought, not yet poured';
   wrap.innerHTML=`
-    <div class="hero" id="heroFeat" style="margin-top:16px">${featured.imageBase64?`<div class="bg" style="background-image:url('${featured.imageBase64}')"></div>`:''}<div class="scrim"></div><div class="body"><div class="kicker">${featured.rating>=4?'★ Top rated':'Most recent'}</div><div class="name">${esc(featured.name)}</div><div class="meta"><span class="tchip ${featured.type}">${TYPE[featured.type].emoji} ${TYPE[featured.type].label}</span>${featured.rating?stars(featured.rating,'sm'):''}${featured.origin?`<span>· ${esc(featured.origin)}</span>`:''}</div></div></div>
-    <div class="section"><div class="section-head"><div class="section-title">All wines</div></div><div class="grid">${wines.map(dcardHtml).join('')}</div></div>`;
-  $('#heroFeat')&&$('#heroFeat').addEventListener('click',()=>openDetail(featured.id));
-  wrap.querySelectorAll('.dcard').forEach(c=>c.addEventListener('click',()=>openDetail(c.dataset.id)));
+    <div class="btn-row" style="margin-top:16px"><button class="btn btn-primary" id="btnAddBottle" style="flex:1">➕ Add a bottle to cellar</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 10px"><span class="note" style="margin:0">Group by</span><select class="sortsel" id="cellarGroup"><option value="country">🌍 Country</option><option value="region">🗺️ Region</option><option value="grape">🍇 Grape</option><option value="vineyard">🏰 Vineyard</option><option value="vintage">📅 Vintage</option></select></div>
+    <div id="cellarList"></div>`;
+  $('#btnAddBottle').addEventListener('click',()=>{caddReset();go('cadd');});
+  $('#cellarGroup').value=cellarGroup;
+  $('#cellarGroup').addEventListener('change',e=>{cellarGroup=e.target.value;renderCellarList();});
+  renderCellarList();
 }
-const dcardHtml=d=>`<div class="dcard" data-id="${d.id}"><div class="stripe ${d.type}"></div><div class="info"><div class="nm">${esc(d.name)}</div><div class="sub">${esc([d.variety,d.origin].filter(Boolean).join(' · ')||TYPE[d.type].label)}</div>${d.rating?`<div class="rt">${stars(d.rating,'sm')}</div>`:''}</div></div>`;
+function winBadge(w){
+  const t=(w||'').toLowerCase();const y=new Date().getFullYear();
+  const years=(w||'').match(/(19|20)\d{2}/g)||[];
+  if(!t)return`<span class="winb later">—</span>`;
+  if(/now|drink now|ready/i.test(t))return`<span class="winb now">适饮 Now</span>`;
+  if(years.length&&+years[0]>y)return`<span class="winb later">${years[0]}+</span>`;
+  if(years.length&&+years[years.length-1]<y)return`<span class="winb past">Past</span>`;
+  if(years.length)return`<span class="winb now">适饮 Now</span>`;
+  return`<span class="winb now">${esc(w)}</span>`;
+}
+const bottleCard=b=>`<div class="bcard ${b.type||'wine'}" data-id="${b.id}"><div class="cork"></div>
+  ${b.imageBase64?`<img src="${b.imageBase64}" alt="label" style="width:100%;height:74px;object-fit:cover;border-radius:8px;margin-top:10px">`:`<div class="bic">${(TYPE[b.type]||{}).emoji||'🍾'}</div>`}
+  <div class="bn">${esc(b.name)}</div>
+  <div class="bs">${esc([b.vineyard,b.vintage].filter(Boolean).join(' · '))}</div>
+  <div class="bs">${esc([(b.variety||'').split(/[,/]/)[0].trim(),b.origin?originCountry(b.origin):''].filter(Boolean).join(' · '))}</div>
+  <div class="brow">${winBadge(b.window)}${b.decant?`<span class="bdec">⏳ ${esc(b.decant)}</span>`:''}</div>
+  <div class="bact"><button class="link-btn" data-a="edit">✏️</button><button class="link-btn" data-a="del" style="color:var(--red)">🗑</button></div>
+</div>`;
+function renderCellarList(){
+  const el=$('#cellarList');if(!el)return;
+  const list=[...bottlesCache].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  if(!list.length){el.innerHTML=`<div class="card" style="margin-top:4px;padding:18px"><div class="hero empty"><div class="in"><span class="big">🍾</span><div style="font-family:var(--serif);font-size:1.2rem;color:var(--text);margin-bottom:4px">The cellar is empty</div><div style="font-size:.84rem">Add the bottles you've bought but haven't poured yet.</div></div></div></div>`;return;}
+  const key=b=>{
+    if(cellarGroup==='country')return originCountry(b.origin)||'Unknown';
+    if(cellarGroup==='region')return originRegion(b.origin)||'Unknown';
+    if(cellarGroup==='grape')return(b.variety||'').split(/[,/]/)[0].trim()||'Unknown';
+    if(cellarGroup==='vineyard')return b.vineyard||'Unknown';
+    return b.vintage||'Unknown';
+  };
+  const groups=new Map();
+  list.forEach(b=>{const k=key(b);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(b);});
+  const keys=[...groups.keys()].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+  el.innerHTML=keys.map(k=>`<div class="section" style="margin-top:14px"><div class="section-head"><div class="section-title">${esc(k)} <span class="em">${groups.get(k).length}</span></div></div><div class="cabinet">${groups.get(k).map(bottleCard).join('')}</div></div>`).join('');
+  el.querySelectorAll('.bcard').forEach(c=>c.addEventListener('click',e=>{
+    const a=e.target.closest('[data-a]');
+    if(a&&a.dataset.a==='edit'){editBottle(c.dataset.id);return;}
+    if(a&&a.dataset.a==='del'){delBottle(c.dataset.id);return;}
+    openBottleDetail(c.dataset.id);
+  }));
+}
+function openBottleDetail(id){
+  const b=bottlesCache.find(x=>x.id===id);if(!b)return;
+  $('#sheetBody').innerHTML=`<button class="sheet-close close-x" id="dClose">✕</button><div class="detail-name">${esc(b.name)}</div><div class="detail-meta"><span class="tchip ${b.type||'wine'}">${(TYPE[b.type]||{}).emoji||'🍾'} ${(TYPE[b.type]||{}).label||''}</span>${b.vintage?`<span>· ${esc(b.vintage)}</span>`:''}${b.window?`<span>· ${winBadge(b.window)}</span>`:''}</div><div class="detail-meta" style="margin-top:4px">${[b.variety,b.origin,b.vineyard].filter(Boolean).map(esc).join(' · ')}${b.abv?' · '+esc(b.abv)+'% ABV':''}</div>${b.imageBase64?`<img src="${b.imageBase64}" alt="label photo" style="width:100%;max-height:280px;object-fit:contain;border-radius:12px;margin:12px 0 2px;background:var(--line)">`:''}${b.decant?`<div class="detail-sec"><div class="h">Decant / serve</div><p>${esc(b.decant)}</p></div>`:''}${b.summary?`<div class="detail-sec"><div class="h">Summary</div><p>${esc(b.summary)}</p></div>`:''}<div style="color:var(--text-4);font-size:.74rem;margin-top:18px">🍾 In cellar · added ${fmtDate(b.createdAt)}</div><div class="detail-actions"><button class="btn btn-primary" id="dEditB">✏️ Edit</button><button class="btn" id="dDelB" style="margin-left:auto;color:var(--red)">🗑 Remove</button></div>`;
+  openSheet();$('#dClose').onclick=closeSheet;$('#dEditB').onclick=()=>{closeSheet();editBottle(id);};$('#dDelB').onclick=async()=>{if(confirm('Remove this bottle from the cellar?')){closeSheet();await delBottle(id);}};
+}
+async function delBottle(id){await dbDelB(id);recordDelete(id);await refreshCache();renderHome();toast('🗑 Removed from cellar.');syncNow({silent:true});}
+function editBottle(id){const b=bottlesCache.find(x=>x.id===id);if(!b)return;caddReset();$('#cfEditId').value=id;$('#cfTypeC').value=b.type||'wine';$('#cfName').value=b.name||'';$('#cfVariety').value=b.variety||'';$('#cfOrigin').value=b.origin||'';$('#cfVineyard').value=b.vineyard||'';$('#cfVintage').value=b.vintage||'';$('#cfAbv').value=b.abv||'';$('#cfWindow').value=b.window||'';$('#cfDecant').value=b.decant||'';$('#cfSummary').value=b.summary||'';bPhoto=b.imageBase64||'';if(bPhoto){$('#clPhotoPrev').style.display='';$('#clPhotoPrevImg').src=bPhoto;}autoGrow($('#cfSummary'));go('cadd');}
+function caddReset(){bPhoto='';['cfName','cfVariety','cfOrigin','cfVineyard','cfVintage','cfAbv','cfWindow','cfDecant','cfSummary'].forEach(id=>{const el=$('#'+id);if(el)el.value='';});$('#cfEditId').value='';$('#cfTypeC').value='wine';$('#clPhotoPrev').style.display='none';$('#caddSpin').innerHTML='';$('#ckwInput').value='';}
+let bPhoto='';
+async function handleCLPhoto(file){
+  if(!file)return;
+  const b64=await new Promise((res,rej)=>{const img=new Image(),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');img.onload=()=>{const max=1024,scale=Math.min(1,max/img.width,max/img.height);canvas.width=img.width*scale;canvas.height=img.height*scale;ctx.drawImage(img,0,0,canvas.width,canvas.height);res(canvas.toDataURL('image/jpeg',0.85));};img.onerror=rej;img.src=URL.createObjectURL(file);});
+  bPhoto=b64;$('#clPhotoPrev').style.display='';$('#clPhotoPrevImg').src=b64;
+}
+async function cdoSearch(){
+  const kw=$('#ckwInput').value.trim();if(!kw){toast('⚠️ Type a bottle name first.');$('#ckwInput').focus();return;}
+  const s=getSettings();if(!s.apiKey){toast('⚠️ Add your DeepSeek key in Settings first.');openSettings();return;}
+  $('#caddSpin').innerHTML=`<div class="spin-block"><div class="spinner"></div><div>DeepSeek is looking up "<b>${esc(kw)}</b>"…</div></div>`;
+  const prompt=`You are a world-class sommelier. The user bought this bottle but has NOT opened it yet: ${kw}\n\nReply with ONLY one JSON object (no markdown, no code fence):\n{"type":"wine","name":"full bottle name","variety":"grape or blend","origin":"country, region","vineyard":"winery or château","vintage":"year or NV","abv":"number like 14.0","summary":"3-4 sentences: style, producer standing, what to expect","window":"drinking window — write 'now' if in its window today, otherwise the best window like '2028-2040'","decant":"decanting advice, e.g. decant 1 hour"}\nSet type to wine, sake, whisky, or coffee.`;
+  const txt=await askAI(prompt);$('#caddSpin').innerHTML='';
+  const r=parseJsonLoose(txt);
+  if(!r){toast('❌ AI could not read the answer — try again or fill in by hand.');return;}
+  if(r.type)$('#cfTypeC').value=r.type;if(r.name)$('#cfName').value=r.name;if(r.variety)$('#cfVariety').value=r.variety;if(r.origin)$('#cfOrigin').value=r.origin;if(r.vineyard)$('#cfVineyard').value=r.vineyard;if(r.vintage)$('#cfVintage').value=r.vintage;if(r.abv)$('#cfAbv').value=r.abv;if(r.window)$('#cfWindow').value=r.window;if(r.decant)$('#cfDecant').value=r.decant;if(r.summary)$('#cfSummary').value=r.summary;autoGrow($('#cfSummary'));
+  toast('✨ Filled — adjust anything, then Save.');
+}
+async function saveBottle(){
+  const eid=$('#cfEditId').value;const name=$('#cfName').value.trim();
+  if(!name){toast('⚠️ Name is required.');return;}
+  const prev=eid?(bottlesCache.find(x=>x.id===eid)||{}):{};
+  const b={id:eid||Date.now().toString(36)+Math.random().toString(36).slice(2,8),
+    createdAt:prev.createdAt||new Date().toISOString(),modifiedAt:new Date().toISOString(),
+    type:$('#cfTypeC').value,name:name,variety:$('#cfVariety').value.trim(),origin:$('#cfOrigin').value.trim(),
+    vineyard:$('#cfVineyard').value.trim(),vintage:$('#cfVintage').value.trim(),abv:$('#cfAbv').value.trim(),
+    window:$('#cfWindow').value.trim(),decant:$('#cfDecant').value.trim(),summary:$('#cfSummary').value.trim(),
+    imageBase64:bPhoto};
+  await dbPutB(b);await refreshCache();caddReset();go('home');toast('🍾 Saved to cellar!');syncNow({silent:true});
+}
 
 /* ---- library ---- */
 function renderLibrary(){
@@ -938,9 +1059,9 @@ const b64decode=b=>{try{return decodeURIComponent(escape(atob((b||'').replace(/\
 const DELKEY='decanter_deleted';
 const getDeleted=()=>{try{return JSON.parse(localStorage.getItem(DELKEY)||'[]');}catch(e){return[];}};
 const recordDelete=id=>{const d=getDeleted();if(!d.includes(id)){d.push(id);localStorage.setItem(DELKEY,JSON.stringify(d));}};
-async function getLocalCellar(){return {drinks:await dbAll(),deletedIds:getDeleted()};}
-function mergeCellars(local,remote){const del=new Set([...(local.deletedIds||[]),...(remote.deletedIds||[])]);const dt=x=>{const t=new Date(x.modifiedAt||x.createdAt||0).getTime();return isNaN(t)?0:t;};const byId={};for(const d of local.drinks){if(del.has(d.id))continue;byId[d.id]=d;}for(const d of (remote.drinks||[])){if(del.has(d.id))continue;const c=byId[d.id];if(!c||dt(d)>=dt(c))byId[d.id]=d;}return{v:1,updatedAt:new Date().toISOString(),drinks:Object.values(byId),deletedIds:[...del]};}
-async function applyCellar(merged){for(const d of merged.drinks)await dbPut(d);for(const id of merged.deletedIds){try{await dbDel(id);}catch(e){}}localStorage.setItem(DELKEY,JSON.stringify(merged.deletedIds));}
+async function getLocalCellar(){return {drinks:await dbAll(),bottles:await dbAllB(),deletedIds:getDeleted()};}
+function mergeCellars(local,remote){const del=new Set([...(local.deletedIds||[]),...(remote.deletedIds||[])]);const dt=x=>{const t=new Date(x.modifiedAt||x.createdAt||0).getTime();return isNaN(t)?0:t;};const byId={};for(const d of local.drinks){if(del.has(d.id))continue;byId[d.id]=d;}for(const d of (remote.drinks||[])){if(del.has(d.id))continue;const c=byId[d.id];if(!c||dt(d)>=dt(c))byId[d.id]=d;}const bId={};for(const b of (local.bottles||[])){if(del.has(b.id))continue;bId[b.id]=b;}for(const b of (remote.bottles||[])){if(del.has(b.id))continue;const c=bId[b.id];if(!c||dt(b)>=dt(c))bId[b.id]=b;}return{v:1,updatedAt:new Date().toISOString(),drinks:Object.values(byId),bottles:Object.values(bId),deletedIds:[...del]};}
+async function applyCellar(merged){for(const d of merged.drinks)await dbPut(d);for(const b of (merged.bottles||[]))await dbPutB(b);for(const id of merged.deletedIds){try{await dbDel(id);}catch(e){}try{await dbDelB(id);}catch(e){}}localStorage.setItem(DELKEY,JSON.stringify(merged.deletedIds));}
 function setSyncStatus(msg){const el=$('#syncStatus');if(el)el.textContent=msg;}
 function refreshActive(){if(curView==='home')renderHome();else if(curView==='journal')renderLibrary();}
 async function syncNow(opts){
@@ -958,7 +1079,7 @@ async function syncNow(opts){
       const rRaw=await fetch(api,{headers:{Authorization:'Bearer '+s.syncToken,Accept:'application/vnd.github.raw'}});
       if(!rRaw.ok)throw new Error('raw HTTP '+rRaw.status);
       try{remote=JSON.parse(await rRaw.text())||{};}catch(err){throw new Error('cellar.json unreadable — '+err.message);}
-      if(!remote.drinks)remote={drinks:[],deletedIds:[]};}
+      if(!remote.drinks)remote={drinks:[],deletedIds:[]};if(!Array.isArray(remote.bottles))remote.bottles=[];}
     const local=await getLocalCellar();const merged=mergeCellars(local,remote);await applyCellar(merged);
     const body={message:'sync '+merged.updatedAt,content:b64encode(JSON.stringify(merged))};if(sha)body.sha=sha;
     const pr=await fetch(api,{method:'PUT',headers:Object.assign({},hdr,{'Content-Type':'application/json'}),body:JSON.stringify(body)});
@@ -990,7 +1111,7 @@ function showMiniMap(elId,text){const el=document.getElementById(elId);if(!el)re
 
 function bind(){
   $$('.tab').forEach(t=>t.addEventListener('click',()=>go(t.dataset.view)));
-  $('#fabAdd').addEventListener('click',()=>{go('add');clearForm();$('#editBlock').style.display='none';$('#addSpin').innerHTML='';$('#kwInput').value='';$('#addHint').textContent='Type a bottle name and tap Go — DeepSeek fills in the details and writes a tasting summary. Or snap a photo of the label.';setTimeout(()=>$('#kwInput').focus(),200);});
+  $('#fabAdd').addEventListener('click',()=>{if(curView==='home'){go('cadd');caddReset();}else{go('add');clearForm();$('#editBlock').style.display='none';$('#addSpin').innerHTML='';$('#kwInput').value='';$('#addHint').textContent='Type a bottle name and tap Go — DeepSeek fills in the details and writes a tasting summary. Or snap a photo of the label.';setTimeout(()=>$('#kwInput').focus(),200);}});
   $('#topSettings').addEventListener('click',openSettings);
   $('#topSync').addEventListener('click',()=>syncNow({}));
   $('#btnSyncNow').addEventListener('click',()=>syncNow({}));
@@ -1021,6 +1142,13 @@ function bind(){
   $('#refBack').addEventListener('click',backRef);
   $('#qzStart').addEventListener('click',startQuiz);
   try{const qc=localStorage.getItem('decanter_qz_cat');if(qc&&$('#qzCat'))$('#qzCat').value=qc;}catch(e){}
+  $('#ckwSearch').addEventListener('click',cdoSearch);
+  $('#ckwInput').addEventListener('keydown',e=>{if(e.key==='Enter')cdoSearch();});
+  $('#btnCLPhoto').addEventListener('click',()=>$('#clPhotoInput').click());
+  $('#clPhotoInput').addEventListener('change',e=>{const f=e.target.files[0];if(f)handleCLPhoto(f);e.target.value='';});
+  $('#btnCLPhotoClear').addEventListener('click',()=>{bPhoto='';$('#clPhotoPrev').style.display='none';});
+  $('#cbtnSave').addEventListener('click',saveBottle);
+  $('#cbtnCancel').addEventListener('click',()=>{caddReset();go('home');});
   $('#setClose').addEventListener('click',()=>$('#settingsModal').classList.remove('open'));
   $('#settingsModal').addEventListener('click',e=>{if(e.target===$('#settingsModal'))$('#settingsModal').classList.remove('open');});
   $('#setTts').addEventListener('input',e=>$('#ttsLbl').textContent=parseFloat(e.target.value).toFixed(1)+'×');
