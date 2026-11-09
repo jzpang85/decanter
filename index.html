@@ -23,6 +23,7 @@
   --border:rgba(212,168,90,.12);--border-s:rgba(212,168,90,.25);
   --text:#f1e8da;--text-2:#b8a991;--text-3:#847665;--text-4:#574c40;
   --gold:#d4a85a;--gold-2:#e6c074;--gold-soft:rgba(212,168,90,.12);
+  --bar:#3a76e0;--bar-2:#5da0f0;
   --wine:#d27a96;--sake:#86c8ae;--whisky:#e0a06a;--coffee:#cf8a6c;--green:#7fc6a0;--red:#d97a7e;
   --r:18px;--rs:12px;
   --sh1:0 1px 2px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.25);--sh2:0 8px 30px rgba(0,0,0,.45);--shg:0 8px 24px rgba(212,168,90,.25);
@@ -163,7 +164,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .detail-name{font-family:var(--serif);font-size:1.6rem;line-height:1.15;margin-top:6px}
 .detail-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 4px;color:var(--text-2);font-size:.86rem}
 .detail-sec{margin-top:16px}.detail-sec .h{font-size:.68rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);margin-bottom:6px;font-weight:600}.detail-sec p{line-height:1.65;color:var(--text);white-space:pre-wrap}
-.bars{margin-top:4px}.bar{display:flex;align-items:center;gap:10px;margin-bottom:7px}.bar .bl{width:74px;font-size:.78rem;color:var(--text-2)}.bar .bt{flex:1;height:8px;background:var(--surface-3);border-radius:5px;overflow:hidden}.bar .bf{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--gold-2))}.bar .bv{width:18px;font-size:.74rem;color:var(--text-3);text-align:right}
+.bars{margin-top:4px}.bar{display:flex;align-items:center;gap:10px;margin-bottom:7px}.bar .bl{width:74px;font-size:.78rem;color:var(--text-2)}.bar .bt{flex:1;height:8px;background:var(--surface-3);border-radius:5px;overflow:hidden}.bar .bf{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--bar),var(--bar-2))}.bar .bv{width:18px;font-size:.74rem;color:var(--text-3);text-align:right}
 .chart-bars .bl{width:112px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chart-bars .bar.origin .bl{width:58%;white-space:normal;overflow:visible;text-overflow:clip;word-break:break-word;line-height:1.3;font-size:.74rem}
 .tags{display:flex;flex-wrap:wrap;gap:6px}.tag{background:var(--gold-soft);color:var(--gold-2);padding:4px 11px;border-radius:999px;font-size:.78rem}
@@ -388,7 +389,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.9';
+const APP_VER='5.10';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
