@@ -304,7 +304,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
       <div class="label">Food pairing</div><input id="fPairing" placeholder="grilled lamb, aged cheese…">
       <div class="label">Summary / intro</div><textarea id="fSummary" placeholder="DeepSeek writes this — or edit freely…"></textarea><div class="btn-row" style="margin-top:6px"><button type="button" class="btn btn-ghost btn-sm" id="btnReadSummary">🔊 Read summary aloud</button></div>
       <div class="sliders" id="profSliders"></div>
-      <div class="label" style="margin-top:14px">Conclusion</div><input id="fConclusion" placeholder="outstanding, drink now–2030…">
+      <div class="label" style="margin-top:14px">Conclusion</div><textarea id="fConclusion" placeholder="Outstanding — drink now–2030…"></textarea>
       <input type="hidden" id="fRating" value="0"><input type="hidden" id="fEditId" value="">
       <div class="savebar"><button class="btn btn-ghost" id="btnCancel" style="display:none">Cancel</button><button class="btn btn-primary" id="btnSave" style="flex:1">💾 Save to cellar</button></div>
     </div>
@@ -387,7 +387,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.14';
+const APP_VER='5.15';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -441,13 +441,13 @@ async function callAI({keyword,fillAll,imageBase64}){
 
   let messages;
   if(imageBase64){
-    const prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. Look at this bottle photo and identify it. Reply with ONLY one JSON object (no markdown, no code fence), in this exact shape:\n{"type":"wine","name":"full bottle name","variety":"full variety/style names spelled out","origin":"full country and region","vintage":"the year or NV","abv":"a number like 14.0","color":"full appearance in words","aroma":"full nose in words","flavor":"8 to 12 tasting notes in FULL words, comma separated","pairing":"4 to 6 foods, comma separated","decant":"decanting advice or none","conclusion":"one sentence","body":3,"acidity":3,"sweet":1,"tannin":3,"alcohol":3,"finish":3,"summary":"3 to 6 full sentences (about 120 words) in plain prose"}\nSet type to wine, sake, whisky, or coffee. Write EVERY word in full. Each number is 0-5. Summary must be plain text.';
+    const prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. Look at this bottle photo and identify it. Reply with ONLY one JSON object (no markdown, no code fence), in this exact shape:\n{"type":"wine","name":"full bottle name","variety":"full variety/style names spelled out","origin":"full country and region","vintage":"the year or NV","abv":"a number like 14.0","color":"full appearance in words","aroma":"full nose in words","flavor":"8 to 12 tasting notes in FULL words, comma separated","pairing":"4 to 6 foods, comma separated","decant":"decanting advice or none","conclusion":"2 to 4 sentences: quality, style typicity, and drinking window","body":3,"acidity":3,"sweet":1,"tannin":3,"alcohol":3,"finish":3,"summary":"a comprehensive plain-prose tasting summary of 5 to 8 sentences (~200 words): appearance, nose, palate and structure, finish, then food pairing and serving suggestions"}\nSet type to wine, sake, whisky, or coffee. Write EVERY word in full. Each number is 0-5. Summary must be plain text.';
     messages=[{role:'user',content:[{type:'image_url',image_url:{url:imageBase64}},{type:'text',text:prompt}]}];
   }else if(fillAll){
-    const prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. I\'m drinking: '+name+'\n\nReply with ONLY one JSON object (no markdown, no code fence), in this exact shape:\n{"type":"wine","variety":"full variety/style names spelled out","origin":"full country and region","vintage":"the year or NV","abv":"a number like 14.0","color":"full appearance in words","aroma":"full nose in words","flavor":"8 to 12 tasting notes in FULL words, comma separated","pairing":"4 to 6 foods, comma separated","decant":"decanting advice or none","conclusion":"one sentence","body":3,"acidity":3,"sweet":1,"tannin":3,"alcohol":3,"finish":3,"summary":"3 to 6 full sentences (about 120 words) in plain prose"}\nSet type to wine, sake, whisky, or coffee. Write EVERY word in full. Each of body/acidity/sweet/tannin/alcohol/finish is 0-5. The summary must be plain text. Use your knowledge of this style/region if you don\'t know the exact bottling.';
+    const prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. I\'m drinking: '+name+'\n\nReply with ONLY one JSON object (no markdown, no code fence), in this exact shape:\n{"type":"wine","variety":"full variety/style names spelled out","origin":"full country and region","vintage":"the year or NV","abv":"a number like 14.0","color":"full appearance in words","aroma":"full nose in words","flavor":"8 to 12 tasting notes in FULL words, comma separated","pairing":"4 to 6 foods, comma separated","decant":"decanting advice or none","conclusion":"2 to 4 sentences: quality, style typicity, and drinking window","body":3,"acidity":3,"sweet":1,"tannin":3,"alcohol":3,"finish":3,"summary":"a comprehensive plain-prose tasting summary of 5 to 8 sentences (~200 words): appearance, nose, palate and structure, finish, then food pairing and serving suggestions"}\nSet type to wine, sake, whisky, or coffee. Write EVERY word in full. Each of body/acidity/sweet/tannin/alcohol/finish is 0-5. The summary must be plain text. Use your knowledge of this style/region if you don\'t know the exact bottling.';
     messages=[{role:'user',content:prompt}];
   }else{
-    const prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. I\'m drinking: '+name+'\n\nReply with ONLY one JSON object (no markdown, no code fence):\n{"flavor":"8 to 12 tasting notes in FULL words, comma separated","pairing":"4 to 6 foods, comma separated","decant":"decanting advice or none","summary":"3 to 6 full sentences (about 120 words) in plain prose"}\nWrite every word in full.';
+    const prompt='You are a world-class sommelier, sake expert, whisky connoisseur and coffee cupper. I\'m drinking: '+name+'\n\nReply with ONLY one JSON object (no markdown, no code fence):\n{"flavor":"8 to 12 tasting notes in FULL words, comma separated","pairing":"4 to 6 foods, comma separated","decant":"decanting advice or none","summary":"a comprehensive plain-prose tasting summary of 5 to 8 sentences (~200 words): appearance, nose, palate and structure, finish, then food pairing and serving suggestions"}\nWrite every word in full.';
     messages=[{role:'user',content:prompt}];
   }
 
@@ -600,7 +600,7 @@ function autoGrow(el){if(el){el.style.height='auto';el.style.height=Math.max(el.
 function clearForm(){
   $('#fName').value='';$('#fVariety').value='';$('#fOrigin').value='';$('#fAbv').value='';$('#fVintage').value='';$('#fFlavor').value='';$('#fPairing').value='';$('#fSummary').value='';$('#fColor').value='';$('#fAroma').value='';$('#fConclusion').value='';$('#fDecant').value='';
   PROF.forEach(([k])=>{const inp=$('#pf-'+k);if(inp){inp.value=0;$('#pv-'+k).textContent='—';}});
-  formRating=0;formPhoto='';renderRate();renderPhoto();$('#fEditId').value='';$('#btnCancel').style.display='none';setFormType('wine');autoGrow($('#fSummary'));
+  formRating=0;formPhoto='';renderRate();renderPhoto();$('#fEditId').value='';$('#btnCancel').style.display='none';setFormType('wine');autoGrow($('#fSummary'));autoGrow($('#fConclusion'));
   const ab=$('#aiBlock');if(ab)ab.style.display='';$('#btnSave').textContent='💾 Save to cellar';
 }
 const isEditing=()=>!!$('#fEditId').value;
@@ -610,10 +610,10 @@ function loadIntoForm(d){
   $('#fName').value=d.name||'';$('#fVariety').value=d.variety||'';$('#fOrigin').value=d.origin||'';$('#fAbv').value=d.abv||'';$('#fVintage').value=d.vintage||'';$('#fFlavor').value=d.flavor||'';$('#fPairing').value=d.pairing||'';$('#fSummary').value=d.summary||'';
   $('#fColor').value=(d.sat&&d.sat.color)||'';$('#fAroma').value=(d.sat&&d.sat.aroma)||'';$('#fConclusion').value=(d.sat&&d.sat.conclusion)||'';$('#fDecant').value=(d.sat&&d.sat.decant)||'';
   PROF.forEach(([k])=>{const v=(d.sat&&d.sat[k])||0;const inp=$('#pf-'+k);if(inp){inp.value=v;$('#pv-'+k).textContent=v>0?v+'/5':'—';}});
-  formRating=d.rating||0;formPhoto=d.imageBase64||'';renderRate();renderPhoto();$('#kwInput').value=d.name||'';$('#addHint').textContent='Editing — notes stay unchanged. Add a label photo, adjust the rating, then Save.';autoGrow($('#fSummary'));
+  formRating=d.rating||0;formPhoto=d.imageBase64||'';renderRate();renderPhoto();$('#kwInput').value=d.name||'';$('#addHint').textContent='Editing — notes stay unchanged. Add a label photo, adjust the rating, then Save.';autoGrow($('#fSummary'));autoGrow($('#fConclusion'));
   toast('✏️ Editing — notes stay unchanged.');
 }
-function fillFromResult(r){if(r.type&&TYPE[r.type])setFormType(r.type);if(r.name)$('#fName').value=r.name;if(r.variety)$('#fVariety').value=r.variety;if(r.origin)$('#fOrigin').value=r.origin;if(r.abv)$('#fAbv').value=r.abv;if(r.vintage)$('#fVintage').value=r.vintage;if(r.flavor)$('#fFlavor').value=r.flavor;if(r.pairing)$('#fPairing').value=r.pairing;if(r.color)$('#fColor').value=r.color;if(r.aroma)$('#fAroma').value=r.aroma;if(r.conclusion)$('#fConclusion').value=r.conclusion;if(r.decant)$('#fDecant').value=r.decant;if(r.summary)$('#fSummary').value=r.summary;if(r.profile&&typeof r.profile==='object')Object.keys(r.profile).forEach(k=>{const v=parseInt(r.profile[k],10);if(v>=1&&v<=5){const inp=$('#pf-'+k),lab=$('#pv-'+k);if(inp){inp.value=v;if(lab)lab.textContent=v+'/5';}}});setTimeout(()=>{autoGrow($('#fSummary'));showMiniMap('miniMap',($('#fName').value+' '+$('#fOrigin').value));},0);}
+function fillFromResult(r){if(r.type&&TYPE[r.type])setFormType(r.type);if(r.name)$('#fName').value=r.name;if(r.variety)$('#fVariety').value=r.variety;if(r.origin)$('#fOrigin').value=r.origin;if(r.abv)$('#fAbv').value=r.abv;if(r.vintage)$('#fVintage').value=r.vintage;if(r.flavor)$('#fFlavor').value=r.flavor;if(r.pairing)$('#fPairing').value=r.pairing;if(r.color)$('#fColor').value=r.color;if(r.aroma)$('#fAroma').value=r.aroma;if(r.conclusion)$('#fConclusion').value=r.conclusion;if(r.decant)$('#fDecant').value=r.decant;if(r.summary)$('#fSummary').value=r.summary;if(r.profile&&typeof r.profile==='object')Object.keys(r.profile).forEach(k=>{const v=parseInt(r.profile[k],10);if(v>=1&&v<=5){const inp=$('#pf-'+k),lab=$('#pv-'+k);if(inp){inp.value=v;if(lab)lab.textContent=v+'/5';}}});setTimeout(()=>{autoGrow($('#fSummary'));autoGrow($('#fConclusion'));showMiniMap('miniMap',($('#fName').value+' '+$('#fOrigin').value));},0);}
 async function doSearch(){
   if(isEditing()){toast('✏️ Editing — notes stay unchanged. Add a label photo, adjust the rating, then Save.');return;}
   const kw=$('#kwInput').value.trim();if(!kw){toast('⚠️ Type a bottle name first.');$('#kwInput').focus();return;}
@@ -822,6 +822,7 @@ function bind(){
   $$('#ratePick .s').forEach(s=>s.addEventListener('click',()=>{const v=+s.dataset.v;formRating=formRating===v?v-0.5:v;renderRate();}));
   $('#btnSave').addEventListener('click',saveEntry);
   $('#fSummary').addEventListener('input',()=>autoGrow($('#fSummary')));
+  $('#fConclusion').addEventListener('input',()=>autoGrow($('#fConclusion')));
   let _mt;const updMap=()=>{clearTimeout(_mt);_mt=setTimeout(()=>showMiniMap('miniMap',($('#fName').value+' '+$('#fOrigin').value)),400);};
   $('#fOrigin').addEventListener('input',updMap);
   $('#fName').addEventListener('input',updMap);
