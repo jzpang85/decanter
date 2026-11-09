@@ -387,7 +387,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.17';
+const APP_VER='5.18';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -639,7 +639,7 @@ async function saveEntry(){
 /* ---- study ---- */
 let studyPane='ref';
 function renderStudyTabs(){$$('.study-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.pane===studyPane));$$('.pane').forEach(p=>p.classList.remove('active'));$('#pane-'+studyPane).classList.add('active');if(studyPane==='ref')renderRef();if(studyPane==='fc')renderFcDecks();}
-function renderRef(){const grid=$('#catGrid');if(grid.dataset.built)return;grid.dataset.built='1';const cats=[{k:'wine',e:'🍷',t:'Wine & Grapes',d:'SAT method & varieties'},{k:'sake',e:'🍶',t:'Sake',d:'Categories'},{k:'whisky',e:'🥃',t:'Whisky Regions',d:'Scotch & world'},{k:'coffee',e:'☕',t:'Coffee Origins',d:'Origins & processing'}];grid.innerHTML=cats.map(c=>`<div class="cat" data-k="${c.k}"><div class="e">${c.e}</div><div class="t">${c.t}</div><div class="d">${c.d}</div></div>`).join('');grid.querySelectorAll('.cat').forEach(el=>el.addEventListener('click',()=>showRef(el.dataset.k)));}
+function renderRef(){const grid=$('#catGrid');if(grid.dataset.built)return;grid.dataset.built='1';const cats=[{k:'wine',e:'🍷',t:'Wine'},{k:'sake',e:'🍶',t:'Sake'},{k:'whisky',e:'🥃',t:'Whisky'},{k:'coffee',e:'☕',t:'Coffee'}];grid.innerHTML=cats.map(c=>`<div class="cat" data-k="${c.k}"><div class="e">${c.e}</div><div class="t">${c.t}</div></div>`).join('');grid.querySelectorAll('.cat').forEach(el=>el.addEventListener('click',()=>showRef(el.dataset.k)));}
 function showRef(k){$('#catGrid').style.display='none';$('#refWrap').style.display='';const list=$('#refList');if(k==='wine'){list.innerHTML='<div class="kb" style="border:none"><div class="kn">Tasting method — Systematic Approach (SAT)</div></div>'+['Appearance — clarity, intensity, color.','Nose — condition, intensity, aromas.','Palate — sweetness, acidity, tannin, alcohol, body, flavor, finish.','Conclusion — quality, readiness, reasoning.'].map(s=>`<div class="kb"><div class="kd">${esc(s)}</div></div>`).join('')+'<div class="kb" style="border:none;margin-top:8px"><div class="kn">Grape varieties</div></div>'+KB.wine.map(kbRow).join('');return;}if(k==='coffee'){list.innerHTML='<div class="kb" style="border:none"><div class="kn">Origins</div></div>'+KB.coffee.map(kbRow).join('')+'<div class="kb" style="border:none;margin-top:8px"><div class="kn">Processing</div></div>'+PROCESSING.map(p=>`<div class="kb"><div class="kn">${esc(p.n)}</div><div class="kd">${esc(p.d)}</div></div>`).join('');return;}const titles={sake:'Sake categories',whisky:'Regions & styles'};list.innerHTML=`<div class="kb" style="border:none"><div class="kn">${titles[k]}</div></div>`+(KB[k]||[]).map(kbRow).join('');}
 const kbRow=k=>`<div class="kb"><div><span class="kn">${esc(k.n)}</span><span class="ko">— ${esc(k.o)}</span></div>${k.t?`<div class="kd" style="margin-top:4px">${esc(k.d)}</div>`:`<div class="kd">${esc(k.d)}</div>`}</div>`;
 function backRef(){$('#refWrap').style.display='none';$('#catGrid').style.display='';}
