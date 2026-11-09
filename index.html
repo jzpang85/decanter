@@ -258,7 +258,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   <!-- JOURNAL -->
   <section class="view active" id="view-journal">
     <div class="greeting"><div class="hi">The journal</div><div class="you">Everything you've poured</div></div>
-    <div class="card" style="padding:14px 16px;margin-top:16px"><div class="chips" id="chartChips" style="margin-bottom:12px"><button class="chip on" data-c="country">🌍 Country</button><button class="chip" data-c="region">🗺️ Region</button><button class="chip" data-c="grape">🍇 Grape / style</button><button class="chip" data-c="vintage">📅 Vintage</button></div><div id="chartBox"></div></div>
+    <div class="card" style="padding:14px 16px;margin-top:16px"><div class="chips" id="chartChips" style="margin-bottom:12px"><button class="chip on" data-c="country">🌍 Country</button><button class="chip" data-c="region">🗺️ Region</button><button class="chip" data-c="grape">🍇 Grape / style</button><button class="chip" data-c="vintage">📅 Vintage</button></div><div id="chartBox"></div><div id="journalStats"></div></div>
     <div class="toolbar"><div class="search-wrap"><span class="si">🔍</span><input id="libSearch" placeholder="Search name, variety, origin, notes…"></div></div>
     <div class="chips" id="libChips"></div>
     <div style="display:flex;justify-content:flex-end;margin:12px 0"><select class="sortsel" id="libSort"><option value="newest">Newest</option><option value="rating">Top rated</option><option value="name">Name A–Z</option><option value="oldest">Oldest</option></select></div>
@@ -510,11 +510,9 @@ function renderHome(){
   $('#greetHi').textContent=hr<5?'Good night':hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
   $('#greetYou').innerHTML=wines.length?`Your cellar: <b>${wines.length}</b> ${wines.length===1?'wine':'wines'}`:'Start your cellar';
   if(!wines.length){wrap.innerHTML=`<div class="card" style="margin-top:18px;padding:18px"><div class="hero empty"><div class="in"><span class="big">🍷</span><div style="font-family:var(--serif);font-size:1.2rem;color:var(--text);margin-bottom:4px">No wines yet</div><div style="font-size:.84rem">Tap the gold <b style="color:var(--gold-2)">+</b> to add your first bottle. Sake, whisky & coffee live in the Journal.</div></div></div></div>`;return;}
-  const featured=wines.find(d=>d.rating>=4)||wines[0];const rated=wines.filter(d=>d.rating);const avgR=avg(rated.map(d=>d.rating));
-  const vC={},oC={};wines.forEach(d=>{(d.variety||'').split(/[,/]/).map(s=>s.trim()).filter(Boolean).forEach(v=>vC[v.toLowerCase()]=(vC[v.toLowerCase()]||0)+1);(d.origin||'').split(/[,;]/).map(s=>s.trim()).filter(Boolean).forEach(o=>oC[o.toLowerCase()]=(oC[o.toLowerCase()]||0)+1);});
+  const featured=wines.find(d=>d.rating>=4)||wines[0];
   wrap.innerHTML=`
     <div class="hero" id="heroFeat" style="margin-top:16px">${featured.imageBase64?`<div class="bg" style="background-image:url('${featured.imageBase64}')"></div>`:''}<div class="scrim"></div><div class="body"><div class="kicker">${featured.rating>=4?'★ Top rated':'Most recent'}</div><div class="name">${esc(featured.name)}</div><div class="meta"><span class="tchip ${featured.type}">${TYPE[featured.type].emoji} ${TYPE[featured.type].label}</span>${featured.rating?stars(featured.rating,'sm'):''}${featured.origin?`<span>· ${esc(featured.origin)}</span>`:''}</div></div></div>
-    <div class="stats"><div class="stat"><div class="n">${wines.length}</div><div class="l">Wines</div></div><div class="stat"><div class="n">${rated.length?avgR.toFixed(1):'—'}</div><div class="l">Avg ★</div></div><div class="stat"><div class="n">${Object.keys(vC).length}</div><div class="l">Varieties</div></div><div class="stat"><div class="n">${Object.keys(oC).length}</div><div class="l">Origins</div></div></div>
     <div class="section"><div class="section-head"><div class="section-title">All wines</div></div><div class="grid">${wines.map(dcardHtml).join('')}</div></div>`;
   $('#heroFeat')&&$('#heroFeat').addEventListener('click',()=>openDetail(featured.id));
   wrap.querySelectorAll('.dcard').forEach(c=>c.addEventListener('click',()=>openDetail(c.dataset.id)));
@@ -533,6 +531,15 @@ function renderLibrary(){
   grid.querySelectorAll('.dcard').forEach(c=>c.addEventListener('click',()=>openDetail(c.dataset.id)));
   const cc=$('#chartChips');if(cc&&!cc.dataset.built){cc.dataset.built='1';cc.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;chartDim=b.dataset.c;$$('#chartChips .chip').forEach(c=>c.classList.toggle('on',c===b));renderJournalChart();});}
   renderJournalChart();
+  renderJournalStats();
+}
+function renderJournalStats(){
+  const el=$('#journalStats');if(!el)return;
+  const wines=drinksCache.filter(d=>d.type==='wine');
+  if(!wines.length){el.innerHTML='';return;}
+  const rated=wines.filter(d=>d.rating);const avgR=avg(rated.map(d=>d.rating));
+  const vC={},oC={};wines.forEach(d=>{(d.variety||'').split(/[,/]/).map(s=>s.trim()).filter(Boolean).forEach(v=>vC[v.toLowerCase()]=(vC[v.toLowerCase()]||0)+1);(d.origin||'').split(/[,;]/).map(s=>s.trim()).filter(Boolean).forEach(o=>oC[o.toLowerCase()]=(oC[o.toLowerCase()]||0)+1);});
+  el.innerHTML=`<div class="stats"><div class="stat"><div class="n">${wines.length}</div><div class="l">Wines</div></div><div class="stat"><div class="n">${rated.length?avgR.toFixed(1):'—'}</div><div class="l">Avg ★</div></div><div class="stat"><div class="n">${Object.keys(vC).length}</div><div class="l">Varieties</div></div><div class="stat"><div class="n">${Object.keys(oC).length}</div><div class="l">Origins</div></div></div>`;
 }
 function renderJournalChart(){
   const box=$('#chartBox');if(!box)return;
