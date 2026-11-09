@@ -165,6 +165,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .detail-sec{margin-top:16px}.detail-sec .h{font-size:.68rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);margin-bottom:6px;font-weight:600}.detail-sec p{line-height:1.65;color:var(--text);white-space:pre-wrap}
 .bars{margin-top:4px}.bar{display:flex;align-items:center;gap:10px;margin-bottom:7px}.bar .bl{width:74px;font-size:.78rem;color:var(--text-2)}.bar .bt{flex:1;height:8px;background:var(--surface-3);border-radius:5px;overflow:hidden}.bar .bf{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--gold-2))}.bar .bv{width:18px;font-size:.74rem;color:var(--text-3);text-align:right}
 .chart-bars .bl{width:112px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chart-bars .bar.origin .bl{width:58%;white-space:normal;overflow:visible;text-overflow:clip;word-break:break-word;line-height:1.3;font-size:.74rem}
 .tags{display:flex;flex-wrap:wrap;gap:6px}.tag{background:var(--gold-soft);color:var(--gold-2);padding:4px 11px;border-radius:999px;font-size:.78rem}
 .detail-actions{display:flex;gap:9px;margin-top:20px;flex-wrap:wrap}
 
@@ -260,7 +261,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   <!-- JOURNAL -->
   <section class="view active" id="view-journal">
     <div class="greeting"><div class="hi">The journal</div><div class="you">Everything you've poured</div></div>
-    <div class="card" style="padding:14px 16px;margin-top:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span class="note" style="margin:0">Category</span><select class="sortsel" id="statType"><option value="wine">🍷 Wine</option><option value="sake">🍶 Sake</option><option value="whisky">🥃 Whisky</option><option value="coffee">☕ Coffee</option></select></div><div class="chips" id="chartChips" style="margin-bottom:12px"><button class="chip on" data-c="country">🌍 Country</button><button class="chip" data-c="region">🗺️ Region</button><button class="chip" data-c="grape">🍇 Grape / style</button><button class="chip" data-c="vintage">📅 Vintage</button></div><div id="chartBox"></div><div id="journalStats"></div></div>
+    <div class="card" style="padding:14px 16px;margin-top:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span class="note" style="margin:0">Category</span><select class="sortsel" id="statType"><option value="wine">🍷 Wine</option><option value="sake">🍶 Sake</option><option value="whisky">🥃 Whisky</option><option value="coffee">☕ Coffee</option></select></div><div class="chips" id="chartChips" style="margin-bottom:12px"><button class="chip on" data-c="country">🌍 Country</button><button class="chip" data-c="region">🗺️ Region</button><button class="chip" data-c="origin">📍 Origin</button><button class="chip" data-c="grape">🍇 Grape / style</button><button class="chip" data-c="vintage">📅 Vintage</button></div><div id="chartBox"></div><div id="journalStats"></div></div>
     <div class="toolbar"><div class="search-wrap"><span class="si">🔍</span><input id="libSearch" placeholder="Search name, variety, origin, notes…"></div></div>
     <div class="chips" id="libChips"></div>
     <div style="display:flex;justify-content:flex-end;margin:12px 0"><select class="sortsel" id="libSort"><option value="newest">Newest</option><option value="rating">Top rated</option><option value="name">Name A–Z</option><option value="oldest">Oldest</option></select></div>
@@ -387,7 +388,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.7';
+const APP_VER='5.8';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -563,10 +564,11 @@ function renderJournalStats(){
 function renderJournalChart(){
   const box=$('#chartBox');if(!box)return;
   const counts={};
-  const inc=k=>{if(!k)return;if(k.length>28)k=k.slice(0,27)+'…';counts[k]=(counts[k]||0)+1;};
+  const inc=(k,mx)=>{if(!k)return;mx=mx||28;if(k.length>mx)k=k.slice(0,mx-1)+'…';counts[k]=(counts[k]||0)+1;};
   drinksCache.filter(d=>d.type===statType).forEach(d=>{
     if(chartDim==='country')inc(originCountry(d.origin));
     else if(chartDim==='region')inc(originRegion(d.origin));
+    else if(chartDim==='origin')inc((d.origin||'').trim(),80);
     else if(chartDim==='grape'){if(statType==='wine'){const gs=wineGrapes(d.variety||'');if(gs.length)gs.forEach(inc);}else inc((d.variety||'').split(/[,/]/)[0].trim());}
     else{const m=(d.vintage||'').match(/(19|20)\d{2}/);inc(m?m[0]:(d.vintage||'').trim());}
   });
@@ -574,7 +576,7 @@ function renderJournalChart(){
   entries.sort(chartDim==='vintage'?(a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}):(a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
   if(!entries.length){box.innerHTML=`<div style="color:var(--text-4);font-size:.84rem;text-align:center;padding:10px 0">No ${TYPE[statType].label.toLowerCase()} poured yet — charts appear after you add bottles.</div>`;return;}
   const max=Math.max(...entries.map(e=>e[1]));
-  box.innerHTML=`<div class="bars chart-bars" style="max-height:220px;overflow-y:auto">${entries.map(([k,n])=>`<div class="bar"><span class="bl">${esc(k)}</span><span class="bt"><span class="bf" style="width:${Math.round(n/max*100)}%"></span></span><span class="bv">${n}</span></div>`).join('')}</div>`;
+  box.innerHTML=`<div class="bars chart-bars" style="max-height:220px;overflow-y:auto">${entries.map(([k,n])=>`<div class="bar${chartDim==='origin'?' origin':''}"><span class="bl">${esc(k)}</span><span class="bt"><span class="bf" style="width:${Math.round(n/max*100)}%"></span></span><span class="bv">${n}</span></div>`).join('')}</div>`;
 }
 
 /* ---- detail ---- */
