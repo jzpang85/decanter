@@ -385,7 +385,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.5';
+const APP_VER='5.6';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -771,10 +771,15 @@ async function syncNow(opts){
   const api='https://api.github.com/repos/'+s.syncRepo+'/contents/cellar.json';
   const hdr={Authorization:'Bearer '+s.syncToken,Accept:'application/vnd.github+json'};
   const attempt=async()=>{let remote={drinks:[],deletedIds:[]},sha=null;
-    const r=await fetch(api,{headers:hdr});
-    if(r.status===404){/* first sync: no file yet */}
-    else if(!r.ok){throw new Error('HTTP '+r.status);}
-    else{const j=await r.json();sha=j.sha;remote=JSON.parse(b64decode(j.content))||{};if(!remote.drinks)remote={drinks:[],deletedIds:[]};}
+    const rMeta=await fetch(api,{headers:hdr});
+    if(rMeta.status===404){/* first sync: no file yet */}
+    else if(!rMeta.ok){throw new Error('HTTP '+rMeta.status);}
+    else{const meta=await rMeta.json();sha=meta.sha;
+      // cellar.json >1MB: the JSON API omits `content` (null) — fetch raw instead
+      const rRaw=await fetch(api,{headers:{Authorization:'Bearer '+s.syncToken,Accept:'application/vnd.github.raw'}});
+      if(!rRaw.ok)throw new Error('raw HTTP '+rRaw.status);
+      try{remote=JSON.parse(await rRaw.text())||{};}catch(err){throw new Error('cellar.json unreadable — '+err.message);}
+      if(!remote.drinks)remote={drinks:[],deletedIds:[]};}
     const local=await getLocalCellar();const merged=mergeCellars(local,remote);await applyCellar(merged);
     const body={message:'sync '+merged.updatedAt,content:b64encode(JSON.stringify(merged))};if(sha)body.sha=sha;
     const pr=await fetch(api,{method:'PUT',headers:Object.assign({},hdr,{'Content-Type':'application/json'}),body:JSON.stringify(body)});
