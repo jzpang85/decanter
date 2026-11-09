@@ -437,7 +437,7 @@ const dbDelB=id=>new Promise((res,rej)=>{const tx=db.transaction(BSTORE,'readwri
 
 /* ---- state ---- */
 let drinksCache=[],bottlesCache=[],cellarGroup='country',curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.31';
+const APP_VER='5.32';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -893,7 +893,7 @@ function startFc(deck){fcDeck=shuffle(deck);fcI=0;fcFlip=false;$('#fcDecks').sty
 function renderFc(){if(!fcDeck.length){endFc();return;}const c=fcDeck[fcI],p=fcProg(),box=(p[c.id]&&p[c.id].box)||0;$('#fcSession').innerHTML=`<div class="fc-meta">Card ${fcI+1} / ${fcDeck.length} · ${box?'●'.repeat(box):'new'}</div><div class="fc" id="fcCard"><div class="lab">${fcFlip?'Answer':'Name'}</div><div class="${fcFlip?'back':'front'}">${fcFlip?c.back:esc(c.front)}</div><div class="hint">${fcFlip?'tap to flip back':'tap to reveal'}</div></div>${fcFlip?`<div class="fc-ctrl"><button class="btn" id="fcNo">✗ Didn't know</button><button class="btn btn-primary" id="fcYes">✓ Got it</button></div>`:''}<div class="fc-ctrl" style="margin-top:10px"><button class="btn btn-ghost" id="fcBack">← Back</button><button class="btn btn-ghost" id="fcEnd">End</button></div>`;$('#fcCard').onclick=()=>{if(!fcFlip){fcFlip=true;renderFc();}};if(fcFlip){$('#fcYes').onclick=()=>gradeFc(true);$('#fcNo').onclick=()=>gradeFc(false);}$('#fcBack').onclick=()=>{if(fcI>0){fcI--;fcFlip=false;renderFc();}};$('#fcEnd').onclick=endFc;}
 function gradeFc(ok){const c=fcDeck[fcI],p=fcProg(),cur=p[c.id]||{box:0};cur.box=ok?Math.min(5,cur.box+1):Math.max(0,cur.box-1);p[c.id]=cur;fcProgSet(p);fcI++;fcFlip=false;if(fcI>=fcDeck.length)endFc(true);else renderFc();}
 function endFc(done){$('#fcSession').style.display='none';$('#fcDecks').style.display='';if(done)toast('🃏 Deck done!');}
-const QZ_BANKS={'wine-l2':{f:'quiz/wine-l2.json',v:'4f2e45d0c9f2'},'wine-l3':{f:'quiz/wine-l3.json',v:'1333c444ad32'}};
+const QZ_BANKS={'wine-l2':{f:'quiz/wine-l2.json',v:'834f525c1b81'},'wine-l3':{f:'quiz/wine-l3.json',v:''}};
 const QZ_CACHE='decanter_quiz_bank_v2_';
 async function loadBank(key){
   const ck=QZ_CACHE+key;
