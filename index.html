@@ -60,7 +60,7 @@ body.no-scroll{overflow:hidden}
 .greeting .you b{font-weight:600}
 
 .card{background:linear-gradient(180deg,var(--surface-2) 0%,var(--surface) 100%);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh1)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:12px 8px;text-align:center}
 .stat .n{font-family:var(--serif);font-size:1.4rem;color:var(--gold-2);line-height:1}
 .stat .l{font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.8px;margin-top:5px}
@@ -261,7 +261,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   <!-- JOURNAL -->
   <section class="view active" id="view-journal">
     <div class="greeting"><div class="hi">The journal</div><div class="you">Everything you've poured</div></div>
-    <div class="card" style="padding:14px 16px;margin-top:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span class="note" style="margin:0">Category</span><select class="sortsel" id="statType"><option value="wine">🍷 Wine</option><option value="sake">🍶 Sake</option><option value="whisky">🥃 Whisky</option><option value="coffee">☕ Coffee</option></select></div><div class="chips" id="chartChips" style="margin-bottom:12px"><button class="chip on" data-c="country">🌍 Country</button><button class="chip" data-c="region">🗺️ Region</button><button class="chip" data-c="origin">📍 Origin</button><button class="chip" data-c="grape">🍇 Grape / style</button><button class="chip" data-c="vintage">📅 Vintage</button></div><div id="chartBox"></div><div id="journalStats"></div></div>
+    <div class="card" style="padding:14px 16px;margin-top:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span class="note" style="margin:0">Category</span><select class="sortsel" id="statType"><option value="wine">🍷 Wine</option><option value="sake">🍶 Sake</option><option value="whisky">🥃 Whisky</option><option value="coffee">☕ Coffee</option></select></div><div class="chips" id="chartChips" style="margin-bottom:12px"><button class="chip on" data-c="country">🌍 Country</button><button class="chip" data-c="region">🗺️ Region</button><button class="chip" data-c="grape">🍇 Grape / style</button><button class="chip" data-c="vintage">📅 Vintage</button></div><div id="chartBox"></div><div id="journalStats"></div></div>
     <div class="toolbar"><div class="search-wrap"><span class="si">🔍</span><input id="libSearch" placeholder="Search name, variety, origin, notes…"></div></div>
     <div class="chips" id="libChips"></div>
     <div style="display:flex;justify-content:flex-end;margin:12px 0"><select class="sortsel" id="libSort"><option value="newest">Newest</option><option value="rating">Top rated</option><option value="name">Name A–Z</option><option value="oldest">Oldest</option></select></div>
@@ -388,7 +388,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.8';
+const APP_VER='5.9';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -408,6 +408,7 @@ const fmtDate=iso=>{const d=new Date(iso),now=new Date(),diff=now-d;if(diff<864e
 const avg=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
 const GRAPES=['cabernet sauvignon','sauvignon blanc','cabernet franc','petit verdot','gruner veltliner','gewurztraminer','pinot noir','pinot gris','pinot grigio','pinot blanc','chenin blanc','sangiovese','mourvedre','carmenere','chardonnay','tempranillo','vermentino','nebbiolo','zinfandel','dolcetto','grenache','cinsault','viognier','semillon','barbera','riesling','aligote','moscato','malbec','gamay','syrah','shiraz','merlot','fiano','glera'].sort((a,b)=>b.length-a.length);
 function wineGrapes(s){let h=' '+s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]+/g,' ')+' ';const found=[];for(const g of GRAPES){const n=' '+g+' ';while(h.includes(n)){found.push(g);h=h.slice(0,h.indexOf(n))+' '+h.slice(h.indexOf(n)+n.length);}}return[...new Set(found)];}
+const GRAPE_NAME={'cabernet sauvignon':'Cabernet Sauvignon','sauvignon blanc':'Sauvignon Blanc','cabernet franc':'Cabernet Franc','petit verdot':'Petit Verdot','gruner veltliner':'Gr\u00fcner Veltliner','gewurztraminer':'Gew\u00fcrztraminer','pinot noir':'Pinot Noir','pinot gris':'Pinot Gris','pinot grigio':'Pinot Grigio','pinot blanc':'Pinot Blanc','chenin blanc':'Chenin Blanc','sangiovese':'Sangiovese','mourvedre':'Mourv\u00e8dre','carmenere':'Carmen\u00e8re','chardonnay':'Chardonnay','tempranillo':'Tempranillo','vermentino':'Vermentino','nebbiolo':'Nebbiolo','zinfandel':'Zinfandel','dolcetto':'Dolcetto','grenache':'Grenache','cinsault':'Cinsault','viognier':'Viognier','semillon':'S\u00e9millon','barbera':'Barbera','riesling':'Riesling','aligote':'Aligot\u00e9','moscato':'Moscato','malbec':'Malbec','gamay':'Gamay','syrah':'Syrah','shiraz':'Shiraz','merlot':'Merlot','fiano':'Fiano','glera':'Glera'};
 const COUNTRIES=['united states','new zealand','south africa','switzerland','portugal','australia','argentina','germany','uruguay','hungary','georgia','lebanon','slovenia','croatia','morocco','austria','england','scotland','ireland','japan','spain','italy','chile','china','france','greece','mexico','israel','turkey','brazil','canada','usa'];
 function originParts(o){return(o||'').split(',').map(s=>s.trim()).filter(Boolean);}
 function originCountry(o){const p=originParts(o);for(const c of COUNTRIES){const m=p.find(x=>x.toLowerCase()===c);if(m)return m;}return p[0]||'';}
@@ -552,14 +553,13 @@ function renderJournalStats(){
   const items=drinksCache.filter(d=>d.type===statType);
   if(!items.length){el.innerHTML='';return;}
   const rated=items.filter(d=>d.rating);const avgR=avg(rated.map(d=>d.rating));
-  const vSet=new Set(),oSet=new Set();
+  const vSet=new Set();
   items.forEach(d=>{
     const v=(d.variety||'').trim();if(v){if(statType==='wine'){wineGrapes(v).forEach(g=>vSet.add(g));}else vSet.add(v.toLowerCase());}
-    const o=(d.origin||'').trim();if(o)oSet.add(o.toLowerCase());
   });
   const pl={wine:'Wines',sake:'Sakes',whisky:'Whiskies',coffee:'Coffees'}[statType]||'Bottles';
   const vl=statType==='wine'?'Varieties':'Styles';
-  el.innerHTML=`<div class="stats"><div class="stat"><div class="n">${items.length}</div><div class="l">${pl}</div></div><div class="stat"><div class="n">${rated.length?avgR.toFixed(1):'—'}</div><div class="l">Avg ★</div></div><div class="stat"><div class="n">${vSet.size}</div><div class="l">${vl}</div></div><div class="stat"><div class="n">${oSet.size}</div><div class="l">Origins</div></div></div>`;
+  el.innerHTML=`<div class="stats"><div class="stat"><div class="n">${items.length}</div><div class="l">${pl}</div></div><div class="stat"><div class="n">${rated.length?avgR.toFixed(1):'—'}</div><div class="l">Avg ★</div></div><div class="stat"><div class="n">${vSet.size}</div><div class="l">${vl}</div></div></div>`;
 }
 function renderJournalChart(){
   const box=$('#chartBox');if(!box)return;
@@ -568,8 +568,7 @@ function renderJournalChart(){
   drinksCache.filter(d=>d.type===statType).forEach(d=>{
     if(chartDim==='country')inc(originCountry(d.origin));
     else if(chartDim==='region')inc(originRegion(d.origin));
-    else if(chartDim==='origin')inc((d.origin||'').trim(),80);
-    else if(chartDim==='grape'){if(statType==='wine'){const gs=wineGrapes(d.variety||'');if(gs.length)gs.forEach(inc);}else inc((d.variety||'').split(/[,/]/)[0].trim());}
+    else if(chartDim==='grape'){if(statType==='wine'){const gs=wineGrapes(d.variety||'');if(gs.length)gs.forEach(g=>inc(GRAPE_NAME[g]||g));}else inc((d.variety||'').split(/[,/]/)[0].trim());}
     else{const m=(d.vintage||'').match(/(19|20)\d{2}/);inc(m?m[0]:(d.vintage||'').trim());}
   });
   const entries=Object.entries(counts);
