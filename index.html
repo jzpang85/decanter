@@ -182,6 +182,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .qopts{display:flex;flex-direction:column;gap:9px}
 .qopt{text-align:left;padding:13px 16px;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:.92rem;font-family:var(--sans);transition:var(--t)}
 .qopt:hover{border-color:var(--border-s)}.qopt:disabled{cursor:default}.qopt.ok{border-color:var(--green);background:rgba(127,198,160,.16);color:var(--green)}.qopt.no{border-color:var(--red);background:rgba(217,122,126,.16);color:var(--red)}
+.qzd{font-size:.68rem;padding:3px 10px;border-radius:999px;font-weight:600;letter-spacing:.4px}
+.qzd-0{background:rgba(127,198,160,.16);color:var(--green)}
+.qzd-1{background:rgba(93,160,240,.16);color:#7fb2f5}
+.qzd-2{background:rgba(224,160,106,.18);color:var(--whisky)}
+.qzd-3{background:rgba(217,122,126,.2);color:var(--red)}
 .qpips{display:flex;gap:4px;margin-bottom:16px}.qpips .p{flex:1;height:5px;border-radius:3px;background:var(--surface-3)}.qpips .p.done{background:var(--gold)}.qpips .p.bad{background:var(--red)}
 .qex{margin-top:14px;font-size:.84rem;color:var(--text-2);padding:12px 15px;background:var(--surface-2);border-radius:var(--rs);line-height:1.55;border:1px solid var(--border)}
 
@@ -387,7 +392,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.23';
+const APP_VER='5.24';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -763,58 +768,40 @@ function startFc(deck){fcDeck=shuffle(deck);fcI=0;fcFlip=false;$('#fcDecks').sty
 function renderFc(){if(!fcDeck.length){endFc();return;}const c=fcDeck[fcI],p=fcProg(),box=(p[c.id]&&p[c.id].box)||0;$('#fcSession').innerHTML=`<div class="fc-meta">Card ${fcI+1} / ${fcDeck.length} · ${box?'●'.repeat(box):'new'}</div><div class="fc" id="fcCard"><div class="lab">${fcFlip?'Answer':'Name'}</div><div class="${fcFlip?'back':'front'}">${fcFlip?c.back:esc(c.front)}</div><div class="hint">${fcFlip?'tap to flip back':'tap to reveal'}</div></div>${fcFlip?`<div class="fc-ctrl"><button class="btn" id="fcNo">✗ Didn't know</button><button class="btn btn-primary" id="fcYes">✓ Got it</button></div>`:''}<div class="fc-ctrl" style="margin-top:10px"><button class="btn btn-ghost" id="fcBack">← Back</button><button class="btn btn-ghost" id="fcEnd">End</button></div>`;$('#fcCard').onclick=()=>{if(!fcFlip){fcFlip=true;renderFc();}};if(fcFlip){$('#fcYes').onclick=()=>gradeFc(true);$('#fcNo').onclick=()=>gradeFc(false);}$('#fcBack').onclick=()=>{if(fcI>0){fcI--;fcFlip=false;renderFc();}};$('#fcEnd').onclick=endFc;}
 function gradeFc(ok){const c=fcDeck[fcI],p=fcProg(),cur=p[c.id]||{box:0};cur.box=ok?Math.min(5,cur.box+1):Math.max(0,cur.box-1);p[c.id]=cur;fcProgSet(p);fcI++;fcFlip=false;if(fcI>=fcDeck.length)endFc(true);else renderFc();}
 function endFc(done){$('#fcSession').style.display='none';$('#fcDecks').style.display='';if(done)toast('🃏 Deck done!');}
-let qQ=[],qI=0,qScore=0,qAns=false,qRes=[],qPicks=[],qzBank=null;
-const QZ_BANKS={'wine-l2':{f:'quiz/wine-l2.json'},'wine-l3':{f:'quiz/wine-l3.json'}};
-const QZ_CACHE='decanter_quiz_bank_v1_';
-async function loadBank(key){
-  const ck=QZ_CACHE+key;
-  try{const hit=localStorage.getItem(ck);if(hit)return JSON.parse(hit);}catch(e){}
-  const urls=[
-    'https://cdn.jsdelivr.net/gh/jzpang85/decanter@main/'+QZ_BANKS[key].f,
-    'https://raw.githubusercontent.com/jzpang85/decanter/main/'+QZ_BANKS[key].f
-  ];
-  let lastErr=null;
-  for(const u of urls){
-    try{const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);
-      const d=await r.json();if(!d||!Array.isArray(d.q)||!d.q.length)throw new Error('bad bank');
-      try{localStorage.setItem(ck,JSON.stringify(d));}catch(e){}
-      return d;
-    }catch(e){lastErr=e;}
-  }
-  throw lastErr||new Error('network error');
-}
-async function startQuiz(){
-  const key=$('#qzCat').value;
-  try{localStorage.setItem('decanter_qz_cat',key);}catch(e){}
-  $('#qzIntro').style.display='none';$('#qzSession').style.display='';
-  $('#qzSession').innerHTML=`<div style="text-align:center;padding:24px 0"><div class="spinner"></div><div style="color:var(--text-3);margin-top:12px">Loading question bank…</div></div>`;
-  try{
-    qzBank=await loadBank(key);
-    qzFresh();
-  }catch(e){
-    $('#qzSession').style.display='none';$('#qzIntro').style.display='';
-    toast('❌ Could not load the question bank — check your connection and retry.');
-  }
-}
-function qzStat(){const answered=qI+(qAns?1:0);const pct=answered?Math.round(qScore/answered*100):0;const el=$('#qzStat');if(el)el.textContent=`Answered ${answered} · ${qScore} ✓ (${pct}%)`;}
+let qzHist=[],qzBuckets=[[],[],[],[]],qzLevel=.6,qzCur=null,qzLastOk=null,qzBank=null,qAns=false;
+const QZ_DIF=['Basic','Medium','Hard','Master'];
+const qzCorrect=()=>qzHist.filter(h=>h.ok).length+(qzLastOk===true?1:0);
+function qzStat(){const answered=qzHist.length+(qzLastOk===null?0:1);const corr=qzCorrect();const pct=answered?Math.round(corr/answered*100):0;const el=$('#qzStat');if(el)el.textContent=`Answered ${answered} · ${corr} ✓ (${pct}%)`;}
 function quitQuiz(){$('#qzSession').style.display='none';$('#qzIntro').style.display='';toast('👋 Quiz ended.');}
 function exitQuiz(){quizResults();}
-function qzFresh(){if(!qzBank){startQuiz();return;}qQ=shuffle(qzBank.q);qI=0;qScore=0;qRes=[];qPicks=[];qAns=false;renderQuiz();}
-function renderQuiz(){if(qI>=qQ.length){quizResults();return;}const q=qQ[qI];qAns=false;$('#qzSession').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><button class="btn btn-ghost btn-sm" id="qzExit">✕ Exit</button><span id="qzStat" style="font-size:.76rem;color:var(--text-3)"></span><button class="btn btn-ghost btn-sm" id="qzRefresh">↻ Refresh</button></div><div class="qq">Q${qI+1}. ${esc(q.q)}</div><div class="qopts" id="qOpts">${q.o.map((o,i)=>`<button class="qopt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div id="qEx"></div>`;$('#qzExit').onclick=exitQuiz;$('#qzRefresh').onclick=qzFresh;qzStat();$$('#qOpts .qopt').forEach(b=>b.onclick=()=>answerQuiz(+b.dataset.i));}
-function answerQuiz(i){if(qAns)return;qAns=true;const q=qQ[qI],ok=i===q.a;if(ok)qScore++;qRes[qI]=ok;qPicks[qI]=i;qzStat();$$('#qOpts .qopt').forEach(b=>{const ix=+b.dataset.i;b.disabled=true;if(ix===q.a)b.classList.add('ok');else if(ix===i)b.classList.add('no');});$('#qEx').innerHTML=`<div class="qex"><b style="color:${ok?'var(--green)':'var(--red)'}">${ok?'✓ Correct':'✗ Not quite'}</b> — ${esc(q.e)}<br><br><button class="btn btn-primary" id="qNext">${qI+1>=qQ.length?'See results':'Next →'}</button></div>`;$('#qNext').onclick=()=>{qI++;renderQuiz();};}
-function quizResults(){const answered=Math.min(qI,qQ.length);const pct=answered?Math.round(qScore/answered*100):0;let g='Keep tasting!',e='🥲';if(pct>=90){g='Master Sommelier-tier!';e='🏆';}else if(pct>=70){g='Excellent palate!';e='🎖️';}else if(pct>=50){g='Solid — keep going.';e='👍';}$('#qzSession').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><button class="btn btn-ghost btn-sm" id="qzQuit">✕ Exit</button><span style="font-size:.76rem;color:var(--text-3)">${answered} answered · ${qScore} correct (${pct}%)</span><span style="width:52px"></span></div><div style="text-align:center;padding:24px 0"><div style="font-size:3rem">${e}</div><div style="font-family:var(--serif);font-size:1.7rem;color:var(--gold-2);margin-top:6px">${qScore} / ${answered}</div><div style="color:var(--text-3)">${g}</div><div class="btn-row" style="justify-content:center;margin-top:18px"><button class="btn btn-primary" id="qAgain">↻ Play again</button><button class="btn" id="qReview">📖 Review answers</button></div></div>`;$('#qAgain').onclick=qzFresh;$('#qReview').onclick=reviewQuiz;$('#qzQuit').onclick=quitQuiz;}
+function qzFresh(){if(!qzBank){startQuiz();return;}
+  qzBuckets=[[],[],[],[]];qzBank.q.forEach(q=>qzBuckets[Math.min(3,q.d||1)].push(q));qzBuckets.forEach(b=>{for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}});
+  qzHist=[];qzLevel=.6;qzCur=null;qzLastOk=null;qAns=false;qzNext();}
+function qzNext(){
+  const t=Math.round(qzLevel);let b=qzBuckets[t],bi=t;
+  for(let r=1;r<=3&&!b.length;r++){
+    if(t+r<=3&&qzBuckets[t+r].length){b=qzBuckets[t+r];bi=t+r;break;}
+    if(t-r>=0&&qzBuckets[t-r].length){b=qzBuckets[t-r];bi=t-r;break;}
+  }
+  if(!b.length){quizResults();return;}
+  qzCur=b.pop();qAns=false;renderQuiz();}
+function renderQuiz(){if(!qzCur){quizResults();return;}
+  const q=qzCur,d=Math.min(3,q.d||1);
+  $('#qzSession').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span id="qzStat" style="font-size:.76rem;color:var(--text-3)"></span><span class="qzd qzd-${d}">${QZ_DIF[d]}</span></div><div class="qq">Q${qzHist.length+(qzLastOk===null?0:1)+1}. ${esc(q.q)}</div><div class="qopts" id="qOpts">${q.o.map((o,i)=>`<button class="qopt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div id="qEx"></div><div class="fc-ctrl" style="margin-top:12px"><button class="btn btn-ghost btn-sm" id="qzExit">✕ Exit</button><button class="btn btn-ghost btn-sm" id="qzRefresh">↻ Refresh</button></div>`;
+  $('#qzExit').onclick=exitQuiz;$('#qzRefresh').onclick=qzFresh;qzStat();
+  $$('#qOpts .qopt').forEach(b=>b.onclick=()=>answerQuiz(+b.dataset.i));}
+function answerQuiz(i){if(qAns)return;qAns=true;const q=qzCur,ok=i===q.a;qzLastOk=ok;qzLevel=Math.max(0,Math.min(3,qzLevel+(ok?0.25+0.15*(q.d||1):-0.3)));qzStat();
+  $$('#qOpts .qopt').forEach(b=>{const ix=+b.dataset.i;b.disabled=true;if(ix===q.a)b.classList.add('ok');else if(ix===i)b.classList.add('no');});
+  $('#qEx').innerHTML=`<div class="qex"><b style="color:${ok?'var(--green)':'var(--red)'}">${ok?'✓ Correct':'✗ Not quite'}</b> — ${esc(q.e)}<br><br><button class="btn btn-primary" id="qNext">Next →</button></div>`;$('#qNext').onclick=()=>{qzHist.push({q:qzCur,pick:i,ok:!!qzLastOk});qzLastOk=null;qzNext();};}
+function quizResults(){const answered=qzHist.length+(qzLastOk===null?0:1);const corr=qzCorrect();const pct=answered?Math.round(corr/answered*100):0;let g='Keep tasting!',e='🥲';if(pct>=90){g='Master Sommelier-tier!';e='🏆';}else if(pct>=70){g='Excellent palate!';e='🎖️';}else if(pct>=50){g='Solid — keep going.';e='👍';}
+  $('#qzSession').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><button class="btn btn-ghost btn-sm" id="qzQuit">✕ Exit</button><span style="font-size:.76rem;color:var(--text-3)">${answered} answered · ${corr} correct (${pct}%)</span><span style="width:52px"></span></div><div style="text-align:center;padding:24px 0"><div style="font-size:3rem">${e}</div><div style="font-family:var(--serif);font-size:1.7rem;color:var(--gold-2);margin-top:6px">${corr} / ${answered}</div><div style="color:var(--text-3)">${g}</div><div class="btn-row" style="justify-content:center;margin-top:18px"><button class="btn btn-primary" id="qAgain">↻ Play again</button><button class="btn" id="qReview">📖 Review answers</button></div></div>`;$('#qAgain').onclick=qzFresh;$('#qReview').onclick=reviewQuiz;$('#qzQuit').onclick=quitQuiz;}
 function reviewQuiz(){
-  const answered=Math.min(qI,qQ.length);
+  const answered=qzHist.length;
   $('#qzSession').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><button class="btn btn-ghost btn-sm" id="qzQuit">✕ Exit</button><span style="font-size:.76rem;color:var(--text-3)">📖 Review — ${answered} answered</span><button class="btn btn-ghost btn-sm" id="qzBackRes">← Back</button></div>`+
-  qQ.slice(0,answered).map((q,i)=>{
-    const ok=!!qRes[i],pick=qPicks[i];
+  qzHist.map((h,i)=>{const q=h.q,ok=h.ok,pick=h.pick;
     const you=`<span style="color:${ok?'var(--green)':'var(--red)'}">${esc(q.o[pick])}</span>`;
-    return `<div class="card" style="padding:14px 16px;margin-bottom:12px"><div class="kr-head"><span class="vd ${ok?'ok':'no'}">${ok?'✓':'✗'}</span><span style="font-size:.9rem">${i+1}. ${esc(q.q)}</span></div><div style="font-size:.8rem;color:var(--text-3);margin-top:8px">Your answer: ${you}</div><div style="font-size:.8rem;margin-top:4px">Correct: <b style="color:var(--text)">${esc(q.o[q.a])}</b></div>${q.e?`<div style="font-size:.78rem;color:var(--text-3);margin-top:6px;line-height:1.5">💡 ${esc(q.e)}</div>`:''}</div>`;
-  }).join('')+`<div class="btn-row" style="justify-content:center;margin-top:6px"><button class="btn btn-primary" id="qzBackRes2">← Back to results</button></div>`;
-  $('#qzQuit').onclick=quitQuiz;
-  const back=()=>quizResults();
-  $('#qzBackRes').onclick=back;$('#qzBackRes2').onclick=back;
-}
+    return `<div class="card" style="padding:14px 16px;margin-bottom:12px"><div class="kr-head"><span class="vd ${ok?'ok':'no'}">${ok?'✓':'✗'}</span><span style="font-size:.9rem">${i+1}. ${esc(q.q)}</span></div><div style="font-size:.8rem;color:var(--text-3);margin-top:8px">Your answer: ${you}</div><div style="font-size:.8rem;margin-top:4px">Correct: <b style="color:var(--text)">${esc(q.o[q.a])}</b></div>${q.e?`<div style="font-size:.78rem;color:var(--text-3);margin-top:6px;line-height:1.5">💡 ${esc(q.e)}</div>`:''}</div>`;}).join('')+`<div class="btn-row" style="justify-content:center;margin-top:6px"><button class="btn btn-primary" id="qzBackRes2">← Back to results</button></div>`;
+  $('#qzQuit').onclick=quitQuiz;const back=()=>quizResults();$('#qzBackRes').onclick=back;$('#qzBackRes2').onclick=back;}
 
 /* ---- settings ---- */
 function openSettings(){const s=getSettings();$('#setKey').value=s.apiKey||'';$('#setModel').value=[...$('#setModel').options].some(o=>o.value===s.model)?s.model:'deepseek-v4-pro';$('#setEndpoint').value=s.endpoint||'https://api.deepseek.com/v1/chat/completions';$('#setTts').value=s.ttsRate;$('#ttsLbl').textContent=s.ttsRate.toFixed(1)+'×';$('#setSyncToken').value=s.syncToken||'';$('#setSyncRepo').value=s.syncRepo||'jzpang85/decanter-cellar';const sy=localStorage.getItem('decanter_synced');setSyncStatus(sy?('✓ last synced '+fmtDate(sy)):'not synced yet');$('#diag').style.display='none';$('#settingsModal').classList.add('open');}
@@ -945,7 +932,13 @@ async function syncNow(opts){
     const pr=await fetch(api,{method:'PUT',headers:Object.assign({},hdr,{'Content-Type':'application/json'}),body:JSON.stringify(body)});
     if(pr.status===409)return{conflict:true};if(!pr.ok){const t=await pr.text().catch(()=>'');throw new Error('push '+pr.status+' '+t.slice(0,100));}
     return{conflict:false,merged};};
-  try{let res=await attempt();if(res.conflict)res=await attempt();const merged=res.merged;
+  try{let res=null,lastErr=null;
+    for(let t=0;t<3;t++){
+      try{res=await attempt();break;}
+      catch(e){lastErr=e;if(!/Failed to fetch|NetworkError|load failed|Load failed/i.test(e.message))break;await new Promise(r=>setTimeout(r,1200*(t+1)));}
+    }
+    if(!res)throw lastErr||new Error('sync failed');
+    if(res.conflict)res=await attempt();const merged=res.merged;
     localStorage.setItem('decanter_synced',new Date().toISOString());
     setSyncStatus('✓ Synced '+merged.drinks.length+' bottles');
     await refreshCache();refreshActive();
