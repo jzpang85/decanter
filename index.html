@@ -385,7 +385,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.3';
+const APP_VER='5.4';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -405,6 +405,10 @@ const fmtDate=iso=>{const d=new Date(iso),now=new Date(),diff=now-d;if(diff<864e
 const avg=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
 const GRAPES=['cabernet sauvignon','sauvignon blanc','cabernet franc','petit verdot','gruner veltliner','gewurztraminer','pinot noir','pinot gris','pinot grigio','pinot blanc','chenin blanc','sangiovese','mourvedre','carmenere','chardonnay','tempranillo','vermentino','nebbiolo','zinfandel','dolcetto','grenache','cinsault','viognier','semillon','barbera','riesling','aligote','moscato','malbec','gamay','syrah','shiraz','merlot','fiano','glera'].sort((a,b)=>b.length-a.length);
 function wineGrapes(s){let h=' '+s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]+/g,' ')+' ';const found=[];for(const g of GRAPES){const n=' '+g+' ';while(h.includes(n)){found.push(g);h=h.slice(0,h.indexOf(n))+' '+h.slice(h.indexOf(n)+n.length);}}return[...new Set(found)];}
+const COUNTRIES=['united states','new zealand','south africa','switzerland','portugal','australia','argentina','germany','uruguay','hungary','georgia','lebanon','slovenia','croatia','morocco','austria','england','scotland','ireland','japan','spain','italy','chile','china','france','greece','mexico','israel','turkey','brazil','canada','usa'];
+function originParts(o){return(o||'').split(',').map(s=>s.trim()).filter(Boolean);}
+function originCountry(o){const p=originParts(o);for(const c of COUNTRIES){const m=p.find(x=>x.toLowerCase()===c);if(m)return m;}return p[0]||'';}
+function originRegion(o){const p=originParts(o);const i=p.findIndex(x=>COUNTRIES.includes(x.toLowerCase()));if(i<0)return p[1]||p[0]||'';return p[i+1]||p[i-1]||'';}
 const topN=(o,n)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n);
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
@@ -559,8 +563,8 @@ function renderJournalChart(){
   const counts={};
   drinksCache.filter(d=>d.type===statType).forEach(d=>{
     let key='';
-    if(chartDim==='country')key=(d.origin||'').split(',')[0].trim();
-    else if(chartDim==='region'){const p=(d.origin||'').split(',').map(s=>s.trim()).filter(Boolean);key=p[1]||p[0]||'';}
+    if(chartDim==='country')key=originCountry(d.origin);
+    else if(chartDim==='region')key=originRegion(d.origin);
     else if(chartDim==='grape')key=(d.variety||'').split(/[,/]/)[0].trim();
     else{const m=(d.vintage||'').match(/(19|20)\d{2}/);key=m?m[0]:(d.vintage||'').trim();}
     if(!key)return;if(key.length>28)key=key.slice(0,27)+'…';
