@@ -316,7 +316,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     <div class="study-tabs"><button class="on" data-pane="ref">📚 Reference</button><button data-pane="fc">🃏 Flashcards</button><button data-pane="qz">❓ Quiz</button></div>
     <div class="pane active" id="pane-ref"><div class="cat-grid" id="catGrid"></div><div id="refWrap" style="display:none"><button class="btn btn-ghost" id="refBack" style="margin:0 0 14px">← All topics</button><div class="card" style="padding:6px 16px"><div id="refList"></div></div></div></div>
     <div class="pane" id="pane-fc"><div class="card" style="padding:18px"><div id="fcDecks"></div><div id="fcSession" style="display:none"></div></div></div>
-    <div class="pane" id="pane-qz"><div class="card" style="padding:18px"><div id="qzIntro"><p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Ten questions across wine, sake, whisky & coffee — mixed with your cellar.</p><button class="btn btn-primary" id="qzStart">▶ Start quiz</button></div><div id="qzSession" style="display:none"></div></div></div>
+    <div class="pane" id="pane-qz"><div class="card" style="padding:18px"><div id="qzIntro"><p style="color:var(--text-3);font-size:.86rem;margin-bottom:14px">Pick an exam — 20 multiple-choice questions per round, shuffled fresh each time. WSET mock papers in the vault are included in the banks.</p><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><select class="sortsel" id="qzCat"><option value="wine-l2">🍷 Wine — WSET Level 2</option><option value="wine-l3">🍷 Wine — WSET Level 3</option></select><button class="btn btn-primary" id="qzStart">▶ Start quiz</button></div></div><div id="qzSession" style="display:none"></div></div></div>
   </section>
 
   <!-- BLIND TASTING -->
@@ -387,7 +387,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.19';
+const APP_VER='5.20';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -508,7 +508,6 @@ function renderPhoto(){const p=$('#photoPrev'),img=$('#photoPrevImg');if(!p)retu
 /* ---- KB ---- */
 const KB={wine:[{n:'Cabernet Sauvignon',t:['cabernet','bordeaux'],o:'Bordeaux / Napa',d:'Full-bodied, high tannin. Blackcurrant, cedar, graphite, mint.'},{n:'Merlot',t:['merlot'],o:'Bordeaux (Pomerol)',d:'Plush, round. Plum, black cherry, chocolate.'},{n:'Pinot Noir',t:['pinot','burgundy'],o:'Burgundy',d:'Light, perfumed, high acid. Red cherry, raspberry, forest floor.'},{n:'Syrah / Shiraz',t:['syrah','shiraz'],o:'Rhône / Barossa',d:'Powerful, dark. Blackberry, black pepper, smoked meat.'},{n:'Chardonnay',t:['chardonnay','chablis'],o:'Burgundy / Sonoma',d:'Steely Chablis to rich, buttery Napa. Apple, citrus, butter.'},{n:'Sauvignon Blanc',t:['sauvignon','sancerre'],o:'Loire / Marlborough',d:'Zesty, high acid. Grapefruit, passionfruit, cut grass.'},{n:'Riesling',t:['riesling','mosel'],o:'Germany / Alsace',d:'Aromatic, high acid. Lime, apple, jasmine, petrol.'},{n:'Nebbiolo',t:['nebbiolo','barolo'],o:'Piedmont',d:'Pale but fiercely tannic. Rose, tar, dried cherry, truffle.'},{n:'Sangiovese',t:['sangiovese','chianti'],o:'Tuscany',d:'Sour cherry, leather, herbs, earth. The grape of Chianti.'},{n:'Tempranillo',t:['tempranillo','rioja'],o:'Rioja / Ribera',d:'Strawberry, leather, tobacco, vanilla.'}],sake:[{n:'Junmai',t:['junmai'],o:'Japan',d:'Pure rice — no added alcohol. Full body, rich, earthy.'},{n:'Honjōzō',t:['honjozo'],o:'Japan',d:'A little brewer\'s alcohol added. Lighter, smoother.'},{n:'Ginjō',t:['ginjo'],o:'Japan',d:'Polished ≥60%. Fruity, floral (apple, melon, anise).'},{n:'Daiginjō',t:['daiginjo'],o:'Japan',d:'Polished ≥50%. Intensely aromatic, refined.'},{n:'Nigori',t:['nigori'],o:'Japan',d:'Coarsely filtered — cloudy, creamy. Sweet, dessert-like.'},{n:'Namazake',t:['nama'],o:'Japan',d:'Unpasteurized — fresh, vivid.'}],whisky:[{n:'Speyside Single Malt',t:['speyside','macallan'],o:'Scotland, Speyside',d:'Smooth, honeyed, orchard fruit, often sherry-casked.'},{n:'Highland Single Malt',t:['highland'],o:'Scotland, Highlands',d:'Heather, honey, spice, a wisp of smoke.'},{n:'Islay Single Malt',t:['islay','peaty','laphroaig'],o:'Scotland, Islay',d:'Peaty & smoky — medicinal, seaweed, brine, iodine.'},{n:'Lowland Single Malt',t:['lowland'],o:'Scotland, Lowlands',d:'Light, grassy, floral, gentle.'},{n:'Campbeltown',t:['campbeltown','springbank'],o:'Scotland, Campbeltown',d:'Briny, smoky, oily, complex.'},{n:'Bourbon',t:['bourbon','kentucky'],o:'USA, Kentucky',d:'≥51% corn, new charred oak. Sweet, vanilla, caramel.'},{n:'Tennessee Whiskey',t:['tennessee'],o:'USA, Tennessee',d:'Charcoal-mellowed bourbon. Smoother.'},{n:'Irish Whiskey',t:['irish','jameson'],o:'Ireland',d:'Triple-distilled, unpeated. Smooth, light, honey.'},{n:'Japanese Whisky',t:['japanese','yamazaki','hibiki'],o:'Japan',d:'Modeled on Scotch; renowned for poise and balance.'},{n:'Rye Whiskey',t:['rye'],o:'USA / Canada',d:'≥51% rye. Spicier, peppery, drier than bourbon.'}],coffee:[{n:'Ethiopia (Yirgacheffe)',t:['ethiopia','yirgacheffe'],o:'Ethiopia',d:'Floral, jasmine, bergamot, blueberry, bright citrus.'},{n:'Colombia',t:['colombia'],o:'Colombia',d:'Balanced, sweet. Caramel, milk chocolate, red apple.'},{n:'Brazil',t:['brazil'],o:'Brazil',d:'Low acid, heavy body, nutty, chocolate, caramel.'},{n:'Kenya (AA)',t:['kenya'],o:'Kenya',d:'Bright, winey acidity. Blackcurrant, blackberry.'},{n:'Guatemala (Antigua)',t:['guatemala','antigua'],o:'Guatemala',d:'Full body, bright acid. Cocoa, baking spice, toffee.'},{n:'Sumatra',t:['sumatra','indonesia'],o:'Indonesia',d:'Heavy body, low acid, earthy, herbal. Cedar, dark chocolate.'},{n:'Costa Rica (Tarrazú)',t:['costa rica','tarrazu'],o:'Costa Rica',d:'Clean, bright, high-grown. Citrus, honey, almond.'},{n:'Jamaica Blue Mountain',t:['jamaica'],o:'Jamaica',d:'Rare, mild. Very smooth, low acid.'}]};
 const PROCESSING=[{n:'Washed / Wet',d:'Cherry removed, fermented & washed. Clean, bright, acidic.'},{n:'Natural / Dry',d:'Dried in cherry. Fruity, heavy body.'},{n:'Honey / Pulped Natural',d:'Some mucilage left. Sweet, balanced.'}];
-const QBANK=[{q:'Which Scotch region is famous for peaty, smoky malts?',o:['Speyside','Islay','Lowland','Campbeltown'],a:1,e:'Islay — Laphroaig, Ardbeg, Lagavulin.'},{q:'Pinot Noir is most celebrated in?',o:['Bordeaux','Napa','Burgundy','Rioja'],a:2,e:'Red Burgundy is 100% Pinot Noir.'},{q:'"Seimaibuai" in sake is the?',o:['Ferment temp','Rice polishing ratio','Bottle size','Brewer rank'],a:1,e:'% of grain left after polishing.'},{q:'Which coffee origin = floral jasmine & blueberry?',o:['Brazil','Ethiopia','Sumatra','Jamaica'],a:1,e:'Ethiopia / Yirgacheffe.'},{q:'Bourbon needs at least what % corn?',o:['41%','51%','61%','71%'],a:1,e:'≥51% corn, new charred oak.'},{q:'Left-Bank Bordeaux is dominated by?',o:['Merlot','Cabernet Sauvignon','Pinot Noir','Syrah'],a:1,e:'Left-Bank = Cab-dominant.'},{q:'"Junmai" sake contains?',o:['Added alcohol','No added alcohol','Carbonation','Oak aging'],a:1,e:'Junmai = pure rice.'},{q:'Wet-hulling is associated with?',o:['Ethiopia','Colombia','Sumatra','Kenya'],a:2,e:'Sumatra — earthy, heavy-bodied.'},{q:'Filtered through sugar-maple charcoal?',o:['Bourbon','Tennessee Whiskey','Irish','Rye'],a:1,e:'Lincoln County Process (Jack Daniel\'s).'},{q:'Riesling is most classically from?',o:['France','Italy','Germany','Spain'],a:2,e:'Germany\'s Mosel & Rheingau.'},{q:'Usually triple-distilled & unpeated?',o:['Scotch','Irish Whiskey','Bourbon','Cognac'],a:1,e:'Irish whiskey — smoother, lighter.'},{q:'WSET SAT assesses in which order?',o:['Palate→Nose→Appearance','Appearance→Nose→Palate→Conclusion','Nose→Palate→Appearance','Conclusion→Palate'],a:1,e:'Appearance, Nose, Palate, Conclusion.'}];
 
 /* ---- router ---- */
 function go(view){curView=view;$$('.view').forEach(v=>v.classList.remove('active'));$('#view-'+view).classList.add('active');$$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.view===view));$('#fabAdd').classList.toggle('hidden',view==='add'||view==='blind');window.scrollTo({top:0,behavior:'instant'});if(view==='home')renderHome();if(view==='journal')renderLibrary();if(view==='blind')renderBlind();}
@@ -754,7 +753,39 @@ function renderFc(){if(!fcDeck.length){endFc();return;}const c=fcDeck[fcI],p=fcP
 function gradeFc(ok){const c=fcDeck[fcI],p=fcProg(),cur=p[c.id]||{box:0};cur.box=ok?Math.min(5,cur.box+1):Math.max(0,cur.box-1);p[c.id]=cur;fcProgSet(p);fcI++;fcFlip=false;if(fcI>=fcDeck.length)endFc(true);else renderFc();}
 function endFc(done){$('#fcSession').style.display='none';$('#fcDecks').style.display='';if(done)toast('🃏 Deck done!');}
 let qQ=[],qI=0,qScore=0,qAns=false,qRes=[];
-function startQuiz(){const dyn=[];const wr=drinksCache.filter(d=>d.origin);if(wr.length>=3){const t=wr[0],dis=shuffle(wr.slice(1)).slice(0,3).map(d=>d.origin),opts=shuffle([t.origin,...dis]);dyn.push({q:`In your cellar, where is "${t.name}" from?`,o:opts,a:opts.indexOf(t.origin),e:`You logged ${t.name} as ${t.origin}.`});}const wf=drinksCache.filter(d=>d.flavor);if(wf.length>=3){const t=wf[0],dis=shuffle(wf.slice(1)).slice(0,3).map(d=>d.flavor),opts=shuffle([t.flavor,...dis]);dyn.push({q:`Which notes did you record for "${t.name}"?`,o:opts,a:opts.indexOf(t.flavor),e:`You described ${t.name}: ${t.flavor}.`});}qQ=shuffle([...QBANK,...dyn]).slice(0,10);qI=0;qScore=0;qRes=[];$('#qzIntro').style.display='none';$('#qzSession').style.display='';renderQuiz();}
+const QZ_BANKS={'wine-l2':{f:'quiz/wine-l2.json'},'wine-l3':{f:'quiz/wine-l3.json'}};
+const QZ_CACHE='decanter_quiz_bank_v1_';
+async function loadBank(key){
+  const ck=QZ_CACHE+key;
+  try{const hit=localStorage.getItem(ck);if(hit)return JSON.parse(hit);}catch(e){}
+  const urls=[
+    'https://cdn.jsdelivr.net/gh/jzpang85/decanter@main/'+QZ_BANKS[key].f,
+    'https://raw.githubusercontent.com/jzpang85/decanter/main/'+QZ_BANKS[key].f
+  ];
+  let lastErr=null;
+  for(const u of urls){
+    try{const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);
+      const d=await r.json();if(!d||!Array.isArray(d.q)||!d.q.length)throw new Error('bad bank');
+      try{localStorage.setItem(ck,JSON.stringify(d));}catch(e){}
+      return d;
+    }catch(e){lastErr=e;}
+  }
+  throw lastErr||new Error('network error');
+}
+async function startQuiz(){
+  const key=$('#qzCat').value;
+  try{localStorage.setItem('decanter_qz_cat',key);}catch(e){}
+  $('#qzIntro').style.display='none';$('#qzSession').style.display='';
+  $('#qzSession').innerHTML=`<div style="text-align:center;padding:24px 0"><div class="spinner"></div><div style="color:var(--text-3);margin-top:12px">Loading question bank…</div></div>`;
+  try{
+    const bank=await loadBank(key);
+    qQ=shuffle(bank.q).slice(0,20);qI=0;qScore=0;qRes=[];
+    renderQuiz();
+  }catch(e){
+    $('#qzSession').style.display='none';$('#qzIntro').style.display='';
+    toast('❌ Could not load the question bank — check your connection and retry.');
+  }
+}
 function renderQuiz(){if(qI>=qQ.length){quizResults();return;}const q=qQ[qI];qAns=false;const pips=qQ.map((_,i)=>i<qI?(qRes[i]?'done':'bad'):'').map(c=>`<div class="p ${c}"></div>`).join('');$('#qzSession').innerHTML=`<div class="qpips">${pips}</div><div class="qq">${qI+1}. ${esc(q.q)}</div><div class="qopts" id="qOpts">${q.o.map((o,i)=>`<button class="qopt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div id="qEx"></div>`;$$('#qOpts .qopt').forEach(b=>b.onclick=()=>answerQuiz(+b.dataset.i));}
 function answerQuiz(i){if(qAns)return;qAns=true;const q=qQ[qI],ok=i===q.a;if(ok)qScore++;qRes[qI]=ok;$$('#qOpts .qopt').forEach(b=>{const ix=+b.dataset.i;b.disabled=true;if(ix===q.a)b.classList.add('ok');else if(ix===i)b.classList.add('no');});$('#qEx').innerHTML=`<div class="qex"><b style="color:${ok?'var(--green)':'var(--red)'}">${ok?'✓ Correct':'✗ Not quite'}</b> — ${esc(q.e)}<br><br><button class="btn btn-primary" id="qNext">${qI+1>=qQ.length?'See results':'Next →'}</button></div>`;$('#qNext').onclick=()=>{qI++;renderQuiz();};}
 function quizResults(){const pct=Math.round(qScore/qQ.length*100);let g='Keep tasting!',e='🥲';if(pct>=90){g='Master Sommelier-tier!';e='🏆';}else if(pct>=70){g='Excellent palate!';e='🎖️';}else if(pct>=50){g='Solid — keep going.';e='👍';}$('#qzSession').innerHTML=`<div style="text-align:center;padding:24px 0"><div style="font-size:3rem">${e}</div><div style="font-family:var(--serif);font-size:1.7rem;color:var(--gold-2);margin-top:6px">${qScore} / ${qQ.length}</div><div style="color:var(--text-3)">${g}</div><button class="btn btn-primary" id="qAgain" style="margin-top:18px">↻ Play again</button></div>`;$('#qAgain').onclick=startQuiz;}
@@ -938,6 +969,7 @@ function bind(){
   $$('.study-tabs button').forEach(b=>b.addEventListener('click',()=>{studyPane=b.dataset.pane;renderStudyTabs();}));
   $('#refBack').addEventListener('click',backRef);
   $('#qzStart').addEventListener('click',startQuiz);
+  try{const qc=localStorage.getItem('decanter_qz_cat');if(qc&&$('#qzCat'))$('#qzCat').value=qc;}catch(e){}
   $('#setClose').addEventListener('click',()=>$('#settingsModal').classList.remove('open'));
   $('#settingsModal').addEventListener('click',e=>{if(e.target===$('#settingsModal'))$('#settingsModal').classList.remove('open');});
   $('#setTts').addEventListener('input',e=>$('#ttsLbl').textContent=parseFloat(e.target.value).toFixed(1)+'×');
