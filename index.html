@@ -437,7 +437,7 @@ const dbDelB=id=>new Promise((res,rej)=>{const tx=db.transaction(BSTORE,'readwri
 
 /* ---- state ---- */
 let drinksCache=[],bottlesCache=[],cellarGroup='country',curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.29';
+const APP_VER='5.30';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -1067,7 +1067,7 @@ async function getLocalCellar(){return {drinks:await dbAll(),bottles:await dbAll
 function mergeCellars(local,remote){const del=new Set([...(local.deletedIds||[]),...(remote.deletedIds||[])]);const dt=x=>{const t=new Date(x.modifiedAt||x.createdAt||0).getTime();return isNaN(t)?0:t;};const byId={};for(const d of local.drinks){if(del.has(d.id))continue;byId[d.id]=d;}for(const d of (remote.drinks||[])){if(del.has(d.id))continue;const c=byId[d.id];if(!c||dt(d)>=dt(c))byId[d.id]=d;}const bId={};for(const b of (local.bottles||[])){if(del.has(b.id))continue;bId[b.id]=b;}for(const b of (remote.bottles||[])){if(del.has(b.id))continue;const c=bId[b.id];if(!c||dt(b)>=dt(c))bId[b.id]=b;}return{v:1,updatedAt:new Date().toISOString(),drinks:Object.values(byId),bottles:Object.values(bId),deletedIds:[...del]};}
 async function applyCellar(merged){for(const d of merged.drinks)await dbPut(d);for(const b of (merged.bottles||[]))await dbPutB(b);for(const id of merged.deletedIds){try{await dbDel(id);}catch(e){}try{await dbDelB(id);}catch(e){}}localStorage.setItem(DELKEY,JSON.stringify(merged.deletedIds));}
 function setSyncStatus(msg){const el=$('#syncStatus');if(el)el.textContent=msg;}
-function refreshActive(){if(curView==='home')renderHome();else if(curView==='journal')renderLibrary();}
+function refreshActive(){try{if(curView==='home')renderHome();else if(curView==='journal')renderLibrary();}catch(e){console.warn('render error',e);}}
 async function syncNow(opts){
   opts=opts||{};const s=getSettings();
   if(!s.syncToken||!(s.syncRepo||'').trim()){if(!opts.silent)toast('☁️ Add your GitHub token + repo in Settings to sync.');return null;}
