@@ -140,12 +140,6 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .btn-ghost{background:transparent}
 .btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.btn-block{width:100%}
 
-details.prof{border:1px solid var(--border);border-radius:var(--rs);background:var(--surface);margin-top:4px;overflow:hidden}
-details.prof>summary{list-style:none;cursor:pointer;padding:13px 15px;font-size:.82rem;color:var(--gold);display:flex;justify-content:space-between;align-items:center}
-details.prof>summary::-webkit-details-marker{display:none}
-details.prof>summary::after{content:'⌄';color:var(--text-3);transition:transform var(--t);font-size:1.1rem}
-details.prof[open]>summary::after{transform:rotate(180deg)}
-details.prof .pbody{padding:2px 15px 15px}
 .sliders{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin-top:6px}
 .sliders .it{display:flex;flex-direction:column;gap:4px}.sliders .it .lab{display:flex;justify-content:space-between;font-size:.74rem;color:var(--text-2)}.sliders .it .lab .v{color:var(--gold)}
 input[type=range]{padding:0;background:transparent;border:none;box-shadow:none;height:22px}
@@ -303,10 +297,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
       <input type="file" id="labelPhotoInput" accept="image/*" style="display:none">
       <div class="label">Rating <span id="rateVal" style="color:var(--gold-2);font-weight:700"></span></div>
       <div class="stars pick" id="ratePick" title="Tap a star for full; tap the same star again for half"><span class="s" data-v="1">★</span><span class="s" data-v="2">★</span><span class="s" data-v="3">★</span><span class="s" data-v="4">★</span><span class="s" data-v="5">★</span></div>
+      <div class="label">Appearance</div><input id="fColor" placeholder="deep garnet, pale gold…">
+      <div class="label">Nose / aroma</div><input id="fAroma" placeholder="black cherry, vanilla…">
+      <div class="label">Decant / serve</div><input id="fDecant" placeholder="e.g. decant 1 hour, or serve now">
       <div class="label">Flavor notes</div><input id="fFlavor" placeholder="blackcurrant, cedar…">
       <div class="label">Food pairing</div><input id="fPairing" placeholder="grilled lamb, aged cheese…">
       <div class="label">Summary / intro</div><textarea id="fSummary" placeholder="DeepSeek writes this — or edit freely…"></textarea><div class="btn-row" style="margin-top:6px"><button type="button" class="btn btn-ghost btn-sm" id="btnReadSummary">🔊 Read summary aloud</button></div>
-      <details class="prof" id="profDetails"><summary>📋 Tasting profile & serving (AI-filled)</summary><div class="pbody"><div class="label" style="margin-top:0">Decant / serve</div><input id="fDecant" placeholder="e.g. decant 1 hour, or serve now"><div class="sliders" id="profSliders"></div><div class="label" style="margin-top:14px">Appearance</div><input id="fColor" placeholder="deep garnet, pale gold…"><div class="label">Nose / aroma</div><input id="fAroma" placeholder="black cherry, vanilla…"><div class="label">Conclusion</div><input id="fConclusion" placeholder="outstanding, drink now–2030…"></div></details>
+      <div class="sliders" id="profSliders"></div>
+      <div class="label" style="margin-top:14px">Conclusion</div><input id="fConclusion" placeholder="outstanding, drink now–2030…">
       <input type="hidden" id="fRating" value="0"><input type="hidden" id="fEditId" value="">
       <div class="savebar"><button class="btn btn-ghost" id="btnCancel" style="display:none">Cancel</button><button class="btn btn-primary" id="btnSave" style="flex:1">💾 Save to cellar</button></div>
     </div>
@@ -389,7 +387,7 @@ const dbDel=id=>new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite
 
 /* ---- state ---- */
 let drinksCache=[],curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.13';
+const APP_VER='5.14';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
