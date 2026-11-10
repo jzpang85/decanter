@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#15100c">
 <meta name="description" content="JP Decanter — journal wine, sake, whisky & coffee with DeepSeek AI.">
+<link rel="stylesheet" href="leaflet.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 <title>JP Decanter v4</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍷%3C/text%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -251,6 +253,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .minimap{height:170px;border-radius:var(--rs);overflow:hidden;margin:10px 0 4px;border:1px solid var(--border);background:#1a1410}
 .minimap.hidden{display:none}
 </style>
+<script src="leaflet.js"></script>
+<script>if(!window.L){var lf=document.createElement('script');lf.src='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js';lf.onerror=function(){var l2=document.createElement('script');l2.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';l2.onerror=function(){var l3=document.createElement('script');l3.src='https://registry.npmmirror.com/leaflet/1.9.4/files/dist/leaflet.js';document.head.appendChild(l3);};document.head.appendChild(l2);};document.head.appendChild(lf);}</script>
 </head>
 <body>
 <div class="app">
@@ -430,7 +434,7 @@ const dbDelB=id=>new Promise((res,rej)=>{const tx=db.transaction(BSTORE,'readwri
 
 /* ---- state ---- */
 let drinksCache=[],bottlesCache=[],cellarGroup='country',curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.39';
+const APP_VER='5.40';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -1140,6 +1144,37 @@ function clipPoly(pts,x0,y0,x1,y1){
   return out;
 }
 function showMiniMap(elId,text){
+  const el=document.getElementById(elId);if(!el)return;
+  const g=geoLookup(text);if(!g){el.classList.add('hidden');return;}
+  if(typeof window.L==='undefined'){showInfoMap(elId,text);return;}
+  el.classList.remove('hidden');el.innerHTML='';
+  try{
+    const z=(GEO[g.name]||[])[2]||6;
+    const map=L.map(elId,{zoomControl:true,attributionControl:true}).setView([g.lat,g.lng],z);
+    const tiles=[
+      ['CARTO dark','https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png','© OpenStreetMap © CARTO'],
+      ['OSM','https://tile.openstreetmap.org/{z}/{x}/{y}.png','© OpenStreetMap contributors'],
+      ['Gaode','https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}','© AutoNavi'],
+    ];
+    let ti=0;
+    const mkLayer=i=>{
+      const t=tiles[i];
+      const opts={maxZoom:18,attribution:t[2]};
+      if(i===2)opts.subdomains=['1','2','3','4'];
+      const layer=L.tileLayer(t[1],opts).addTo(map);
+      layer.on('tileerror',()=>{
+        if(layer._fell)return;layer._fell=1;
+        if(ti<tiles.length-1){ti++;mkLayer(ti);}
+        else showInfoMap(elId,text);
+      });
+    };
+    mkLayer(0);
+    L.circle([g.lat,g.lng],{radius:25000,color:'#e6c074',weight:1.5,fillColor:'#d4a85a',fillOpacity:0.25}).addTo(map);
+    L.marker([g.lat,g.lng]).addTo(map).bindPopup(g.name[0].toUpperCase()+g.name.slice(1));
+    setTimeout(()=>{try{map.invalidateSize();}catch(e){}},160);
+  }catch(e){showInfoMap(elId,text);}
+}
+function showInfoMap(elId,text){
   const el=document.getElementById(elId);if(!el)return;
   const g=geoLookup(text);if(!g){el.classList.add('hidden');return;}
   const W=640,H=320;
