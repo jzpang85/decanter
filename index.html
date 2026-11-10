@@ -434,7 +434,7 @@ const dbDelB=id=>new Promise((res,rej)=>{const tx=db.transaction(BSTORE,'readwri
 
 /* ---- state ---- */
 let drinksCache=[],bottlesCache=[],cellarGroup='country',curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.40';
+const APP_VER='5.41';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -1151,22 +1151,37 @@ function showMiniMap(elId,text){
   try{
     const z=(GEO[g.name]||[])[2]||6;
     const map=L.map(elId,{zoomControl:true,attributionControl:true}).setView([g.lat,g.lng],z);
+    const qk=(x,y,z)=>{let k='';for(let i=z;i>0;i--){let d=0;const m=1<<(i-1);if(x&m)d+=1;if(y&m)d+=2;k+=d;}return k;};
     const tiles=[
-      ['CARTO dark','https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png','© OpenStreetMap © CARTO'],
-      ['OSM','https://tile.openstreetmap.org/{z}/{x}/{y}.png','© OpenStreetMap contributors'],
-      ['Gaode','https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}','© AutoNavi'],
+      {u:'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',a:'© AutoNavi',s:['1','2','3','4']},
+      {u:'https://rt{s}.map.gtimg.com/tile?z={z}&x={x}&y={y}&styleid=3',a:'© Tencent',s:['0','1','2','3']},
+      {u:null,a:'© Bing'},
+      {u:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',a:'© OpenStreetMap © CARTO'},
+      {u:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',a:'© OpenStreetMap contributors'},
     ];
-    let ti=0;
+    let ti=0,watch=null;
     const mkLayer=i=>{
       const t=tiles[i];
-      const opts={maxZoom:18,attribution:t[2]};
-      if(i===2)opts.subdomains=['1','2','3','4'];
-      const layer=L.tileLayer(t[1],opts).addTo(map);
-      layer.on('tileerror',()=>{
+      const opts={maxZoom:18,attribution:t.a};
+      let layer;
+      if(!t.u){
+        const B=L.TileLayer.extend({getTileUrl(c){return 'https://ecn.t'+((c.x+c.y)%4)+'.tiles.virtualearth.net/tiles/r'+qk(c.x,c.y,c.z)+'.jpeg?g=0';}});
+        layer=new B('',opts);
+      }else{
+        if(t.s)opts.subdomains=t.s;
+        layer=L.tileLayer(t.u,opts);
+      }
+      layer.addTo(map);
+      layer.on('tileload',()=>{if(watch){clearTimeout(watch);watch=null;}});
+      const advance=()=>{
         if(layer._fell)return;layer._fell=1;
+        if(watch){clearTimeout(watch);watch=null;}
         if(ti<tiles.length-1){ti++;mkLayer(ti);}
         else showInfoMap(elId,text);
-      });
+      };
+      layer.on('tileerror',advance);
+      if(watch){clearTimeout(watch);}
+      watch=setTimeout(advance,8000);
     };
     mkLayer(0);
     L.circle([g.lat,g.lng],{radius:25000,color:'#e6c074',weight:1.5,fillColor:'#d4a85a',fillOpacity:0.25}).addTo(map);
