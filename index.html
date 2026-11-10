@@ -250,9 +250,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .bcard .bact{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
 .minimap{height:170px;border-radius:var(--rs);overflow:hidden;margin:10px 0 4px;border:1px solid var(--border);background:#1a1410}
 .minimap.hidden{display:none}
-.leaflet-container{background:#1a1410;font:11px var(--sans)}
-.leaflet-control-attribution{font-size:9px!important;background:rgba(21,16,12,.7)!important;color:var(--text-3)!important}
-.leaflet-control-attribution a{color:var(--text-2)!important}
 </style>
 </head>
 <body>
@@ -433,7 +430,7 @@ const dbDelB=id=>new Promise((res,rej)=>{const tx=db.transaction(BSTORE,'readwri
 
 /* ---- state ---- */
 let drinksCache=[],bottlesCache=[],cellarGroup='country',curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine';
-const APP_VER='5.36';
+const APP_VER='5.37';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
