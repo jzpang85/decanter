@@ -101,6 +101,7 @@ body.no-scroll{overflow:hidden}
 .dcard .stripe.wine{background:var(--wine)}.dcard .stripe.sake{background:var(--sake)}.dcard .stripe.whisky{background:var(--whisky)}.dcard .stripe.coffee{background:var(--coffee)}
 .dcard .nm{font-family:var(--serif);font-size:.95rem;line-height:1.2;color:var(--text);overflow:hidden;text-overflow:ellipsis;display:-webkit_box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.3em}
 .dcard .sub{font-size:.74rem;color:var(--text-3);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rtn{margin-left:5px;font-size:.72rem;color:var(--gold-2);font-weight:600}
 .dcard .rt{margin-top:6px}
 .empty{text-align:center;padding:50px 20px;color:var(--text-3)}.empty .ico{font-size:2.8rem;display:block;margin-bottom:10px;opacity:.7}
 
@@ -282,7 +283,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     <div class="greeting"><div class="hi">The journal</div><div class="you">Everything you've poured</div></div>
     <div class="card" style="padding:14px 16px;margin-top:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span class="note" style="margin:0">Category</span><select class="sortsel" id="statType"><option value="wine">🍷 Wine</option><option value="sake">🍶 Sake</option><option value="whisky">🥃 Whisky</option><option value="coffee">☕ Coffee</option></select></div><div class="chips" id="chartChips" style="margin-bottom:12px"><button class="chip on" data-c="country">🌍 Country</button><button class="chip" data-c="region">🗺️ Region</button><button class="chip" data-c="appellation">📍 Appellation</button><button class="chip" data-c="grape">🍇 Grape / style</button><button class="chip" data-c="vintage">📅 Vintage</button></div><div id="chartBox"></div><div id="journalStats"></div></div>
     <div class="toolbar"><div class="search-wrap"><span class="si">🔍</span><input id="libSearch" placeholder="Search name, variety, origin, notes…"></div></div>
-    <div id="drillBar" style="display:none;margin:10px 0 0"></div>
+    <div id="drillBar" style="display:none;margin:10px 0 6px;flex-wrap:wrap"></div>
     <div class="chips" id="libChips"></div>
     <div style="display:flex;justify-content:flex-end;margin:12px 0"><select class="sortsel" id="libSort"><option value="newest">Newest</option><option value="rating">Top rated</option><option value="name">Name A–Z</option><option value="oldest">Oldest</option></select></div>
     <div id="libGrid"></div>
@@ -439,7 +440,7 @@ const dbDelB=id=>new Promise((res,rej)=>{const tx=db.transaction(BSTORE,'readwri
 
 /* ---- state ---- */
 let drinksCache=[],bottlesCache=[],cellarGroup='country',curView='journal',libFilter='all',libSearch='',libSort='newest',chartDim='country',statType='wine',libDrill=null;
-const APP_VER='5.48';
+const APP_VER='5.49';
 let formType='wine',formRating=0,formPhoto='';
 const PROF=[['body','Body'],['acidity','Acidity'],['sweet','Sweet'],['tannin','Tannin'],['alcohol','Alcohol'],['finish','Finish']];
 
@@ -660,7 +661,7 @@ async function saveBottle(){
   await dbPutB(b);await refreshCache();caddReset();go('home');toast('🍾 Saved to cellar!');syncNow({silent:true});
 }
 
-const dcardHtml=d=>`<div class="dcard" data-id="${d.id}"><div class="stripe ${d.type}"></div><div class="info"><div class="nm">${esc(d.name)}</div><div class="sub">${esc([d.variety,d.origin].filter(Boolean).join(' · ')||TYPE[d.type].label)}</div>${d.rating?`<div class="rt">${stars(d.rating,'sm')}</div>`:''}</div></div>`;
+const dcardHtml=d=>`<div class="dcard" data-id="${d.id}"><div class="stripe ${d.type}"></div><div class="info"><div class="nm">${esc(d.name)}</div><div class="sub">${esc([d.variety,d.origin].filter(Boolean).join(' · ')||TYPE[d.type].label)}</div>${d.rating?`<div class="rt">${stars(d.rating,'sm')}<span class="rtn">${d.rating}</span></div>`:''}</div></div>`;
 
 /* ---- library ---- */
 function renderLibrary(){
@@ -675,7 +676,7 @@ function renderLibrary(){
   grid.querySelectorAll('.dcard').forEach(c=>c.addEventListener('click',()=>openDetail(c.dataset.id)));
   const db=$('#drillBar');
   if(db){
-    if(libDrill){db.style.display='';db.innerHTML=`<span class="chip on">📍 ${esc(libDrill.key)} · ${esc(libDrill.dim)} <button class="link-btn" id="drillClear" style="margin-left:4px">✕</button></span>`;$('#drillClear').onclick=()=>{libDrill=null;renderLibrary();};}
+    if(libDrill){db.style.display='';db.innerHTML=`<span class="chip on" style="max-width:100%;white-space:normal;line-height:1.4;height:auto">📍 ${esc(libDrill.key)} · ${esc(libDrill.dim)} <button class="link-btn" id="drillClear" style="margin-left:4px">✕</button></span>`;$('#drillClear').onclick=()=>{libDrill=null;renderLibrary();};}
     else db.style.display='none';
   }
   const cc=$('#chartChips');if(cc&&!cc.dataset.built){cc.dataset.built='1';cc.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;chartDim=b.dataset.c;libDrill=null;$$('#chartChips .chip').forEach(c=>c.classList.toggle('on',c===b));renderJournalChart();});}
